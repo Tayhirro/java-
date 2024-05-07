@@ -62,7 +62,7 @@ class RouteInputWindow extends JFrame {
         RoutePlanningSystem routePlanningSystem = new RoutePlanningSystem();
 
         setTitle("¬∑œﬂ ‰»Î");
-        setSize(320, 200);
+        setSize(240, 140);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null); // Center the window
 
