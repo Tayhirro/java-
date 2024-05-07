@@ -16,16 +16,16 @@ public class MainWindow extends JFrame {
         this.recommendationSystem = recommendationSystem;
         this.userInterests = userInterests;
 
-        setTitle("ä¸»ç•Œé¢");
+        setTitle("Ö÷½çÃæ");
         setSize(320, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Center the window
 
         // Create UI components
-        recommendationButton = new JButton("æ¸¸å­¦æ¨è");
-        routePlanningButton = new JButton("è·¯çº¿è§„åˆ’");
-        placeQueryButton = new JButton("åœºæ‰€æŸ¥è¯¢");
-        diaryButton = new JButton("æ¸¸å­¦æ—¥è®°");
+        recommendationButton = new JButton("ÓÎÑ§ÍÆ¼ö");
+        routePlanningButton = new JButton("Â·Ïß¹æ»®");
+        placeQueryButton = new JButton("³¡Ëù²éÑ¯");
+        diaryButton = new JButton("ÓÎÑ§ÈÕ¼Ç");
 
         // Create a panel and add the components
         JPanel panel = new JPanel();

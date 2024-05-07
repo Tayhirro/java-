@@ -11,7 +11,7 @@ public class RecommendationWindow extends JFrame {
         this.recommendationSystem = recommendationSystem;
         this.userInterests = userInterests;
 
-        setTitle("Ê∏∏Â≠¶Êé®Ëçê");
+        setTitle("”Œ—ßÕ∆ºˆ");
         setSize(320, 200);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null); // Center the window

@@ -16,16 +16,16 @@ public class LoginWindow extends JFrame {
         this.ums = ums;
         ums.loadUsersFromFile("users.txt");
 
-        // åˆ›å»ºæ•°æ®åŠ è½½å™¨å®ä¾‹
+        // ´´½¨Êı¾İ¼ÓÔØÆ÷ÊµÀı
         CenterPlaceDataLoader dataLoader = new CenterPlaceDataLoader("CenterPlace.txt");
 
-        // åˆ›å»ºæ¨èç³»ç»Ÿå®ä¾‹
+        // ´´½¨ÍÆ¼öÏµÍ³ÊµÀı
         recommendationSystem = new RecommendationSystem(dataLoader);
 
-        // ç”¨æˆ·å…´è¶£åˆ—è¡¨
+        // ÓÃ»§ĞËÈ¤ÁĞ±í
         userInterests = List.of("keyword1", "keyword3");
 
-        setTitle("ç™»å½•çª—å£");
+        setTitle("µÇÂ¼´°¿Ú");
         setSize(320, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Center the window
@@ -33,22 +33,22 @@ public class LoginWindow extends JFrame {
         // Create UI components
         usernameField = new JTextField(20);
         passwordField = new JPasswordField(20);
-        loginButton = new JButton("ç™»å½•");
-        registerButton = new JButton("æ³¨å†Œ");
+        loginButton = new JButton("µÇÂ¼");
+        registerButton = new JButton("×¢²á");
 
         // Create a panel and add the components
         JPanel panel = new JPanel();
 
 //        panel.setLayout(null);
-//        JButton button = new JButton("æŒ‰é’®");
-//        button.setBounds(50, 50, 80, 30); // è®¾ç½®æŒ‰é’®çš„ä½ç½®å’Œå¤§å°
+//        JButton button = new JButton("°´Å¥");
+//        button.setBounds(50, 50, 80, 30); // ÉèÖÃ°´Å¥µÄÎ»ÖÃºÍ´óĞ¡
 //        panel.add(button);
 
         //panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        panel.add(new JLabel("ç”¨æˆ·å:"));
+        panel.add(new JLabel("ÓÃ»§Ãû:"));
         panel.add(usernameField);
-        panel.add(new JLabel("å¯†ç :"));
+        panel.add(new JLabel("ÃÜÂë:"));
         panel.add(passwordField);
         panel.add(loginButton);
         panel.add(registerButton);
@@ -66,13 +66,13 @@ public class LoginWindow extends JFrame {
                 // Call the login method of UserManagementSystem
                 String sessionId = ums.login(username, password);
                 if (sessionId != null) {
-                    System.out.println("ç™»å½•æˆåŠŸï¼Œä¼šè¯IDï¼š" + sessionId);
+                    System.out.println("µÇÂ¼³É¹¦£¬»á»°ID£º" + sessionId);
                     // Close the login window and open the main window
                     setVisible(false);
                     dispose();
                     new MainWindow(recommendationSystem, userInterests).setVisible(true);
                 } else {
-                    System.out.println("ç™»å½•å¤±è´¥");
+                    System.out.println("µÇÂ¼Ê§°Ü");
                 }
             }
         });
@@ -81,17 +81,17 @@ public class LoginWindow extends JFrame {
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String username = JOptionPane.showInputDialog("è¯·è¾“å…¥ç”¨æˆ·å");
-                String password = JOptionPane.showInputDialog("è¯·è¾“å…¥å¯†ç ");
-                String email = JOptionPane.showInputDialog("è¯·è¾“å…¥é‚®ç®±");
+                String username = JOptionPane.showInputDialog("ÇëÊäÈëÓÃ»§Ãû");
+                String password = JOptionPane.showInputDialog("ÇëÊäÈëÃÜÂë");
+                String email = JOptionPane.showInputDialog("ÇëÊäÈëÓÊÏä");
 
                 // Call the register method of UserManagementSystem
                 boolean success = ums.register(username, password, email);
                 if (success) {
-                    JOptionPane.showMessageDialog(null, "æ³¨å†ŒæˆåŠŸ");
-                    ums.saveUsersToFile("users.txt"); // ä¿å­˜ç”¨æˆ·ä¿¡æ¯
+                    JOptionPane.showMessageDialog(null, "×¢²á³É¹¦");
+                    ums.saveUsersToFile("users.txt"); // ±£´æÓÃ»§ĞÅÏ¢
                 } else {
-                    JOptionPane.showMessageDialog(null, "æ³¨å†Œå¤±è´¥ï¼Œç”¨æˆ·åå·²å­˜åœ¨");
+                    JOptionPane.showMessageDialog(null, "×¢²áÊ§°Ü£¬ÓÃ»§ÃûÒÑ´æÔÚ");
                 }
             }
         });

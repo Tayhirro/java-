@@ -7,7 +7,7 @@ public class UserManagementSystem {
     private Map<String, User> usersDB = new HashMap<>();
     private Map<String, String> sessionDB = new HashMap<>();
 
-    // ç”¨æˆ·æ³¨å†Œ
+    // ÓÃ»§×¢²á
     public boolean register(String username, String password, String email){
         if (!usersDB.containsKey(username)) {
             User newUser = new User(username, password, email);
@@ -17,7 +17,7 @@ public class UserManagementSystem {
         return false;
     }
 
-    // ç”¨æˆ·ç™»å½•
+    // ÓÃ»§µÇÂ¼
     public String login(String username, String password) {
         if(usersDB.containsKey(username)&&usersDB.get(username).getPassword().equals(password)) {
             String sessionId = generateSessionId();
@@ -27,7 +27,7 @@ public class UserManagementSystem {
         return null;
     }
 
-    // æ›´æ–°ä¿¡æ¯
+    // ¸üĞÂĞÅÏ¢
     public boolean updateProfile(String sessionId, String newEmail, Map<String, String> additionalInfo) {
         if (sessionDB.containsKey(sessionId)) {
             String username = sessionDB.get(sessionId);
@@ -47,7 +47,7 @@ public class UserManagementSystem {
         return false;
     }
 
-    // ä¿å­˜ç”¨æˆ·ä¿¡æ¯åˆ°æ–‡ä»¶
+    // ±£´æÓÃ»§ĞÅÏ¢µ½ÎÄ¼ş
     public void saveUsersToFile(String filename) {
         try (PrintWriter writer = new PrintWriter(new File(filename))) {
             for (User user : usersDB.values()) {

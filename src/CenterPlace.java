@@ -4,8 +4,8 @@ public class CenterPlace {
     private final String name;
     private String category;
     private List<String> keywords;
-    private double popularity;//鐑害
-    private double rating;//璇勪环
+    private double popularity;//热度
+    private double rating;//评价
     private List<String> features; // Features related to user interests
 
     public CenterPlace(String name, String category, List<String> keywords, double popularity, double rating, List<String> features) {

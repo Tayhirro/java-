@@ -5,14 +5,14 @@ public class Main {
         UserManagementSystem ums = new UserManagementSystem();
         new LoginWindow(ums);
 
-        // åˆ›å»ºæ•°æ®åŠ è½½å™¨å®ä¾‹
+        // ´´½¨Êı¾İ¼ÓÔØÆ÷ÊµÀı
         CenterPlaceDataLoader dataLoader = new CenterPlaceDataLoader("CenterPlace.txt");
 
-        // åˆ›å»ºæ¨èç³»ç»Ÿå’Œæœç´¢ç³»ç»Ÿå®ä¾‹
+        // ´´½¨ÍÆ¼öÏµÍ³ºÍËÑË÷ÏµÍ³ÊµÀı
         RecommendationSystem recommendationSystem = new RecommendationSystem(dataLoader);
         SearchSystem searchSystem = new SearchSystem(dataLoader);
 
-        // ä½¿ç”¨æ¨èç³»ç»Ÿå’Œæœç´¢ç³»ç»Ÿ
+        // Ê¹ÓÃÍÆ¼öÏµÍ³ºÍËÑË÷ÏµÍ³
         List<String> userInterests = List.of("keyword1", "keyword3");
 
         List<CenterPlace> recommendedCenterPlaces = recommendationSystem.recommendCenterPlaces(0.6,0.5,userInterests);
