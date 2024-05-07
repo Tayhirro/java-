@@ -1,12 +1,13 @@
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.*;
 
 public class UserManagementSystem {
     private Map<String, User> usersDB = new HashMap<>();
     private Map<String, String> sessionDB = new HashMap<>();
 
-    // 鐢ㄦ埛娉ㄥ唽
+    // 用户注册
     public boolean register(String username, String password, String email){
         if (!usersDB.containsKey(username)) {
             User newUser = new User(username, password, email);
@@ -16,7 +17,7 @@ public class UserManagementSystem {
         return false;
     }
 
-    // 鐢ㄦ埛鐧诲綍
+    // 用户登录
     public String login(String username, String password) {
         if(usersDB.containsKey(username)&&usersDB.get(username).getPassword().equals(password)) {
             String sessionId = generateSessionId();
@@ -26,7 +27,7 @@ public class UserManagementSystem {
         return null;
     }
 
-    // 鏇存柊淇℃伅
+    // 更新信息
     public boolean updateProfile(String sessionId, String newEmail, Map<String, String> additionalInfo) {
         if (sessionDB.containsKey(sessionId)) {
             String username = sessionDB.get(sessionId);
@@ -44,6 +45,28 @@ public class UserManagementSystem {
             }
         }
         return false;
+    }
+
+    // 保存用户信息到文件
+    public void saveUsersToFile(String filename) {
+        try (PrintWriter writer = new PrintWriter(new File(filename))) {
+            for (User user : usersDB.values()) {
+                writer.println(user.getUsername() + "," + user.getPassword() + "," + user.getEmail());
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadUsersFromFile(String filename) {
+        try (Scanner scanner = new Scanner(new File(filename))) {
+            while (scanner.hasNextLine()) {
+                String[] userData = scanner.nextLine().split(",");
+                register(userData[0], userData[1], userData[2]);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     // Generate session ID

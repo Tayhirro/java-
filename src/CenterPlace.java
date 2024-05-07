@@ -1,13 +1,17 @@
 import java.util.List;
 
 public class CenterPlace {
-    private String name;
-    private double popularity;//鐑害
-    private double rating;//璇勪环
+    private final String name;
+    private String category;
+    private List<String> keywords;
+    private double popularity;//热度
+    private double rating;//评价
     private List<String> features; // Features related to user interests
 
-    public CenterPlace(String name, double popularity, double rating, List<String> features) {
+    public CenterPlace(String name, String category, List<String> keywords, double popularity, double rating, List<String> features) {
         this.name = name;
+        this.category = category;
+        this.keywords = keywords;
         this.popularity = popularity;
         this.rating = rating;
         this.features = features;
@@ -28,6 +32,30 @@ public class CenterPlace {
 
     public List<String> getFeatures() {
         return features;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public List<String> getKeywords() {
+        return keywords;
+    }
+
+    public void setPopularity(double popularity) {
+        this.popularity = popularity;
+    }
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+    public void setFeatures(List<String> features) {
+        this.features = features;
+    }
+    public void setCategory(String category) {
+        this.category = category;
+    }
+    public void setKeywords(List<String> keywords) {
+        this.keywords = keywords;
     }
 
 }
