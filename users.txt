@@ -1,2 +1,2 @@
-ljq,123,19449@
+ljq,123,19449@,preference=ѧϰ
 tayhirro,123,1941
