@@ -46,6 +46,7 @@ public class RoutePlanningWindow extends JFrame {
 
         // Add the panel to the frame
         add(panel);
+
     }
 }
 // 路线输入窗口
@@ -58,6 +59,8 @@ class RouteInputWindow extends JFrame {
     private String end;
 
     public RouteInputWindow() {
+        RoutePlanningSystem routePlanningSystem = new RoutePlanningSystem();
+
         setTitle("路线输入");
         setSize(320, 200);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -87,6 +90,16 @@ class RouteInputWindow extends JFrame {
                 end = endField.getText();
                 System.out.println("起点: " + start);
                 System.out.println("终点: " + end);
+                int startId = routePlanningSystem.getPointId(start);
+                int endId = routePlanningSystem.getPointId(end);
+                if (startId == -1) {
+                    // 在窗口中打印错误信息，而不是在控制台中打印
+                    JOptionPane.showMessageDialog(RouteInputWindow.this, "起点不存在");
+                } else if (endId == -1) {
+                    JOptionPane.showMessageDialog(RouteInputWindow.this, "终点不存在");
+                } else {
+                    routePlanningSystem.dijkstra(startId, endId);
+                }
             }
         });
     }
