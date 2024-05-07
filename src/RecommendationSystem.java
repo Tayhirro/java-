@@ -40,6 +40,30 @@ public class RecommendationSystem {
         return top10CenterPlaces;
     }
 
+    public List<CenterPlace> recommendCenterPlacesByTags(List<String> tags, double popularityWeight, double ratingWeight) {
+        List<CenterPlace> results = new ArrayList<>();
+        for (CenterPlace centerPlace : centerPlaces) {
+            for (String keyword : centerPlace.getKeywords()) {
+                if (tags.contains(keyword)) {
+                    results.add(centerPlace);
+                    break;
+                }
+            }
+        }
+
+        // Sort results based on popularity and rating
+        Collections.sort(results, new Comparator<CenterPlace>() {
+            @Override
+            public int compare(CenterPlace c1, CenterPlace c2) {
+                double score1 = popularityWeight * c1.getPopularity() + ratingWeight * c1.getRating();
+                double score2 = popularityWeight * c2.getPopularity() + ratingWeight * c2.getRating();
+                return Double.compare(score2, score1); // Descending order
+            }
+        });
+
+        return results;
+    }
+
     // Calculate score for a centerPlace based on user's preferences and interests
     private double calculateScore(CenterPlace centerPlace, double popularityWeight, double ratingWeight, List<String> userInterests) {
         double score = popularityWeight * centerPlace.getPopularity() + ratingWeight * centerPlace.getRating();
