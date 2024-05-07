@@ -29,7 +29,7 @@ public class LoginWindow extends JFrame {
         userInterests = List.of("keyword1", "keyword3");
 
         setTitle("µÇÂ¼´°¿Ú");
-        setSize(320, 200);
+        setSize(260, 140);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Center the window
 
@@ -44,7 +44,7 @@ public class LoginWindow extends JFrame {
 
         panel.add(new JLabel("ÓÃ»§Ãû:"));
         panel.add(usernameField);
-        panel.add(new JLabel("ÃÜÂë:"));
+        panel.add(new JLabel("ÃÜ  Âë:"));
         panel.add(passwordField);
         panel.add(loginButton);
         panel.add(registerButton);
@@ -67,8 +67,9 @@ public class LoginWindow extends JFrame {
                     setVisible(false);
                     dispose();
                     User user = ums.getUserByUsername(username);
-                    showPreferenceWindow(user, ums); // Show preference window
                     new MainWindow(recommendationSystem, searchSystem,userInterests).setVisible(true);
+                    showPreferenceWindow(user, ums); // Show preference window
+
                 } else {
                     System.out.println("µÇÂ¼Ê§°Ü");
                 }
