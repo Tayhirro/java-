@@ -5,15 +5,18 @@ import java.util.List;
 
 public class MainWindow extends JFrame {
     private JButton recommendationButton;
+
     private JButton routePlanningButton;
     private JButton placeQueryButton;
     private JButton diaryButton;
 
     private RecommendationSystem recommendationSystem;
+    private SearchSystem searchSystem;
     private List<String> userInterests;
 
-    public MainWindow(RecommendationSystem recommendationSystem, List<String> userInterests) {
+    public MainWindow(RecommendationSystem recommendationSystem, SearchSystem searchSystem, List<String> userInterests) {
         this.recommendationSystem = recommendationSystem;
+        this.searchSystem = searchSystem;
         this.userInterests = userInterests;
 
         setTitle("Ö÷½çÃæ");
@@ -42,7 +45,7 @@ public class MainWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Open the recommendation window
-                new RecommendationWindow(recommendationSystem, userInterests).setVisible(true);
+                new RecommendationWindow(recommendationSystem, searchSystem,userInterests).setVisible(true);
             }
         });
 
