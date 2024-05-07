@@ -1,6 +1,7 @@
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.*;
 
 public class UserManagementSystem {
     private Map<String, User> usersDB = new HashMap<>();
@@ -44,6 +45,28 @@ public class UserManagementSystem {
             }
         }
         return false;
+    }
+
+    // 保存用户信息到文件
+    public void saveUsersToFile(String filename) {
+        try (PrintWriter writer = new PrintWriter(new File(filename))) {
+            for (User user : usersDB.values()) {
+                writer.println(user.getUsername() + "," + user.getPassword() + "," + user.getEmail());
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadUsersFromFile(String filename) {
+        try (Scanner scanner = new Scanner(new File(filename))) {
+            while (scanner.hasNextLine()) {
+                String[] userData = scanner.nextLine().split(",");
+                register(userData[0], userData[1], userData[2]);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     // Generate session ID

@@ -11,6 +11,7 @@ public class LoginWindow extends JFrame {
 
     public LoginWindow(UserManagementSystem ums) {
         this.ums = ums;
+        ums.loadUsersFromFile("users.txt");
 
         setTitle("登录窗口");
         setSize(320, 200);
@@ -54,6 +55,10 @@ public class LoginWindow extends JFrame {
                 String sessionId = ums.login(username, password);
                 if (sessionId != null) {
                     System.out.println("登录成功，会话ID：" + sessionId);
+                    // Close the login window and open the main window
+                    setVisible(false);
+                    dispose();
+                    new MainWindow().setVisible(true);
                 } else {
                     System.out.println("登录失败");
                 }
@@ -72,6 +77,7 @@ public class LoginWindow extends JFrame {
                 boolean success = ums.register(username, password, email);
                 if (success) {
                     JOptionPane.showMessageDialog(null, "注册成功");
+                    ums.saveUsersToFile("users.txt"); // 保存用户信息
                 } else {
                     JOptionPane.showMessageDialog(null, "注册失败，用户名已存在");
                 }
