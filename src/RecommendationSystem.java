@@ -3,8 +3,8 @@ import java.util.*;
 public class RecommendationSystem {
     private List<CenterPlace> centerPlaces;
 
-    public RecommendationSystem() {
-        centerPlaces = new ArrayList<>();
+    public RecommendationSystem(CenterPlaceDataLoader dataLoader) {
+        centerPlaces = dataLoader.getCenterPlaces();
         // Initialize centerPlaces data
     }
 

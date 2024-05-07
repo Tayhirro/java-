@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class MainWindow extends JFrame {
     private JButton recommendationButton;
@@ -8,7 +9,13 @@ public class MainWindow extends JFrame {
     private JButton placeQueryButton;
     private JButton diaryButton;
 
-    public MainWindow() {
+    private RecommendationSystem recommendationSystem;
+    private List<String> userInterests;
+
+    public MainWindow(RecommendationSystem recommendationSystem, List<String> userInterests) {
+        this.recommendationSystem = recommendationSystem;
+        this.userInterests = userInterests;
+
         setTitle("主界面");
         setSize(320, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -35,7 +42,7 @@ public class MainWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Open the recommendation window
-                new RecommendationWindow().setVisible(true);
+                new RecommendationWindow(recommendationSystem, userInterests).setVisible(true);
             }
         });
 

@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class LoginWindow extends JFrame {
     private JTextField usernameField;
@@ -8,10 +9,21 @@ public class LoginWindow extends JFrame {
     private JButton loginButton;
     private JButton registerButton;
     private UserManagementSystem ums;
+    private RecommendationSystem recommendationSystem;
+    private List<String> userInterests;
 
     public LoginWindow(UserManagementSystem ums) {
         this.ums = ums;
         ums.loadUsersFromFile("users.txt");
+
+        // 创建数据加载器实例
+        CenterPlaceDataLoader dataLoader = new CenterPlaceDataLoader("CenterPlace.txt");
+
+        // 创建推荐系统实例
+        recommendationSystem = new RecommendationSystem(dataLoader);
+
+        // 用户兴趣列表
+        userInterests = List.of("keyword1", "keyword3");
 
         setTitle("登录窗口");
         setSize(320, 200);
@@ -58,7 +70,7 @@ public class LoginWindow extends JFrame {
                     // Close the login window and open the main window
                     setVisible(false);
                     dispose();
-                    new MainWindow().setVisible(true);
+                    new MainWindow(recommendationSystem, userInterests).setVisible(true);
                 } else {
                     System.out.println("登录失败");
                 }

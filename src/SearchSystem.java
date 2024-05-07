@@ -3,8 +3,8 @@ import java.util.*;
 public class SearchSystem {
     private List<CenterPlace> centerPlaces;
 
-    public SearchSystem() {
-        centerPlaces = new ArrayList<>();
+    public SearchSystem(CenterPlaceDataLoader dataLoader) {
+        centerPlaces = dataLoader.getCenterPlaces();
         // Initialize centerPlaces data
     }
 
