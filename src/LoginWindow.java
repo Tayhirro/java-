@@ -13,7 +13,7 @@ public class LoginWindow extends JFrame {
         this.ums = ums;
 
         setTitle("登录窗口");
-        setSize(300, 200);
+        setSize(320, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Center the window
 
