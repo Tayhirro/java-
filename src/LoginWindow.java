@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
+import java.util.*;
 
 public class LoginWindow extends JFrame {
     private JTextField usernameField;
@@ -26,7 +26,7 @@ public class LoginWindow extends JFrame {
         searchSystem= new SearchSystem(dataLoader);
 
         // 用户兴趣列表
-        userInterests = List.of("keyword1", "keyword3");
+        userInterests = new ArrayList<>();
 
         setTitle("登录窗口");
         setSize(260, 140);
@@ -113,10 +113,22 @@ public class LoginWindow extends JFrame {
 
         JButton button = new JButton("确定");
         button.addActionListener(e -> {
-            if (cbSport.isSelected()) user.addAdditionalInfo("preference", "运动");
-            if (cbRest.isSelected()) user.addAdditionalInfo("preference", "休息");
-            if (cbEat.isSelected()) user.addAdditionalInfo("preference", "吃饭");
-            if (cbStudy.isSelected()) user.addAdditionalInfo("preference", "学习");
+            if (cbSport.isSelected()) {
+                user.addAdditionalInfo("preference", "运动");
+                userInterests.add("运动");
+            }
+            if (cbRest.isSelected()) {
+                user.addAdditionalInfo("preference", "休息");
+                userInterests.add("休息");
+            }
+            if (cbEat.isSelected()) {
+                user.addAdditionalInfo("preference", "吃饭");
+                userInterests.add("吃饭");
+            }
+            if (cbStudy.isSelected()) {
+                user.addAdditionalInfo("preference", "学习");
+                userInterests.add("学习");
+            }
 
             ums.saveUsersToFile("users.txt"); // Save user preferences to file
 

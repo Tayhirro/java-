@@ -1,4 +1,5 @@
-import java.util.List;
+import javax.swing.*;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -13,7 +14,7 @@ public class Main {
         SearchSystem searchSystem = new SearchSystem(dataLoader);
 
         // 使用推荐系统和搜索系统
-        List<String> userInterests = List.of("keyword1", "keyword3");
+        List<String> userInterests =new ArrayList<>();
 
         List<CenterPlace> recommendedCenterPlaces = recommendationSystem.recommendCenterPlaces(0.6,0.5,userInterests);
         System.out.println("Top 10 Recommended CenterPlaces: ");
