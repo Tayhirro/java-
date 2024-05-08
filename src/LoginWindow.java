@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
+import java.util.*;
 
 public class LoginWindow extends JFrame {
     private JTextField usernameField;
@@ -10,6 +10,7 @@ public class LoginWindow extends JFrame {
     private JButton registerButton;
     private UserManagementSystem ums;
     private RecommendationSystem recommendationSystem;
+    private SearchSystem searchSystem;
     private List<String> userInterests;
 
     public LoginWindow(UserManagementSystem ums) {
@@ -22,11 +23,13 @@ public class LoginWindow extends JFrame {
         // 创建推荐系统实例
         recommendationSystem = new RecommendationSystem(dataLoader);
 
+        searchSystem= new SearchSystem(dataLoader);
+
         // 用户兴趣列表
-        userInterests = List.of("keyword1", "keyword3");
+        userInterests = new ArrayList<>();
 
         setTitle("登录窗口");
-        setSize(320, 200);
+        setSize(260, 140);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Center the window
 
@@ -39,16 +42,9 @@ public class LoginWindow extends JFrame {
         // Create a panel and add the components
         JPanel panel = new JPanel();
 
-//        panel.setLayout(null);
-//        JButton button = new JButton("按钮");
-//        button.setBounds(50, 50, 80, 30); // 设置按钮的位置和大小
-//        panel.add(button);
-
-        //panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
         panel.add(new JLabel("用户名:"));
         panel.add(usernameField);
-        panel.add(new JLabel("密码:"));
+        panel.add(new JLabel("密  码:"));
         panel.add(passwordField);
         panel.add(loginButton);
         panel.add(registerButton);
@@ -70,7 +66,10 @@ public class LoginWindow extends JFrame {
                     // Close the login window and open the main window
                     setVisible(false);
                     dispose();
-                    new MainWindow(recommendationSystem, userInterests).setVisible(true);
+                    User user = ums.getUserByUsername(username);
+                    new MainWindow(recommendationSystem, searchSystem,userInterests).setVisible(true);
+                    showPreferenceWindow(user, ums); // Show preference window
+
                 } else {
                     System.out.println("登录失败");
                 }
@@ -97,5 +96,53 @@ public class LoginWindow extends JFrame {
         });
 
         setVisible(true);
+    }
+
+    private void showPreferenceWindow(User user, UserManagementSystem ums) {
+        JFrame frame = new JFrame("选择偏好");
+        frame.setSize(300, 200);
+        frame.setLocationRelativeTo(null); // Center the window
+
+        JPanel preferencePanel = new JPanel();
+        preferencePanel.setLayout(new BoxLayout(preferencePanel, BoxLayout.Y_AXIS));
+
+        JCheckBox cbSport = new JCheckBox("运动");
+        JCheckBox cbRest = new JCheckBox("休息");
+        JCheckBox cbEat = new JCheckBox("吃饭");
+        JCheckBox cbStudy = new JCheckBox("学习");
+
+        JButton button = new JButton("确定");
+        button.addActionListener(e -> {
+            if (cbSport.isSelected()) {
+                user.addAdditionalInfo("preference", "运动");
+                userInterests.add("运动");
+            }
+            if (cbRest.isSelected()) {
+                user.addAdditionalInfo("preference", "休息");
+                userInterests.add("休息");
+            }
+            if (cbEat.isSelected()) {
+                user.addAdditionalInfo("preference", "吃饭");
+                userInterests.add("吃饭");
+            }
+            if (cbStudy.isSelected()) {
+                user.addAdditionalInfo("preference", "学习");
+                userInterests.add("学习");
+            }
+
+            ums.saveUsersToFile("users.txt"); // Save user preferences to file
+
+            frame.setVisible(false);
+            frame.dispose();
+        });
+
+        preferencePanel.add(cbSport);
+        preferencePanel.add(cbRest);
+        preferencePanel.add(cbEat);
+        preferencePanel.add(cbStudy);
+        preferencePanel.add(button);
+
+        frame.add(preferencePanel);
+        frame.setVisible(true);
     }
 }

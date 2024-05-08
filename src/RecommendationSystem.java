@@ -9,7 +9,13 @@ public class RecommendationSystem {
     }
 
     public List<CenterPlace> recommendCenterPlaces(double userPopularityWeight, double userRatingWeight, List<String> userInterests) {
-        PriorityQueue<CenterPlace> maxHeap = new PriorityQueue<>(10, new Comparator<CenterPlace>() {
+        List<CenterPlace> allCenterPlaces = new ArrayList<>();
+        for (CenterPlace centerPlace : centerPlaces) {
+            allCenterPlaces.add(centerPlace);
+        }
+
+        // Sort allCenterPlaces based on score
+        Collections.sort(allCenterPlaces, new Comparator<CenterPlace>() {
             @Override
             public int compare(CenterPlace c1, CenterPlace c2) {
                 double score1 = calculateScore(c1, userPopularityWeight, userRatingWeight, userInterests);
@@ -18,26 +24,38 @@ public class RecommendationSystem {
             }
         });
 
-        // Insert centerPlaces into max heap
+        // Get top 10 centerPlaces from allCenterPlaces
+        List<CenterPlace> top10CenterPlaces = new ArrayList<>();
+        for (int i = 0; i < 10 && i < allCenterPlaces.size(); i++) {
+            top10CenterPlaces.add(allCenterPlaces.get(i));
+        }
+
+        return top10CenterPlaces;
+    }
+
+
+    public List<CenterPlace> recommendCenterPlacesByTags(List<String> tags, double popularityWeight, double ratingWeight) {
+        List<CenterPlace> results = new ArrayList<>();
         for (CenterPlace centerPlace : centerPlaces) {
-            maxHeap.offer(centerPlace);
-            if (maxHeap.size() > 10) {
-                maxHeap.poll(); // Remove the lowest score centerPlace if heap size exceeds 10
+            for (String keyword : centerPlace.getKeywords()) {
+                if (tags.contains(keyword)) {
+                    results.add(centerPlace);
+                    break;
+                }
             }
         }
 
-        // Convert max heap to list
-        List<CenterPlace> top10CenterPlaces = new ArrayList<>(maxHeap);
-        Collections.sort(top10CenterPlaces, new Comparator<CenterPlace>() {
+        // Sort results based on popularity and rating
+        Collections.sort(results, new Comparator<CenterPlace>() {
             @Override
             public int compare(CenterPlace c1, CenterPlace c2) {
-                double score1 = calculateScore(c1, userPopularityWeight, userRatingWeight, userInterests);
-                double score2 = calculateScore(c2, userPopularityWeight, userRatingWeight, userInterests);
+                double score1 = popularityWeight * c1.getPopularity() + ratingWeight * c1.getRating();
+                double score2 = popularityWeight * c2.getPopularity() + ratingWeight * c2.getRating();
                 return Double.compare(score2, score1); // Descending order
             }
         });
 
-        return top10CenterPlaces;
+        return results;
     }
 
     // Calculate score for a centerPlace based on user's preferences and interests
@@ -45,8 +63,9 @@ public class RecommendationSystem {
         double score = popularityWeight * centerPlace.getPopularity() + ratingWeight * centerPlace.getRating();
         // Additional score based on matching user interests with centerPlace features
         for (String interest : userInterests) {
-            if (centerPlace.getFeatures().contains(interest)) {
-                score += 1.0; // Increment score for each matching interest
+            if (centerPlace.getKeywords().contains(interest)) {
+                score += 50; // Increment score for each matching interest
+                System.out.println("Matched interest: " + interest);
             }
         }
         return score;

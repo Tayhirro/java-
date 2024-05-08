@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class UserManagementSystem {
     private Map<String, User> usersDB = new HashMap<>();
@@ -51,7 +52,10 @@ public class UserManagementSystem {
     public void saveUsersToFile(String filename) {
         try (PrintWriter writer = new PrintWriter(new File(filename))) {
             for (User user : usersDB.values()) {
-                writer.println(user.getUsername() + "," + user.getPassword() + "," + user.getEmail());
+                String additionalInfoStr = user.getAdditionalInfo().isEmpty() ? "" : "," + user.getAdditionalInfo().entrySet().stream()
+                        .map(entry -> entry.getKey() + "=" + entry.getValue())
+                        .collect(Collectors.joining(";"));
+                writer.println(user.getUsername() + "," + user.getPassword() + "," + user.getEmail() + additionalInfoStr);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -67,6 +71,10 @@ public class UserManagementSystem {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public User getUserByUsername(String username) {
+        return usersDB.get(username);
     }
 
     // Generate session ID
