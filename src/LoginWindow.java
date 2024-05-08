@@ -83,7 +83,14 @@ public class LoginWindow extends JFrame {
                 String username = JOptionPane.showInputDialog("请输入用户名");
                 String password = JOptionPane.showInputDialog("请输入密码");
                 String email = JOptionPane.showInputDialog("请输入邮箱");
+                if(username == null || password == null || email == null) {
 
+                    return;
+                }
+                if(username.isEmpty() || password.isEmpty() || email.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "用户名、密码和邮箱不能为空");
+                    return;
+                }
                 // Call the register method of UserManagementSystem
                 boolean success = ums.register(username, password, email);
                 if (success) {
