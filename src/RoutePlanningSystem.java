@@ -130,7 +130,7 @@ public class RoutePlanningSystem {
                 String name = parts[0];
                 double x = Double.parseDouble(parts[1]);
                 double y = Double.parseDouble(parts[2]);
-                PointType type = PointType.valueOf(parts[3]);
+                String type = parts[3];
                 addPoint(name, x, y, type);
             }
             pointsScanner.close();
@@ -236,90 +236,90 @@ public class RoutePlanningSystem {
         return dist[end];
     }
 
-    // 旅行商问题，从start出发，经过所有的点，再回到start，返回最短的length，并记录路径
-    double tspLength(int start, int[] ends, EdgeType type, int[] path) {
-        double[][] dist = new double[pointNum][pointNum];
-        for (int i = 0; i < pointNum; i++) {
-            for (int j = 0; j < pointNum; j++) {
-                dist[i][j] = Double.MAX_VALUE;
-            }
-        }
-        for (int i = 0; i < edgeNum; i++) {
-            if (edges[i].type == type) {
-                dist[edges[i].from][edges[i].to] = edges[i].length;
-            }
-        }
-        for (int k = 0; k < pointNum; k++) {
-            for (int i = 0; i < pointNum; i++) {
-                for (int j = 0; j < pointNum; j++) {
-                    if (dist[i][k] + dist[k][j] < dist[i][j]) {
-                        dist[i][j] = dist[i][k] + dist[k][j];
-                    }
-                }
-            }
-        }
-        double minDist = Double.MAX_VALUE;
-        int[] perm = new int[pointNum];
-        for (int i = 0; i < pointNum; i++) {
-            perm[i] = i;
-        }
-        do {
-            double curDist = 0;
-            for (int i = 0; i < ends.length - 1; i++) {
-                curDist += dist[ends[i]][ends[i + 1]];
-            }
-            curDist += dist[ends[ends.length - 1]][start];
-            if (curDist < minDist) {
-                minDist = curDist;
-                for (int i = 0; i < ends.length; i++) {
-                    path[i] = ends[perm[i]];
-                }
-            }
-        } while (next_permutation(perm, ends.length));
-        return minDist;
-    }
+    // // 旅行商问题，从start出发，经过所有的点，再回到start，返回最短的length，并记录路径
+    // double tspLength(int start, int[] ends, EdgeType type, int[] path) {
+    // double[][] dist = new double[pointNum][pointNum];
+    // for (int i = 0; i < pointNum; i++) {
+    // for (int j = 0; j < pointNum; j++) {
+    // dist[i][j] = Double.MAX_VALUE;
+    // }
+    // }
+    // for (int i = 0; i < edgeNum; i++) {
+    // if (edges[i].type == type) {
+    // dist[edges[i].from][edges[i].to] = edges[i].length;
+    // }
+    // }
+    // for (int k = 0; k < pointNum; k++) {
+    // for (int i = 0; i < pointNum; i++) {
+    // for (int j = 0; j < pointNum; j++) {
+    // if (dist[i][k] + dist[k][j] < dist[i][j]) {
+    // dist[i][j] = dist[i][k] + dist[k][j];
+    // }
+    // }
+    // }
+    // }
+    // double minDist = Double.MAX_VALUE;
+    // int[] perm = new int[pointNum];
+    // for (int i = 0; i < pointNum; i++) {
+    // perm[i] = i;
+    // }
+    // do {
+    // double curDist = 0;
+    // for (int i = 0; i < ends.length - 1; i++) {
+    // curDist += dist[ends[i]][ends[i + 1]];
+    // }
+    // curDist += dist[ends[ends.length - 1]][start];
+    // if (curDist < minDist) {
+    // minDist = curDist;
+    // for (int i = 0; i < ends.length; i++) {
+    // path[i] = ends[perm[i]];
+    // }
+    // }
+    // } while (next_permutation(perm, ends.length));
+    // return minDist;
+    // }
 
-    // 旅行商问题，从start出发，经过所有的点，再回到start，返回最短的 (ValidLength=length / crowding)，并记录路径
-    double tspValidLength(int start, int[] ends, EdgeType type, int[] path) {
-        double[][] dist = new double[pointNum][pointNum];
-        for (int i = 0; i < pointNum; i++) {
-            for (int j = 0; j < pointNum; j++) {
-                dist[i][j] = Double.MAX_VALUE;
-            }
-        }
-        for (int i = 0; i < edgeNum; i++) {
-            if (edges[i].type == type) {
-                dist[edges[i].from][edges[i].to] = edges[i].length / edges[i].crowding;
-            }
-        }
-        for (int k = 0; k < pointNum; k++) {
-            for (int i = 0; i < pointNum; i++) {
-                for (int j = 0; j < pointNum; j++) {
-                    if (dist[i][k] + dist[k][j] < dist[i][j]) {
-                        dist[i][j] = dist[i][k] + dist[k][j];
-                    }
-                }
-            }
-        }
-        double minDist = Double.MAX_VALUE;
-        int[] perm = new int[pointNum];
-        for (int i = 0; i < pointNum; i++) {
-            perm[i] = i;
-        }
-        do {
-            double curDist = 0;
-            for (int i = 0; i < ends.length - 1; i++) {
-                curDist += dist[ends[i]][ends[i + 1]];
-            }
-            curDist += dist[ends[ends.length - 1]][start];
-            if (curDist < minDist) {
-                minDist = curDist;
-                for (int i = 0; i < ends.length; i++) {
-                    path[i] = ends[perm[i]];
-                }
-            }
-        } while (next_permutation(perm, ends.length));
-        return minDist;
-    }
+    // // 旅行商问题，从start出发，经过所有的点，再回到start，返回最短的 (ValidLength=length / crowding)，并记录路径
+    // double tspValidLength(int start, int[] ends, EdgeType type, int[] path) {
+    // double[][] dist = new double[pointNum][pointNum];
+    // for (int i = 0; i < pointNum; i++) {
+    // for (int j = 0; j < pointNum; j++) {
+    // dist[i][j] = Double.MAX_VALUE;
+    // }
+    // }
+    // for (int i = 0; i < edgeNum; i++) {
+    // if (edges[i].type == type) {
+    // dist[edges[i].from][edges[i].to] = edges[i].length / edges[i].crowding;
+    // }
+    // }
+    // for (int k = 0; k < pointNum; k++) {
+    // for (int i = 0; i < pointNum; i++) {
+    // for (int j = 0; j < pointNum; j++) {
+    // if (dist[i][k] + dist[k][j] < dist[i][j]) {
+    // dist[i][j] = dist[i][k] + dist[k][j];
+    // }
+    // }
+    // }
+    // }
+    // double minDist = Double.MAX_VALUE;
+    // int[] perm = new int[pointNum];
+    // for (int i = 0; i < pointNum; i++) {
+    // perm[i] = i;
+    // }
+    // do {
+    // double curDist = 0;
+    // for (int i = 0; i < ends.length - 1; i++) {
+    // curDist += dist[ends[i]][ends[i + 1]];
+    // }
+    // curDist += dist[ends[ends.length - 1]][start];
+    // if (curDist < minDist) {
+    // minDist = curDist;
+    // for (int i = 0; i < ends.length; i++) {
+    // path[i] = ends[perm[i]];
+    // }
+    // }
+    // } while (next_permutation(perm, ends.length));
+    // return minDist;
+    // }
 
 }
