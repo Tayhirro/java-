@@ -98,7 +98,7 @@ class RouteInputWindow extends JFrame {
                 } else if (endId == -1) {
                     JOptionPane.showMessageDialog(RouteInputWindow.this, "÷’µ„≤ª¥Ê‘⁄");
                 } else {
-                    routePlanningSystem.dijkstra(startId, endId);
+
                 }
             }
         });
