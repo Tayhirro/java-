@@ -27,7 +27,7 @@ public class RecommendationWindow extends JFrame {
             }
         });
 
-        JButton searchButton = new JButton("场所查询");
+        JButton searchButton = new JButton("景点/学校查询");
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -58,6 +58,7 @@ public class RecommendationWindow extends JFrame {
         }
         JOptionPane.showMessageDialog(this, message.toString());
     }
+
     private void showSearchResults() {
         String query = JOptionPane.showInputDialog(this, "请输入查询关键词"); // Get user input
         double popularityWeight = 0.6;

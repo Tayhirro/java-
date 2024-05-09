@@ -9,17 +9,16 @@ import java.awt.event.ActionListener;
 public class RoutePlanningWindow extends JFrame {
     public RoutePlanningWindow() {
         setTitle("路线规划");
-        setSize(320, 200);
+        setSize(200, 160);
+        this.setResizable(false);  //锁定大小
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null); // Center the window
 
         // Create buttons
         JButton viewMapButton = new JButton("查看地图");
-        JButton routePlanningButton = new JButton("单点路线规划");
+        JButton singleRoutePlanningButton = new JButton("单点路线规划");
         JButton multiPointRoutePlanningButton = new JButton("多点路线规划");
 
-        // Add an action listener to the viewMapButton
-        // When the button is clicked, a new ImageLoader will be created
         viewMapButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -32,17 +31,13 @@ public class RoutePlanningWindow extends JFrame {
             }
         });
 
-        // Add an action listener to the routePlanningButton
-        // When the button is clicked, a new RouteInputWindow will be created
-        routePlanningButton.addActionListener(new ActionListener() {
+        singleRoutePlanningButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new SinglePointRouteInputWindow().setVisible(true);
             }
         });
 
-        // Add an action listener to the multiPointRoutePlanningButton
-        // When the button is clicked, a new MultiPointRouteInputWindow will be created
         multiPointRoutePlanningButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -50,13 +45,20 @@ public class RoutePlanningWindow extends JFrame {
             }
         });
 
-        // Create a panel and add the buttons
-        JPanel panel = new JPanel();
-        panel.add(viewMapButton);
-        panel.add(routePlanningButton);
-        panel.add(multiPointRoutePlanningButton);
+        // 设置布局
 
-        // Add the panel to the frame
+        JPanel panel = new JPanel(new GridLayout(3, 1));
+        JPanel viewMapButtonPanel = new JPanel();
+        viewMapButtonPanel.add(viewMapButton,BorderLayout.CENTER);
+        JPanel singleRoutePlanningButtonPanel = new JPanel();
+        singleRoutePlanningButtonPanel.add(singleRoutePlanningButton,BorderLayout.CENTER);
+        JPanel multiPointRoutePlanningButtonPanel = new JPanel();
+        multiPointRoutePlanningButtonPanel.add(multiPointRoutePlanningButton,BorderLayout.CENTER);
+
+        panel.add(viewMapButtonPanel);
+        panel.add(singleRoutePlanningButtonPanel);
+        panel.add(multiPointRoutePlanningButtonPanel);
+
         add(panel);
 
     }
