@@ -52,7 +52,6 @@ public class MainWindow extends JFrame {
         add(panel); // 将主面板添加到窗口中
 
 
-
         // Add action listeners to the buttons
         recommendationButton.addActionListener(new ActionListener() {
             @Override

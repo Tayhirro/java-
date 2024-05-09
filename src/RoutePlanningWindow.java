@@ -8,67 +8,53 @@ import java.awt.event.ActionListener;
 // 主窗口
 public class RoutePlanningWindow extends JFrame {
     public RoutePlanningWindow() {
-        setTitle("路线规划");
-        setSize(200, 160);
-        this.setResizable(false);  //锁定大小
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null); // Center the window
 
-        // Create buttons
+        setTitle("路线规划"); // 设置窗口标题
+        setSize(200, 160); // 设置窗口大小
+        setResizable(false);  // 锁定窗口大小
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // 设置关闭操作为释放窗口资源
+        setLocationRelativeTo(null); // 将窗口置于屏幕中央
+        setVisible(true); // 设置窗口可见
+
+        // 创建按钮
         JButton viewMapButton = new JButton("查看地图");
         JButton singleRoutePlanningButton = new JButton("单点路线规划");
         JButton multiPointRoutePlanningButton = new JButton("多点路线规划");
 
-        viewMapButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                SwingUtilities.invokeLater(() -> {
-                    ImageLoader loader = new ImageLoader();
-                    loader.setVisible(true);
-                    // 示例用法
-                    loader.loadImage("map.jpg"); // 将 "map.jpg" 替换为实际的图片路径
-                });
-            }
-        });
-
-        singleRoutePlanningButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new SinglePointRouteInputWindow().setVisible(true);
-            }
-        });
-
-        multiPointRoutePlanningButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new MultiPointRouteInputWindow().setVisible(true);
-            }
-        });
-
         // 设置布局
+        JPanel panel = new JPanel(new GridLayout(3, 1, 5, 5)); // 使用GridLayout布局，3行1列
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 30)); // 添加内边距
 
-        JPanel panel = new JPanel(new GridLayout(3, 1));
-        JPanel viewMapButtonPanel = new JPanel();
-        viewMapButtonPanel.add(viewMapButton,BorderLayout.CENTER);
-        JPanel singleRoutePlanningButtonPanel = new JPanel();
-        singleRoutePlanningButtonPanel.add(singleRoutePlanningButton,BorderLayout.CENTER);
-        JPanel multiPointRoutePlanningButtonPanel = new JPanel();
-        multiPointRoutePlanningButtonPanel.add(multiPointRoutePlanningButton,BorderLayout.CENTER);
+        // 添加按钮到面板
+        panel.add(viewMapButton);
+        panel.add(singleRoutePlanningButton);
+        panel.add(multiPointRoutePlanningButton);
 
-        panel.add(viewMapButtonPanel);
-        panel.add(singleRoutePlanningButtonPanel);
-        panel.add(multiPointRoutePlanningButtonPanel);
+        add(panel); // 将面板添加到窗口中
 
-        add(panel);
+
+
+        // 监听器
+        viewMapButton.addActionListener(e -> SwingUtilities.invokeLater(() -> {
+            ImageLoader loader = new ImageLoader();
+            loader.setVisible(true);
+            // 示例用法
+            loader.loadImage("map.jpg"); // 将 "map.jpg" 替换为实际的图片路径
+        }));
+
+        singleRoutePlanningButton.addActionListener(e -> new SinglePointRouteInputWindow().setVisible(true));
+
+        multiPointRoutePlanningButton.addActionListener(e -> new MultiPointRouteInputWindow().setVisible(true));
+
 
     }
 }
 
 // 单点路线输入窗口
 class SinglePointRouteInputWindow extends JFrame {
-    private JTextField startField;
-    private JTextField endField;
-    private JButton submitButton;
+    private final JTextField startField;
+    private final JTextField endField;
+    private final JButton submitButton;
 
     private String start;
     private String end;
@@ -149,66 +135,63 @@ class SinglePointRouteInputWindow extends JFrame {
         add(panel, BorderLayout.CENTER);
 
         // Add action listener to the submit button
-        submitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                start = startField.getText();
-                end = endField.getText();
-                System.out.println("起点: " + start);
-                System.out.println("终点: " + end);
+        submitButton.addActionListener(e -> {
+            start = startField.getText();
+            end = endField.getText();
+            System.out.println("起点: " + start);
+            System.out.println("终点: " + end);
 
-                //获取交通方式和排序方式
-                String transportation = "";
-                String sorting = "";
-                if (walkingButton.isSelected()) {
-                    transportation = "sidewalk";
-                } else if (bikingButton.isSelected()) {
-                    transportation = "cycleway";
-                } else if (drivingButton.isSelected()) {
-                    transportation = "road";
-                }
+            //获取交通方式和排序方式
+            String transportation = "";
+            String sorting = "";
+            if (walkingButton.isSelected()) {
+                transportation = "sidewalk";
+            } else if (bikingButton.isSelected()) {
+                transportation = "cycleway";
+            } else if (drivingButton.isSelected()) {
+                transportation = "road";
+            }
 
-                if (lengthButton.isSelected()) {
-                    sorting = "length";
-                } else if (timeButton.isSelected()) {
-                    sorting = "time";
-                }
-                // 获取起点和终点的ID
-                int startId = routePlanningSystem.getPointId(start);
-                int endId = routePlanningSystem.getPointId(end);
+            if (lengthButton.isSelected()) {
+                sorting = "length";
+            } else if (timeButton.isSelected()) {
+                sorting = "time";
+            }
+            // 获取起点和终点的ID
+            int startId = routePlanningSystem.getPointId(start);
+            int endId = routePlanningSystem.getPointId(end);
 
-                if (startId == -1) {
-                    // 在窗口中打印错误信息，而不是在控制台中打印
-                    JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "起点不存在");
-                } else if (endId == -1) {
-                    JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "终点不存在");
-                } else {
-                    // 调用路线规划系统的方法，获取路径，并在窗口绘画路径
-                    int[] path = new int[1000];
-                    path[0] = startId;
-                    path[1] = endId;
-                    if (sorting.equals("length")) {
-                        double length = routePlanningSystem.dijkstraLength(startId, endId, transportation, path);
-                        if(length == -1){
-                            JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "无法找到路径");
-                            return;
-                        }
-                        JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "最短路径长度为: " + length);
-                    } else if (sorting.equals("time")) {
-                        double time = routePlanningSystem.dijkstraTime(startId, endId, transportation, path);
-                        if(time == -1){
-                            JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "无法找到路径");
-                            return;
-                        }
-                        JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "最短路径时间为: " + time);
+            if (startId == -1) {
+                // 在窗口中打印错误信息，而不是在控制台中打印
+                JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "起点不存在");
+            } else if (endId == -1) {
+                JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "终点不存在");
+            } else {
+                // 调用路线规划系统的方法，获取路径，并在窗口绘画路径
+                int[] path = new int[1000];
+                path[0] = startId;
+                path[1] = endId;
+                if (sorting.equals("length")) {
+                    double length = routePlanningSystem.dijkstraLength(startId, endId, transportation, path);
+                    if(length == -1){
+                        JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "无法找到路径");
+                        return;
                     }
-                    //画出路径，点的位置在routePlanningSystem.points[path[i]]中，两点之间画线，背景图为map.jpg
-                    SwingUtilities.invokeLater(() -> {
-                        PathLoader loader = new PathLoader(path, routePlanningSystem.points);
-                        loader.setVisible(true);
-                        loader.loadImage("map.jpg"); // 将 "map.jpg" 替换为实际的图片路径
-                    });
+                    JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "最短路径长度为: " + length);
+                } else if (sorting.equals("time")) {
+                    double time = routePlanningSystem.dijkstraTime(startId, endId, transportation, path);
+                    if(time == -1){
+                        JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "无法找到路径");
+                        return;
+                    }
+                    JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "最短路径时间为: " + time);
                 }
+                //画出路径，点的位置在routePlanningSystem.points[path[i]]中，两点之间画线，背景图为map.jpg
+                SwingUtilities.invokeLater(() -> {
+                    PathLoader loader = new PathLoader(path, routePlanningSystem.points);
+                    loader.setVisible(true);
+                    loader.loadImage("map.jpg"); // 将 "map.jpg" 替换为实际的图片路径
+                });
             }
         });
     }
@@ -217,9 +200,9 @@ class SinglePointRouteInputWindow extends JFrame {
 
 // 多点路线输入窗口
 class MultiPointRouteInputWindow extends JFrame{
-    private JTextField startField;
-    private JTextField endsField;
-    private JButton submitButton;
+    private final JTextField startField;
+    private final JTextField endsField;
+    private final JButton submitButton;
 
     private String start;
     private String ends;
@@ -300,74 +283,71 @@ class MultiPointRouteInputWindow extends JFrame{
         add(panel, BorderLayout.CENTER);
 
         // Add action listener to the submit button
-        submitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                start = startField.getText();
-                ends = endsField.getText();
-                System.out.println("起点: " + start);
-                System.out.println("终点: " + ends);
+        submitButton.addActionListener(e -> {
+            start = startField.getText();
+            ends = endsField.getText();
+            System.out.println("起点: " + start);
+            System.out.println("终点: " + ends);
 
-                //获取交通方式和排序方式
-                String transportation = "";
-                String sorting = "";
-                if (walkingButton.isSelected()) {
-                    transportation = "sidewalk";
-                } else if (bikingButton.isSelected()) {
-                    transportation = "cycleway";
-                } else if (drivingButton.isSelected()) {
-                    transportation = "road";
-                }
-
-                if (lengthButton.isSelected()) {
-                    sorting = "length";
-                } else if (timeButton.isSelected()) {
-                    sorting = "time";
-                }
-                // 获取起点
-                int startId = routePlanningSystem.getPointId(start);
-                if (startId == -1) {
-                    // 在窗口中打印错误信息，而不是在控制台中打印
-                    JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "起点不存在");
-                }
-                int []endArray = new int[1000];
-                String[] endArrayString = ends.split(" ");
-                for (int i = 0; i < endArrayString.length; i++) {
-                    int endId = routePlanningSystem.getPointId(endArrayString[i]);
-                    if (endId == -1) {
-                        JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "终点: "+ endArrayString[i] + " 不存在");
-                        return;
-                    }
-                    endArray[i] = endId;
-                }
-                // 调用路线规划系统的方法，获取路径，并在窗口绘画路径
-                int[] path = new int[1000];
-                path[0] = startId;
-                for (int i = 0; i < endArray.length; i++) {
-                    path[i + 1] = endArray[i];
-                }
-                if (sorting.equals("length")) {
-                    double length = routePlanningSystem.tspLength(startId, endArray, transportation, path);
-                    if(length == -1){
-                        JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "无法找到路径");
-                        return;
-                    }
-                    JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "最短路径长度为: " + length);
-                } else if (sorting.equals("time")) {
-                    double time = routePlanningSystem.tspTime(startId, endArray, transportation, path);
-                    if(time == -1){
-                        JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "无法找到路径");
-                        return;
-                    }
-                    JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "最短路径时间为: " + time);
-                }
-                //画出路径，点的位置在routePlanningSystem.points[path[i]]中，两点之间画线，背景图为map.jpg
-                SwingUtilities.invokeLater(() -> {
-                    PathLoader loader = new PathLoader(path, routePlanningSystem.points);
-                    loader.setVisible(true);
-                    loader.loadImage("map.jpg"); // 将 "map.jpg" 替换为实际的图片路径
-                });
+            //获取交通方式和排序方式
+            String transportation = "";
+            String sorting = "";
+            if (walkingButton.isSelected()) {
+                transportation = "sidewalk";
+            } else if (bikingButton.isSelected()) {
+                transportation = "cycleway";
+            } else if (drivingButton.isSelected()) {
+                transportation = "road";
             }
+
+            if (lengthButton.isSelected()) {
+                sorting = "length";
+            } else if (timeButton.isSelected()) {
+                sorting = "time";
+            }
+            // 获取起点
+            int startId = routePlanningSystem.getPointId(start);
+            if (startId == -1) {
+                // 在窗口中打印错误信息，而不是在控制台中打印
+                JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "起点不存在");
+            }
+            int []endArray = new int[1000];
+            String[] endArrayString = ends.split(" ");
+            for (int i = 0; i < endArrayString.length; i++) {
+                int endId = routePlanningSystem.getPointId(endArrayString[i]);
+                if (endId == -1) {
+                    JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "终点: "+ endArrayString[i] + " 不存在");
+                    return;
+                }
+                endArray[i] = endId;
+            }
+            // 调用路线规划系统的方法，获取路径，并在窗口绘画路径
+            int[] path = new int[1000];
+            path[0] = startId;
+            for (int i = 0; i < endArray.length; i++) {
+                path[i + 1] = endArray[i];
+            }
+            if (sorting.equals("length")) {
+                double length = routePlanningSystem.tspLength(startId, endArray, transportation, path);
+                if(length == -1){
+                    JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "无法找到路径");
+                    return;
+                }
+                JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "最短路径长度为: " + length);
+            } else if (sorting.equals("time")) {
+                double time = routePlanningSystem.tspTime(startId, endArray, transportation, path);
+                if(time == -1){
+                    JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "无法找到路径");
+                    return;
+                }
+                JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "最短路径时间为: " + time);
+            }
+            //画出路径，点的位置在routePlanningSystem.points[path[i]]中，两点之间画线，背景图为map.jpg
+            SwingUtilities.invokeLater(() -> {
+                var loader = new PathLoader(path, routePlanningSystem.points);
+                loader.setVisible(true);
+                loader.loadImage("map.jpg"); // 将 "map.jpg" 替换为实际的图片路径
+            });
         });
     }
 }
@@ -375,15 +355,11 @@ class MultiPointRouteInputWindow extends JFrame{
 // 路径加载器，用于显示路径
 class PathLoader extends JFrame {
     private ImageIcon imageIcon;
-    private JLabel label;
-    private int[] path;
-    private MyPoint[] points;
+    private final JLabel label;
     private int imageWidth; // Add this line to store the original image width
     private int imageHeight; // Add this line to store the original image height
 
     public PathLoader(int[] path, MyPoint[] points) {
-        this.path = path;
-        this.points = points;
 
         setTitle("Image Loader");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
