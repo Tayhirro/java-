@@ -5,29 +5,20 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 public class MainWindow extends JFrame {
-    private JButton recommendationButton;
-
-    private JButton routePlanningButton;
-    private JButton placeQueryButton;
-    private JButton diaryButton;
-
-    private RecommendationSystem recommendationSystem;
-    private SearchSystem searchSystem;
-    private List<String> userInterests;
 
     public MainWindow(RecommendationSystem recommendationSystem, SearchSystem searchSystem, List<String> userInterests) {
 
         setTitle("主界面");
         setSize(240, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Center the window
+        setLocationRelativeTo(null);
 
         JButton recommendationButton = new JButton("游学推荐");
         JButton routePlanningButton = new JButton("路线规划");
         JButton placeQueryButton = new JButton("场所查询");
         JButton diaryButton = new JButton("游学日记");
 
-        // Create a panel and add the components
+        // 创建面板并添加组件
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -35,11 +26,13 @@ public class MainWindow extends JFrame {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(5, 5, 5, 5);
 
+        // 游学前相关组件面板
         JPanel beforeStudyTourPanel = new JPanel();
         beforeStudyTourPanel.add(new JLabel("游学前："));
         beforeStudyTourPanel.add(recommendationButton);
-        panel.add(beforeStudyTourPanel, gbc);
+        panel.add(beforeStudyTourPanel, gbc); // 添加游学前组件到主面板
 
+        // 游学中相关组件面板
         gbc.gridy++;
         JPanel inStudyTourPanel = new JPanel();
         inStudyTourPanel.add(new JLabel("游学中："));
@@ -47,15 +40,17 @@ public class MainWindow extends JFrame {
         inStudyTourButtonPanel.add(routePlanningButton);
         inStudyTourButtonPanel.add(placeQueryButton);
         inStudyTourPanel.add(inStudyTourButtonPanel);
-        panel.add(inStudyTourPanel, gbc);
+        panel.add(inStudyTourPanel, gbc); // 添加游学中组件到主面板
 
+        // 游学后相关组件面板
         gbc.gridy++;
         JPanel afterStudyTourPanel = new JPanel();
         afterStudyTourPanel.add(new JLabel("游学后："));
         afterStudyTourPanel.add(diaryButton);
-        panel.add(afterStudyTourPanel, gbc);
+        panel.add(afterStudyTourPanel, gbc); // 添加游学后组件到主面板
 
-        add(panel);
+        add(panel); // 将主面板添加到窗口中
+
 
 
         // Add action listeners to the buttons
@@ -63,7 +58,7 @@ public class MainWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Open the recommendation window
-                new RecommendationWindow(recommendationSystem, searchSystem,userInterests).setVisible(true);
+                new RecommendationWindow(recommendationSystem, searchSystem, userInterests).setVisible(true);
             }
         });
 
