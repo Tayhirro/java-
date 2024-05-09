@@ -2,8 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 
 // 主窗口
 public class RoutePlanningWindow extends JFrame {
@@ -35,16 +34,16 @@ public class RoutePlanningWindow extends JFrame {
 
 
         // 监听器
-        viewMapButton.addActionListener(e -> SwingUtilities.invokeLater(() -> {
+        viewMapButton.addActionListener(_ -> SwingUtilities.invokeLater(() -> {
             ImageLoader loader = new ImageLoader();
             loader.setVisible(true);
             // 示例用法
             loader.loadImage("map.jpg"); // 将 "map.jpg" 替换为实际的图片路径
         }));
 
-        singleRoutePlanningButton.addActionListener(e -> new SinglePointRouteInputWindow().setVisible(true));
+        singleRoutePlanningButton.addActionListener(_ -> new SinglePointRouteInputWindow().setVisible(true));
 
-        multiPointRoutePlanningButton.addActionListener(e -> new MultiPointRouteInputWindow().setVisible(true));
+        multiPointRoutePlanningButton.addActionListener(_ -> new MultiPointRouteInputWindow().setVisible(true));
 
 
     }
@@ -135,7 +134,7 @@ class SinglePointRouteInputWindow extends JFrame {
         add(panel, BorderLayout.CENTER);
 
         // Add action listener to the submit button
-        submitButton.addActionListener(e -> {
+        submitButton.addActionListener(_ -> {
             start = startField.getText();
             end = endField.getText();
             System.out.println("起点: " + start);
@@ -173,14 +172,14 @@ class SinglePointRouteInputWindow extends JFrame {
                 path[1] = endId;
                 if (sorting.equals("length")) {
                     double length = routePlanningSystem.dijkstraLength(startId, endId, transportation, path);
-                    if(length == -1){
+                    if (length == -1) {
                         JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "无法找到路径");
                         return;
                     }
                     JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "最短路径长度为: " + length);
                 } else if (sorting.equals("time")) {
                     double time = routePlanningSystem.dijkstraTime(startId, endId, transportation, path);
-                    if(time == -1){
+                    if (time == -1) {
                         JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "无法找到路径");
                         return;
                     }
@@ -283,7 +282,7 @@ class MultiPointRouteInputWindow extends JFrame{
         add(panel, BorderLayout.CENTER);
 
         // Add action listener to the submit button
-        submitButton.addActionListener(e -> {
+        submitButton.addActionListener(_ -> {
             start = startField.getText();
             ends = endsField.getText();
             System.out.println("起点: " + start);
@@ -415,7 +414,7 @@ class PathLoader extends JFrame {
 class ImageLoader extends JFrame {
 
     private ImageIcon imageIcon;
-    private JLabel label;
+    private final JLabel label;
 
 
 
