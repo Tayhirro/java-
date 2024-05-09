@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+
 // 点类
 class MyPoint {
 
@@ -8,11 +9,6 @@ class MyPoint {
     int x; // 点的坐标
     int y; // 点的坐标
     String type; // 点的类型
-
-    public MyPoint(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
 
     public MyPoint(String name, int x, int y, String type) {
         this.name = name;
@@ -23,69 +19,83 @@ class MyPoint {
 
 }
 
-
 // 边
 class MyEdge {
 
     int from;// 边起点的点编号
     int to;// 边终点的点编号
-    int nextId;// 下一条边的边编号
+    int nextId;// 下一条边的边编号,用于邻接表
 
     // 边的属性
-    double weight;// 边的宽度，承载能力
     double length;// 边的长度
     double crowding;// 拥挤度
-    String type; // 道路种类
 
-    public MyEdge(int from, int to, int nextId, double weight, double length, double crowding, String type) {
+
+    public MyEdge(int from, int to, int nextId, double length, double crowding) {
         this.from = from;
         this.to = to;
         this.nextId = nextId;
-        this.weight = weight;
         this.length = length;
         this.crowding = crowding;
-        this.type = type;
     }
 
 }
 
 public class RoutePlanningSystem {
 
-
-
-
     // 图，包含点和边，使用邻接表存储
     final int MAX_POINT = 1000;
-    final int MAX_EDGE = 50000;
-    int pointNum;// 点的数量
-    int edgeNum;// 边的数量
-    int[] heads = new int[MAX_POINT];// 头指针
-    MyEdge[] edges = new MyEdge[MAX_EDGE];// 边表
+    final int MAX_EDGE = 5000;
+    int pointNum = 0;// 点的数量
+
+
     MyPoint[] points = new MyPoint[MAX_POINT];// 点表
 
+    // 三种边的邻接表
+    int[] sidewalkHeads = new int[MAX_POINT];// 头指针
+    MyEdge[] sidewalk = new MyEdge[MAX_EDGE];// 边表
+    int sidewalkEdgeNum = 0;
+    int[] cyclewayHeads = new int[MAX_POINT];// 头指针
+    MyEdge[] cycleway = new MyEdge[MAX_EDGE];// 边表
+    int cyclewayEdgeNum = 0;
+    int[] roadHeads = new int[MAX_POINT];// 头指针
+    MyEdge[] road = new MyEdge[MAX_EDGE];// 边表
+    int roadEdgeNum = 0;
+
+
     public RoutePlanningSystem() {
-        pointNum = 0;
-        edgeNum = 0;
-        for (int i = 0; i < pointNum; i++) {
-            heads[i] = -1;
-        }
         loadFromFile();
     }
 
-    void addPoint(int x, int y) {
-        points[pointNum] = new MyPoint(x, y);
-        pointNum++;
-    }
 
     void addPoint(String name, int x, int y, String type) {
         points[pointNum] = new MyPoint(name, x, y, type);
+        sidewalkHeads[pointNum] = -1;
+        cyclewayHeads[pointNum] = -1;
+        roadHeads[pointNum] = -1;
         pointNum++;
     }
 
-    void addEdge(int from, int to, double weight, double length, double crowding, String type) {
-        edges[edgeNum] = new MyEdge(from, to, heads[from], weight, length, crowding, type);
-        heads[from] = edgeNum;
-        edgeNum++;
+    void addEdge(int from, int to, double length, double crowding, String type) {
+        switch (type) {
+            case "sidewalk":
+                sidewalk[sidewalkEdgeNum] = new MyEdge(from, to, sidewalkHeads[from], length, crowding);
+                sidewalkHeads[from] = sidewalkEdgeNum;
+                sidewalkEdgeNum++;
+                break;
+            case "cycleway":
+                cycleway[cyclewayEdgeNum] = new MyEdge(from, to, cyclewayHeads[from], length, crowding);
+                cyclewayHeads[from] = cyclewayEdgeNum;
+                cyclewayEdgeNum++;
+                break;
+            case "road":
+                road[roadEdgeNum] = new MyEdge(from, to, roadHeads[from], length, crowding);
+                roadHeads[from] = roadEdgeNum;
+                roadEdgeNum++;
+                break;
+            default:
+                System.out.println("Error: addEdge :unknown type");
+        }
     }
 
     // 获取点的编号
@@ -98,218 +108,63 @@ public class RoutePlanningSystem {
         return -1;
     }
 
-    // 获取边的编号
-    int getEdgeId(int from, int to) {
-        // 遍历from的边
-        for (int i = heads[from]; i != -1; i = edges[i].nextId) {
-            if (edges[i].to == to) {
-                return i;
-            }
-        }
-        return -1;
-    }
 
-    // 从文件加载数据
     void loadFromFile() {
         try {
             // Load points
-            Scanner pointsScanner = new Scanner(new File("points.txt"));
-            while (pointsScanner.hasNextLine()) {
-                String line = pointsScanner.nextLine();
+            Scanner scanner = new Scanner(new File("points.txt"));
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
                 String[] parts = line.split(",");
-                String name = parts[0];
-                int x = Integer.parseInt(parts[1]);
-                int y = Integer.parseInt(parts[2]);
-                String type = parts[3];
-                addPoint(name, x, y, type);
+                addPoint(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[2]), parts[3]);
             }
-            pointsScanner.close();
+            scanner.close();
 
             // Load edges
-            Scanner edgesScanner = new Scanner(new File("edges.txt"));
-            while (edgesScanner.hasNextLine()) {
-                String line = edgesScanner.nextLine();
+            scanner = new Scanner(new File("edges.txt"));
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
                 String[] parts = line.split(",");
-                int from = Integer.parseInt(parts[0]);
-                int to = Integer.parseInt(parts[1]);
-                double weight = Double.parseDouble(parts[2]);
-                double length = Double.parseDouble(parts[3]);
-                double crowding = Double.parseDouble(parts[4]);
-                String type = String.valueOf(parts[5]);
-                addEdge(from, to, weight, length, crowding, type);
+                addEdge(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), Double.parseDouble(parts[2]), Double.parseDouble(parts[3]), parts[4]);
             }
-            edgesScanner.close();
+            scanner.close();
+
         } catch (FileNotFoundException e) {
-            System.out.println("File not found: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    // 选择边的类型使用Dijkstra算法,返回最短的length,并记录路径
-    double dijkstraLength(int start, int end, String type, int path[]) {
-        double[] dist = new double[pointNum];
-        int[] pre = new int[pointNum];
-        boolean[] vis = new boolean[pointNum];
-        for (int i = 0; i < pointNum; i++) {
-            dist[i] = Double.MAX_VALUE;
-            pre[i] = -1;
-            vis[i] = false;
-        }
-        dist[start] = 0;
-        for (int i = 0; i < pointNum; i++) {
-            double minDist = Double.MAX_VALUE;
-            int u = -1;
-            for (int j = 0; j < pointNum; j++) {
-                if (!vis[j] && dist[j] < minDist) {
-                    minDist = dist[j];
-                    u = j;
-                }
-            }
-            if (u == -1) {
-                break;
-            }
-            vis[u] = true;
-            for (int j = heads[u]; j != -1; j = edges[j].nextId) {
-                if (edges[j].type == type && dist[u] + edges[j].length < dist[edges[j].to]) {
-                    dist[edges[j].to] = dist[u] + edges[j].length;
-                    pre[edges[j].to] = u;
-                }
-            }
-        }
-        int pathLen = 0;
-        int p = end;
-        while (p != -1) {
-            path[pathLen] = p;
-            pathLen++;
-            p = pre[p];
-        }
-        return dist[end];
+    //迪杰斯特拉算法,返回最短路径长度,路径存储在path数组中
+    double dijkstraLength(int startId, int endId, String edgeType, int[] path) {
+
+
+        System.out.println("Error: dijkstraLength :return -1");
+        return -1;
     }
 
-    // 选择边的类型使用Dijkstra算法,返回最短的 (ValidLength=length / crowding),并记录路径
-    double dijkstraValidLength(int start, int end, String type, int[] path) {
-        double[] dist = new double[pointNum];
-        int[] pre = new int[pointNum];
-        boolean[] vis = new boolean[pointNum];
-        for (int i = 0; i < pointNum; i++) {
-            dist[i] = Double.MAX_VALUE;
-            pre[i] = -1;
-            vis[i] = false;
-        }
-        dist[start] = 0;
-        for (int i = 0; i < pointNum; i++) {
-            double minDist = Double.MAX_VALUE;
-            int u = -1;
-            for (int j = 0; j < pointNum; j++) {
-                if (!vis[j] && dist[j] < minDist) {
-                    minDist = dist[j];
-                    u = j;
-                }
-            }
-            if (u == -1) {
-                break;
-            }
-            vis[u] = true;
-            for (int j = heads[u]; j != -1; j = edges[j].nextId) {
-                if (edges[j].type == type && dist[u] + edges[j].length / edges[j].crowding < dist[edges[j].to]) {
-                    dist[edges[j].to] = dist[u] + edges[j].length / edges[j].crowding;
-                    pre[edges[j].to] = u;
-                }
-            }
-        }
-        int pathLen = 0;
-        int p = end;
-        while (p != -1) {
-            path[pathLen] = p;
-            pathLen++;
-            p = pre[p];
-        }
-        return dist[end];
+    //迪杰斯特拉算法,返回最短时间,路径存储在path数组中 time=(length*crowding)/speed
+    double dijkstraTime(int startId, int endId, String edgeType, int[] path) {
+
+
+        System.out.println("Error: dijkstraTime :return -1");
+        return -1;
     }
 
-    // // 旅行商问题，从start出发，经过所有的点，再回到start，返回最短的length，并记录路径
-    // double tspLength(int start, int[] ends, String type, int[] path) {
-    // double[][] dist = new double[pointNum][pointNum];
-    // for (int i = 0; i < pointNum; i++) {
-    // for (int j = 0; j < pointNum; j++) {
-    // dist[i][j] = Double.MAX_VALUE;
-    // }
-    // }
-    // for (int i = 0; i < edgeNum; i++) {
-    // if (edges[i].type == type) {
-    // dist[edges[i].from][edges[i].to] = edges[i].length;
-    // }
-    // }
-    // for (int k = 0; k < pointNum; k++) {
-    // for (int i = 0; i < pointNum; i++) {
-    // for (int j = 0; j < pointNum; j++) {
-    // if (dist[i][k] + dist[k][j] < dist[i][j]) {
-    // dist[i][j] = dist[i][k] + dist[k][j];
-    // }
-    // }
-    // }
-    // }
-    // double minDist = Double.MAX_VALUE;
-    // int[] perm = new int[pointNum];
-    // for (int i = 0; i < pointNum; i++) {
-    // perm[i] = i;
-    // }
-    // do {
-    // double curDist = 0;
-    // for (int i = 0; i < ends.length - 1; i++) {
-    // curDist += dist[ends[i]][ends[i + 1]];
-    // }
-    // curDist += dist[ends[ends.length - 1]][start];
-    // if (curDist < minDist) {
-    // minDist = curDist;
-    // for (int i = 0; i < ends.length; i++) {
-    // path[i] = ends[perm[i]];
-    // }
-    // }
-    // } while (next_permutation(perm, ends.length));
-    // return minDist;
-    // }
+    //旅行商问题,返回最短路径长度,路径存储在path数组中
+    double tspLength(int[] endId, String edgeType, int[] path) {
 
-    // // 旅行商问题，从start出发，经过所有的点，再回到start，返回最短的 (ValidLength=length / crowding)，并记录路径
-    // double tspValidLength(int start, int[] ends, String type, int[] path) {
-    // double[][] dist = new double[pointNum][pointNum];
-    // for (int i = 0; i < pointNum; i++) {
-    // for (int j = 0; j < pointNum; j++) {
-    // dist[i][j] = Double.MAX_VALUE;
-    // }
-    // }
-    // for (int i = 0; i < edgeNum; i++) {
-    // if (edges[i].type == type) {
-    // dist[edges[i].from][edges[i].to] = edges[i].length / edges[i].crowding;
-    // }
-    // }
-    // for (int k = 0; k < pointNum; k++) {
-    // for (int i = 0; i < pointNum; i++) {
-    // for (int j = 0; j < pointNum; j++) {
-    // if (dist[i][k] + dist[k][j] < dist[i][j]) {
-    // dist[i][j] = dist[i][k] + dist[k][j];
-    // }
-    // }
-    // }
-    // }
-    // double minDist = Double.MAX_VALUE;
-    // int[] perm = new int[pointNum];
-    // for (int i = 0; i < pointNum; i++) {
-    // perm[i] = i;
-    // }
-    // do {
-    // double curDist = 0;
-    // for (int i = 0; i < ends.length - 1; i++) {
-    // curDist += dist[ends[i]][ends[i + 1]];
-    // }
-    // curDist += dist[ends[ends.length - 1]][start];
-    // if (curDist < minDist) {
-    // minDist = curDist;
-    // for (int i = 0; i < ends.length; i++) {
-    // path[i] = ends[perm[i]];
-    // }
-    // }
-    // } while (next_permutation(perm, ends.length));
-    // return minDist;
-    // }
+
+        System.out.println("Error: tspLength :return -1");
+        return -1;
+    }
+
+    //旅行商问题,返回最短时间,路径存储在path数组中
+    double tspTime(int startId, int[] endId, String edgeType, int[] path) {
+
+
+        System.out.println("Error: tspLength :return -1");
+        return -1;
+    }
+
 
 }

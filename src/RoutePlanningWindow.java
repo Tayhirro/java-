@@ -61,6 +61,7 @@ public class RoutePlanningWindow extends JFrame {
 
     }
 }
+
 // 单点路线输入窗口
 class SinglePointRouteInputWindow extends JFrame {
     private JTextField startField;
@@ -78,11 +79,6 @@ class SinglePointRouteInputWindow extends JFrame {
         setSize(300, 240);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null); // Center the window
-
-        // Create UI components
-        startField = new JTextField(20);
-        endField = new JTextField(20);
-        submitButton = new JButton("提交");
 
         // Create radio buttons
         JRadioButton lengthButton = new JRadioButton("长度");
@@ -124,6 +120,13 @@ class SinglePointRouteInputWindow extends JFrame {
         panel.add(sortingPanel);
         panel.add(transportationPanel);
 
+
+        // Create UI components
+        startField = new JTextField(20);
+        endField = new JTextField(20);
+        submitButton = new JButton("提交");
+
+
         JPanel startPanel = new JPanel();
         startPanel.add(new JLabel("起点:"));
         startPanel.add(startField);
@@ -135,8 +138,6 @@ class SinglePointRouteInputWindow extends JFrame {
         panel.add(startPanel);
         panel.add(endPanel);
 
-
-
         // Create a panel for the submit button with FlowLayout
         JPanel submitPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         submitPanel.add(submitButton);
@@ -144,8 +145,6 @@ class SinglePointRouteInputWindow extends JFrame {
 
         // Add the panel to the frame
         add(panel, BorderLayout.CENTER);
-
-
 
         // Add action listener to the submit button
         submitButton.addActionListener(new ActionListener() {
@@ -187,26 +186,12 @@ class SinglePointRouteInputWindow extends JFrame {
                     path[0] = startId;
                     path[1] = endId;
                     if (sorting.equals("length")) {
-                        //double length = routePlanningSystem.dijkstraLength(startId, endId, transportation, path);
-                        double length =1;
+                        double length = routePlanningSystem.dijkstraLength(startId, endId, transportation, path);
 
                         JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "最短路径长度为: " + length);
                     } else if (sorting.equals("time")) {
-                        //double validLength = routePlanningSystem.dijkstraValidLength(startId, endId, transportation, path);
-                        double validLength = 2;
+                        double time = routePlanningSystem.dijkstraTime(startId, endId, transportation, path);
 
-                        double time=-1;
-                        switch(transportation){
-                            case "sidewalk":
-                                time = validLength / 3;
-                                break;
-                            case "cycleway":
-                                time = validLength / 10;
-                                break;
-                            case "road":
-                                time = validLength / 20;
-                                break;
-                        }
                         JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "最短路径时间为: " + time);
                     }
                     //画出路径，点的位置在routePlanningSystem.points[path[i]]中，两点之间画线，背景图为map.jpg
@@ -223,13 +208,14 @@ class SinglePointRouteInputWindow extends JFrame {
     }
 
 }
+
 // 多点路线输入窗口
 class MultiPointRouteInputWindow extends JFrame{
 
 }
 
 
-// 路径加载器
+// 路径加载器，用于显示路径
 class PathLoader extends JFrame {
     private ImageIcon imageIcon;
     private JLabel label;
@@ -292,7 +278,7 @@ class PathLoader extends JFrame {
     }
 }
 
-// 图片加载器
+// 图片加载器，用于显示图片
 class ImageLoader extends JFrame {
 
     private ImageIcon imageIcon;
