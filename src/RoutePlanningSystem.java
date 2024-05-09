@@ -27,8 +27,8 @@ class MyEdge {
     int nextId;// 下一条边的边编号,用于邻接表
 
     // 边的属性
-    double length;// 边的长度
-    double crowding;// 拥挤度
+    double length;// 边的长度,单位m
+    double crowding;// 拥挤度,0-1,1表示无拥挤,0表示很拥挤，用于计算时间，time=(length)/(speed*crowding)
 
 
     public MyEdge(int from, int to, int nextId, double length, double crowding) {
@@ -136,22 +136,132 @@ public class RoutePlanningSystem {
 
     //迪杰斯特拉算法,返回最短路径长度,路径存储在path数组中
     double dijkstraLength(int startId, int endId, String edgeType, int[] path) {
-
-
+        MyEdge[] edge;
+        int heads[];
+        switch (edgeType) {
+            case "sidewalk":
+              edge = sidewalk;
+              heads = sidewalkHeads;
+              break;
+            case "cycleway":
+               edge = cycleway;
+                heads = cyclewayHeads;
+               break;
+            case "road":
+                edge = road;
+                heads = roadHeads;
+                break;
+            default:
+                System.out.println("Error: dijkstraLength :unknown type");
+                return -1;
+        }
+        int prev[] = new int[MAX_POINT];
+        double dist[] = new double[MAX_POINT];
+        boolean visited[] = new boolean[MAX_POINT];
+        for (int i = 0; i < pointNum; i++) {
+            dist[i] = Double.MAX_VALUE;
+            prev[i] = -1;
+            visited[i] = false;
+        }
+        dist[startId] = 0;
+        for(int i=1;i<pointNum;i++){//循环n-1次,每次找到一个最短路径
+            double mindis = Double.MAX_VALUE;//找到未访问的点中距离最小的点的距离
+            int updateId = -1;//更新的点的编号
+            for(int nextEdgeId=heads[startId];nextEdgeId!=-1;nextEdgeId=edge[nextEdgeId].nextId){
+                if(!visited[nextEdgeId] && dist[nextEdgeId]<mindis){
+                    mindis = dist[nextEdgeId];
+                    updateId = nextEdgeId;
+                }
+            }
+            if(updateId==-1){
+                break;
+            }
+            visited[updateId] = true;
+            for(int nextEdgeId=heads[updateId];nextEdgeId!=-1;nextEdgeId=edge[nextEdgeId].nextId){
+                if(!visited[nextEdgeId] && dist[updateId]+edge[nextEdgeId].length<dist[nextEdgeId]){
+                    dist[nextEdgeId] = dist[updateId]+edge[nextEdgeId].length;
+                    prev[nextEdgeId] = updateId;
+                }
+            }
+            if(updateId==endId){
+                int pathId = 0;
+                for(int j=endId;j!=-1;j=prev[i]){
+                    path[pathId++] = j;
+                }
+                return dist[endId];
+            }
+        }
         System.out.println("Error: dijkstraLength :return -1");
         return -1;
     }
 
     //迪杰斯特拉算法,返回最短时间,路径存储在path数组中 time=(length*crowding)/speed
     double dijkstraTime(int startId, int endId, String edgeType, int[] path) {
-
-
-        System.out.println("Error: dijkstraTime :return -1");
+        MyEdge[] edge;
+        int heads[];
+        int speed;//速度,m/s
+        switch (edgeType) {
+            case "sidewalk":
+                edge = sidewalk;
+                heads = sidewalkHeads;
+                speed=1;
+                break;
+            case "cycleway":
+                edge = cycleway;
+                heads = cyclewayHeads;
+                speed=5;
+                break;
+            case "road":
+                edge = road;
+                heads = roadHeads;
+                speed=10;
+                break;
+            default:
+                System.out.println("Error: dijkstraLength :unknown type");
+                return -1;
+        }
+        int prev[] = new int[MAX_POINT];
+        double dist[] = new double[MAX_POINT];
+        boolean visited[] = new boolean[MAX_POINT];
+        for (int i = 0; i < pointNum; i++) {
+            dist[i] = Double.MAX_VALUE;
+            prev[i] = -1;
+            visited[i] = false;
+        }
+        dist[startId] = 0;
+        for(int i=1;i<pointNum;i++){//循环n-1次,每次找到一个最短路径
+            double mindis = Double.MAX_VALUE;//找到未访问的点中距离最小的点的距离
+            int updateId = -1;//更新的点的编号
+            for(int nextEdgeId=heads[startId];nextEdgeId!=-1;nextEdgeId=edge[nextEdgeId].nextId){
+                if(!visited[nextEdgeId] && dist[nextEdgeId]<mindis){
+                    mindis = dist[nextEdgeId];
+                    updateId = nextEdgeId;
+                }
+            }
+            if(updateId==-1){
+                break;
+            }
+            visited[updateId] = true;
+            for(int nextEdgeId=heads[updateId];nextEdgeId!=-1;nextEdgeId=edge[nextEdgeId].nextId){
+                if(!visited[nextEdgeId] && dist[updateId]+(edge[nextEdgeId].length/edge[nextEdgeId].crowding)<dist[nextEdgeId]){
+                    dist[nextEdgeId] = dist[updateId]+(edge[nextEdgeId].length/edge[nextEdgeId].crowding);
+                    prev[nextEdgeId] = updateId;
+                }
+            }
+            if(updateId==endId){
+                int pathId = 0;
+                for(int j=endId;j!=-1;j=prev[i]){
+                    path[pathId++] = j;
+                }
+                return dist[endId]/speed;
+            }
+        }
+        System.out.println("Error: dijkstraLength :return -1");
         return -1;
     }
 
     //旅行商问题,返回最短路径长度,路径存储在path数组中
-    double tspLength(int[] endId, String edgeType, int[] path) {
+    double tspLength(int startId, int[] endId, String edgeType, int[] path) {
 
 
         System.out.println("Error: tspLength :return -1");

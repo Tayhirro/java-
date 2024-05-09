@@ -187,11 +187,17 @@ class SinglePointRouteInputWindow extends JFrame {
                     path[1] = endId;
                     if (sorting.equals("length")) {
                         double length = routePlanningSystem.dijkstraLength(startId, endId, transportation, path);
-
+                        if(length == -1){
+                            JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "无法找到路径");
+                            return;
+                        }
                         JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "最短路径长度为: " + length);
                     } else if (sorting.equals("time")) {
                         double time = routePlanningSystem.dijkstraTime(startId, endId, transportation, path);
-
+                        if(time == -1){
+                            JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "无法找到路径");
+                            return;
+                        }
                         JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "最短路径时间为: " + time);
                     }
                     //画出路径，点的位置在routePlanningSystem.points[path[i]]中，两点之间画线，背景图为map.jpg
@@ -200,20 +206,169 @@ class SinglePointRouteInputWindow extends JFrame {
                         loader.setVisible(true);
                         loader.loadImage("map.jpg"); // 将 "map.jpg" 替换为实际的图片路径
                     });
-
                 }
             }
         });
-
     }
 
 }
 
 // 多点路线输入窗口
 class MultiPointRouteInputWindow extends JFrame{
+    private JTextField startField;
+    private JTextField endsField;
+    private JButton submitButton;
 
+    private String start;
+    private String ends;
+
+    public MultiPointRouteInputWindow() {
+
+        RoutePlanningSystem routePlanningSystem = new RoutePlanningSystem();
+
+        setTitle("路线输入");
+        setSize(300, 240);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null); // Center the window
+
+        // Create radio buttons
+        JRadioButton lengthButton = new JRadioButton("长度");
+        JRadioButton timeButton = new JRadioButton("时间");
+        JRadioButton walkingButton = new JRadioButton("步行");
+        JRadioButton bikingButton = new JRadioButton("自行车");
+        JRadioButton drivingButton = new JRadioButton("驾车");
+
+        // Create button groups, so the radio buttons are mutually exclusive
+        ButtonGroup sortingGroup = new ButtonGroup();
+        sortingGroup.add(lengthButton);
+        sortingGroup.add(timeButton);
+
+        ButtonGroup transportationGroup = new ButtonGroup();
+        transportationGroup.add(walkingButton);
+        transportationGroup.add(bikingButton);
+        transportationGroup.add(drivingButton);
+
+        // Default select the first radio button
+        lengthButton.setSelected(true);
+        walkingButton.setSelected(true);
+
+        // Create a panel and add the components
+        JPanel panel = new JPanel(new GridLayout(0, 1));
+
+        // Create panels for the radio buttons
+        JPanel sortingPanel = new JPanel();
+        sortingPanel.add(new JLabel("排序方式:"));
+        sortingPanel.add(lengthButton);
+        sortingPanel.add(timeButton);
+
+        JPanel transportationPanel = new JPanel();
+        transportationPanel.add(new JLabel("交通方式:"));
+        transportationPanel.add(walkingButton);
+        transportationPanel.add(bikingButton);
+        transportationPanel.add(drivingButton);
+
+        // Add the radio button panels to the main panel
+        panel.add(sortingPanel);
+        panel.add(transportationPanel);
+
+
+        // Create UI components
+        startField = new JTextField(20);
+        endsField = new JTextField(20);
+        submitButton = new JButton("提交");
+
+
+        JPanel startPanel = new JPanel();
+        startPanel.add(new JLabel("起点:"));
+        startPanel.add(startField);
+
+        JPanel endsPanel = new JPanel();
+        endsPanel.add(new JLabel("终点:"));
+        endsPanel.add(endsField);
+
+        panel.add(startPanel);
+        panel.add(endsPanel);
+
+        // Create a panel for the submit button with FlowLayout
+        JPanel submitPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        submitPanel.add(submitButton);
+        panel.add(submitPanel);
+
+        // Add the panel to the frame
+        add(panel, BorderLayout.CENTER);
+
+        // Add action listener to the submit button
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                start = startField.getText();
+                ends = endsField.getText();
+                System.out.println("起点: " + start);
+                System.out.println("终点: " + ends);
+
+                //获取交通方式和排序方式
+                String transportation = "";
+                String sorting = "";
+                if (walkingButton.isSelected()) {
+                    transportation = "sidewalk";
+                } else if (bikingButton.isSelected()) {
+                    transportation = "cycleway";
+                } else if (drivingButton.isSelected()) {
+                    transportation = "road";
+                }
+
+                if (lengthButton.isSelected()) {
+                    sorting = "length";
+                } else if (timeButton.isSelected()) {
+                    sorting = "time";
+                }
+                // 获取起点
+                int startId = routePlanningSystem.getPointId(start);
+                if (startId == -1) {
+                    // 在窗口中打印错误信息，而不是在控制台中打印
+                    JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "起点不存在");
+                }
+                int []endArray = new int[1000];
+                String[] endArrayString = ends.split(" ");
+                for (int i = 0; i < endArrayString.length; i++) {
+                    int endId = routePlanningSystem.getPointId(endArrayString[i]);
+                    if (endId == -1) {
+                        JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "终点: "+ endArrayString[i] + " 不存在");
+                        return;
+                    }
+                    endArray[i] = endId;
+                }
+                // 调用路线规划系统的方法，获取路径，并在窗口绘画路径
+                int[] path = new int[1000];
+                path[0] = startId;
+                for (int i = 0; i < endArray.length; i++) {
+                    path[i + 1] = endArray[i];
+                }
+                if (sorting.equals("length")) {
+                    double length = routePlanningSystem.tspLength(startId, endArray, transportation, path);
+                    if(length == -1){
+                        JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "无法找到路径");
+                        return;
+                    }
+                    JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "最短路径长度为: " + length);
+                } else if (sorting.equals("time")) {
+                    double time = routePlanningSystem.tspTime(startId, endArray, transportation, path);
+                    if(time == -1){
+                        JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "无法找到路径");
+                        return;
+                    }
+                    JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "最短路径时间为: " + time);
+                }
+                //画出路径，点的位置在routePlanningSystem.points[path[i]]中，两点之间画线，背景图为map.jpg
+                SwingUtilities.invokeLater(() -> {
+                    PathLoader loader = new PathLoader(path, routePlanningSystem.points);
+                    loader.setVisible(true);
+                    loader.loadImage("map.jpg"); // 将 "map.jpg" 替换为实际的图片路径
+                });
+            }
+        });
+    }
 }
-
 
 // 路径加载器，用于显示路径
 class PathLoader extends JFrame {
