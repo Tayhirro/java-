@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -15,30 +16,47 @@ public class MainWindow extends JFrame {
     private List<String> userInterests;
 
     public MainWindow(RecommendationSystem recommendationSystem, SearchSystem searchSystem, List<String> userInterests) {
-        this.recommendationSystem = recommendationSystem;
-        this.searchSystem = searchSystem;
-        this.userInterests = userInterests;
 
         setTitle("主界面");
-        setSize(320, 200);
+        setSize(240, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Center the window
 
-        // Create UI components
-        recommendationButton = new JButton("游学推荐");
-        routePlanningButton = new JButton("路线规划");
-        placeQueryButton = new JButton("场所查询");
-        diaryButton = new JButton("游学日记");
+        JButton recommendationButton = new JButton("游学推荐");
+        JButton routePlanningButton = new JButton("路线规划");
+        JButton placeQueryButton = new JButton("场所查询");
+        JButton diaryButton = new JButton("游学日记");
 
         // Create a panel and add the components
-        JPanel panel = new JPanel();
-        panel.add(recommendationButton);
-        panel.add(routePlanningButton);
-        panel.add(placeQueryButton);
-        panel.add(diaryButton);
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.insets = new Insets(5, 5, 5, 5);
 
-        // Add the panel to the frame
+        JPanel beforeStudyTourPanel = new JPanel();
+        beforeStudyTourPanel.add(new JLabel("游学前："));
+        beforeStudyTourPanel.add(recommendationButton);
+        panel.add(beforeStudyTourPanel, gbc);
+
+        gbc.gridy++;
+        JPanel inStudyTourPanel = new JPanel();
+        inStudyTourPanel.add(new JLabel("游学中："));
+        JPanel inStudyTourButtonPanel = new JPanel(new GridLayout(2, 1, 5, 5));
+        inStudyTourButtonPanel.add(routePlanningButton);
+        inStudyTourButtonPanel.add(placeQueryButton);
+        inStudyTourPanel.add(inStudyTourButtonPanel);
+        panel.add(inStudyTourPanel, gbc);
+
+        gbc.gridy++;
+        JPanel afterStudyTourPanel = new JPanel();
+        afterStudyTourPanel.add(new JLabel("游学后："));
+        afterStudyTourPanel.add(diaryButton);
+        panel.add(afterStudyTourPanel, gbc);
+
         add(panel);
+
 
         // Add action listeners to the buttons
         recommendationButton.addActionListener(new ActionListener() {
