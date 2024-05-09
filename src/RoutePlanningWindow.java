@@ -37,7 +37,7 @@ public class RoutePlanningWindow extends JFrame {
         routePlanningButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new RouteInputWindow().setVisible(true);
+                new SinglePointRouteInputWindow().setVisible(true);
             }
         });
 
@@ -61,8 +61,8 @@ public class RoutePlanningWindow extends JFrame {
 
     }
 }
-// 路线输入窗口
-class RouteInputWindow extends JFrame {
+// 单点路线输入窗口
+class SinglePointRouteInputWindow extends JFrame {
     private JTextField startField;
     private JTextField endField;
     private JButton submitButton;
@@ -70,7 +70,7 @@ class RouteInputWindow extends JFrame {
     private String start;
     private String end;
 
-    public RouteInputWindow() {
+    public SinglePointRouteInputWindow() {
 
         RoutePlanningSystem routePlanningSystem = new RoutePlanningSystem();
 
@@ -178,9 +178,9 @@ class RouteInputWindow extends JFrame {
 
                 if (startId == -1) {
                     // 在窗口中打印错误信息，而不是在控制台中打印
-                    JOptionPane.showMessageDialog(RouteInputWindow.this, "起点不存在");
+                    JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "起点不存在");
                 } else if (endId == -1) {
-                    JOptionPane.showMessageDialog(RouteInputWindow.this, "终点不存在");
+                    JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "终点不存在");
                 } else {
                     // 调用路线规划系统的方法，获取路径，并在窗口绘画路径
                     int[] path = new int[1000];
@@ -190,7 +190,7 @@ class RouteInputWindow extends JFrame {
                         //double length = routePlanningSystem.dijkstraLength(startId, endId, transportation, path);
                         double length =1;
 
-                        JOptionPane.showMessageDialog(RouteInputWindow.this, "最短路径长度为: " + length);
+                        JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "最短路径长度为: " + length);
                     } else if (sorting.equals("time")) {
                         //double validLength = routePlanningSystem.dijkstraValidLength(startId, endId, transportation, path);
                         double validLength = 2;
@@ -207,7 +207,7 @@ class RouteInputWindow extends JFrame {
                                 time = validLength / 20;
                                 break;
                         }
-                        JOptionPane.showMessageDialog(RouteInputWindow.this, "最短路径时间为: " + time);
+                        JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "最短路径时间为: " + time);
                     }
                     //画出路径，点的位置在routePlanningSystem.points[path[i]]中，两点之间画线，背景图为map.jpg
                     SwingUtilities.invokeLater(() -> {
@@ -223,7 +223,7 @@ class RouteInputWindow extends JFrame {
     }
 
 }
-
+// 多点路线输入窗口
 class MultiPointRouteInputWindow extends JFrame{
 
 }
