@@ -168,8 +168,6 @@ class SinglePointRouteInputWindow extends JFrame {
             } else {
                 // 调用路线规划系统的方法，获取路径，并在窗口绘画路径
                 int[] path = new int[1000];
-                path[0] = startId;
-                path[1] = endId;
                 if (sorting.equals("length")) {
                     double length = routePlanningSystem.dijkstraLength(startId, endId, transportation, path);
                     if (length == -1) {
@@ -322,10 +320,6 @@ class MultiPointRouteInputWindow extends JFrame{
             }
             // 调用路线规划系统的方法，获取路径，并在窗口绘画路径
             int[] path = new int[1000];
-            path[0] = startId;
-            for (int i = 0; i < endArray.length; i++) {
-                path[i + 1] = endArray[i];
-            }
             if (sorting.equals("length")) {
                 double length = routePlanningSystem.tspLength(startId, endArray, transportation, path);
                 if(length == -1){
