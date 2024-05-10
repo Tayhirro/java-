@@ -65,6 +65,7 @@ public class PlaceQuerySystem {
             scanner.close();
 
         } catch (FileNotFoundException e) {
+            System.out.println("points.txt or edges.txt not found.");
             e.printStackTrace();
         }
     }
