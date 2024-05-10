@@ -167,14 +167,14 @@ class SinglePointRouteInputWindow extends JFrame {
                 // 调用路线规划系统的方法，获取路径，并在窗口绘画路径
                 int[] path = new int[1000];
                 if (sorting.equals("length")) {
-                    double length = routePlanningSystem.dijkstraLength(startId, endId, transportation, path);
+                    double length = routePlanningSystem.dijkstra(startId, endId, transportation,false, path);
                     if (length == -1) {
                         JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "无法找到路径");
                         return;
                     }
                     JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "最短路径长度为: " + length);
                 } else if (sorting.equals("time")) {
-                    double time = routePlanningSystem.dijkstraTime(startId, endId, transportation, path);
+                    double time = routePlanningSystem.dijkstra(startId, endId, transportation, true, path);
                     if (time == -1) {
                         JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "无法找到路径");
                         return;
@@ -319,14 +319,14 @@ class MultiPointRouteInputWindow extends JFrame{
             // 调用路线规划系统的方法，获取路径，并在窗口绘画路径
             int[] path = new int[1000];
             if (sorting.equals("length")) {
-                double length = routePlanningSystem.tspLength(startId, endArray, transportation, path);
+                double length = routePlanningSystem.tsp(startId, endArray, transportation, false,path);
                 if(length == -1){
                     JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "无法找到路径");
                     return;
                 }
                 JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "最短路径长度为: " + length);
             } else if (sorting.equals("time")) {
-                double time = routePlanningSystem.tspTime(startId, endArray, transportation, path);
+                double time = routePlanningSystem.tsp(startId, endArray, transportation,true, path);
                 if(time == -1){
                     JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "无法找到路径");
                     return;
