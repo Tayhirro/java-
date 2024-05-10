@@ -205,6 +205,7 @@ public class PlaceQueryWindow extends JFrame {
 
 }
 
+
 class PlaceDistanceWindow extends JFrame {
 
     public PlaceDistanceWindow(String[] places, double[] distances) {

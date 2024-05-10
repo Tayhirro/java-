@@ -257,6 +257,7 @@ class MultiPointRouteInputWindow extends JFrame{
         JButton submitButton = new JButton("提交");
 
 
+
         JPanel startPanel = new JPanel();
         startPanel.add(new JLabel("起点:"));
         startPanel.add(startField);
