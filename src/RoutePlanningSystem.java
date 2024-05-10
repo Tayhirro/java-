@@ -49,7 +49,7 @@ public class RoutePlanningSystem {
     int pointNum = 0;// 点的数量
 
 
-    MyPoint[] points = new MyPoint[MAX_POINT];// 点表
+    MyPoint[] point = new MyPoint[MAX_POINT];// 点表
 
     // 三种边的邻接表
     int[] sidewalkHeads = new int[MAX_POINT];// 头指针
@@ -69,7 +69,7 @@ public class RoutePlanningSystem {
 
 
     void addPoint(String name, int x, int y, String type) {
-        points[pointNum] = new MyPoint(name, x, y, type);
+        point[pointNum] = new MyPoint(name, x, y, type);
         sidewalkHeads[pointNum] = -1;
         cyclewayHeads[pointNum] = -1;
         roadHeads[pointNum] = -1;
@@ -101,7 +101,7 @@ public class RoutePlanningSystem {
     // 获取点的编号
     int getPointId(String name) {
         for (int i = 0; i < pointNum; i++) {
-            if (points[i].name.equals(name)) {
+            if (point[i].name.equals(name)) {
                 return i;
             }
         }
@@ -111,8 +111,8 @@ public class RoutePlanningSystem {
 
     void loadFromFile() {
         try {
-            // Load points
-            Scanner scanner = new Scanner(new File("points.txt"));
+            // Load point
+            Scanner scanner = new Scanner(new File("point.txt"));
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split(",");
@@ -120,8 +120,8 @@ public class RoutePlanningSystem {
             }
             scanner.close();
 
-            // Load edges
-            scanner = new Scanner(new File("edges.txt"));
+            // Load edge
+            scanner = new Scanner(new File("edge.txt"));
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split(",");
@@ -141,77 +141,84 @@ public class RoutePlanningSystem {
         MyEdge[] edge;
         int []heads;
         int speed;
+        int edgeNum;
         switch (edgeType) {
             case "sidewalk":
                 edge = sidewalk;
                 heads = sidewalkHeads;
+                edgeNum = sidewalkEdgeNum;
                 speed=1;
                 break;
             case "cycleway":
                 edge = cycleway;
                 heads = cyclewayHeads;
+                edgeNum = cyclewayEdgeNum;
                 speed=5;
                 break;
             case "road":
                 edge = road;
                 heads = roadHeads;
+                edgeNum = roadEdgeNum;
                 speed=10;
                 break;
             default:
                 System.out.println("Error: dijkstraLength :unknown type");
                 return -1;
         }
-        double[] weight = new double[MAX_POINT];
+        double[] weight = new double[edgeNum];
         if(isTime){
-            for(int i=0;i<pointNum;i++){
+            for(int i=0;i<edgeNum;i++){
                 weight[i] = edge[i].length/edge[i].crowding/speed;
             }
         }
         else{
-            for(int i=0;i<pointNum;i++){
+            for(int i=0;i<edgeNum;i++){
                 weight[i] = edge[i].length;
             }
         }
 
         //迪杰斯特拉算法
-        int []prev = new int[MAX_POINT];
-        double []dist = new double[MAX_POINT];
-        boolean []visited = new boolean[MAX_POINT];
+        int []prev = new int[pointNum];
+        double []dist = new double[pointNum];
+        boolean []visited = new boolean[pointNum];
         for (int i = 0; i < pointNum; i++) {
             dist[i] = Double.MAX_VALUE;
             prev[i] = -1;
             visited[i] = false;
         }
         dist[startId] = 0;
-
         for(int i=1;i<pointNum;i++){//循环n-1次,每次找到一个最短路径
             double mindis = Double.MAX_VALUE;//找到未访问的点中距离最小的点的距离
-            int updateId = -1;//更新的点的编号
-            for(int nextEdgeId=heads[startId];nextEdgeId!=-1;nextEdgeId=edge[nextEdgeId].nextId){
-                if(!visited[edge[nextEdgeId].to] && dist[edge[nextEdgeId].to]<mindis){
-                    mindis = dist[edge[nextEdgeId].to];
-                    updateId = edge[nextEdgeId].to;
+            int updateId = -1;
+            for(int j=0;j<pointNum;j++){//找到最近的点
+                if(!visited[j] && dist[j]<mindis){
+                    mindis = dist[j];
+                    updateId = j;
                 }
             }
-            if(updateId==-1){
+            if(updateId==-1){//找不到未访问的点
                 break;
             }
-            visited[updateId] = true;
-            for(int nextEdgeId=heads[updateId];nextEdgeId!=-1;nextEdgeId=edge[nextEdgeId].nextId){
-                if(!visited[edge[nextEdgeId].to] && dist[updateId]+weight[edge[nextEdgeId].to]<dist[edge[nextEdgeId].to]){
-                    dist[edge[nextEdgeId].to] = dist[updateId]+weight[edge[nextEdgeId].to];
-                    prev[edge[nextEdgeId].to] = updateId;
-                }
-            }
-            if(updateId==endId){
+            if(updateId==endId){//找到终点
                 int pathId = 0;
-                for(int j=endId;j!=-1;j=prev[i]){
+
+                System.out.println("path:");
+                for(int j=endId;j!=-1;j=prev[j]){
                     path[pathId++] = j;
+                    System.out.println(point[j].name);
                 }
+                System.out.println("dist:"+dist[endId]);
                 return dist[endId];
             }
+            visited[updateId] = true;
+            for(int u=heads[updateId];u!=-1;u=edge[u].nextId){// 根据updateId更新其他点的距离
+                if(!visited[edge[u].to] && dist[updateId]+weight[u]<dist[edge[u].to]){
+                    dist[edge[u].to] = dist[updateId]+weight[u];
+                    prev[edge[u].to] = updateId;
+                }
+            }
         }
-        System.out.println("Error: dijkstra :return -1");
+        System.out.println("warning: dij : there is no path");
         return -1;
     }
 
@@ -238,7 +245,7 @@ public class RoutePlanningSystem {
                 speed=10;
                 break;
             default:
-                System.out.println("Error: dijkstraLength :unknown type");
+                System.out.println("Error: tsp :unknown type");
                 return -1;
         }
         double[] weight = new double[MAX_POINT];

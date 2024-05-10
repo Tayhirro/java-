@@ -4,7 +4,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 
-// 主窗口
+// 路径规划主窗口
 public class RoutePlanningWindow extends JFrame {
     public RoutePlanningWindow() {
 
@@ -33,15 +33,15 @@ public class RoutePlanningWindow extends JFrame {
 
 
 
-        // 监听器
+        // 查看地图按钮监听器,点击按钮后弹出地图窗口
         viewMapButton.addActionListener(_ -> SwingUtilities.invokeLater(() -> {
             ImageLoader loader = new ImageLoader();
             loader.setVisible(true);
             loader.loadImage("map.jpg"); // 将 "map.jpg" 替换为实际的图片路径
         }));
-
+        // 单点路线规划按钮监听器,点击按钮后弹出单点路线输入窗口
         singleRoutePlanningButton.addActionListener(_ -> new SinglePointRouteInputWindow().setVisible(true));
-
+        // 多点路线规划按钮监听器,点击按钮后弹出多点路线输入窗口
         multiPointRoutePlanningButton.addActionListener(_ -> new MultiPointRouteInputWindow().setVisible(true));
 
 
@@ -50,11 +50,11 @@ public class RoutePlanningWindow extends JFrame {
 
 // 单点路线输入窗口
 class SinglePointRouteInputWindow extends JFrame {
-    private final JTextField startField;
-    private final JTextField endField;
+    private final JTextField startField;//起点输入框
+    private final JTextField endField;//终点输入框
 
-    private String start;
-    private String end;
+    private String start;//起点
+    private String end;//终点
 
     public SinglePointRouteInputWindow() {
 
@@ -65,14 +65,14 @@ class SinglePointRouteInputWindow extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null); // Center the window
 
-        // Create radio buttons
+        // 添加单选按钮
         JRadioButton lengthButton = new JRadioButton("长度");
         JRadioButton timeButton = new JRadioButton("时间");
         JRadioButton walkingButton = new JRadioButton("步行");
         JRadioButton bikingButton = new JRadioButton("自行车");
         JRadioButton drivingButton = new JRadioButton("驾车");
 
-        // Create button groups, so the radio buttons are mutually exclusive
+        // 创建按钮组，使单选按钮互斥
         ButtonGroup sortingGroup = new ButtonGroup();
         sortingGroup.add(lengthButton);
         sortingGroup.add(timeButton);
@@ -82,14 +82,14 @@ class SinglePointRouteInputWindow extends JFrame {
         transportationGroup.add(bikingButton);
         transportationGroup.add(drivingButton);
 
-        // Default select the first radio button
+        // 默认选择第一个单选按钮
         lengthButton.setSelected(true);
         walkingButton.setSelected(true);
 
-        // Create a panel and add the components
+        // 创建一个面板并添加组件
         JPanel panel = new JPanel(new GridLayout(0, 1));
 
-        // Create panels for the radio buttons
+        // 创建单选按钮的面板
         JPanel sortingPanel = new JPanel();
         sortingPanel.add(new JLabel("排序方式:"));
         sortingPanel.add(lengthButton);
@@ -101,16 +101,15 @@ class SinglePointRouteInputWindow extends JFrame {
         transportationPanel.add(bikingButton);
         transportationPanel.add(drivingButton);
 
-        // Add the radio button panels to the main panel
+        // 将单选按钮面板添加到主面板
         panel.add(sortingPanel);
         panel.add(transportationPanel);
 
 
-        // Create UI components
+        // 创建输入框
         startField = new JTextField(20);
         endField = new JTextField(20);
         JButton submitButton = new JButton("提交");
-
 
         JPanel startPanel = new JPanel();
         startPanel.add(new JLabel("起点:"));
@@ -123,15 +122,15 @@ class SinglePointRouteInputWindow extends JFrame {
         panel.add(startPanel);
         panel.add(endPanel);
 
-        // Create a panel for the submit button with FlowLayout
+        // 创建一个带有居中对齐的提交按钮的面板
         JPanel submitPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         submitPanel.add(submitButton);
         panel.add(submitPanel);
 
-        // Add the panel to the frame
+        // 将面板添加到窗口中
         add(panel, BorderLayout.CENTER);
 
-        // Add action listener to the submit button
+        // 为提交按钮添加动作监听器
         submitButton.addActionListener(_ -> {
             start = startField.getText();
             end = endField.getText();
@@ -159,7 +158,6 @@ class SinglePointRouteInputWindow extends JFrame {
             int endId = routePlanningSystem.getPointId(end);
 
             if (startId == -1) {
-                // 在窗口中打印错误信息，而不是在控制台中打印
                 JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "起点不存在");
             } else if (endId == -1) {
                 JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "终点不存在");
@@ -181,9 +179,16 @@ class SinglePointRouteInputWindow extends JFrame {
                     }
                     JOptionPane.showMessageDialog(SinglePointRouteInputWindow.this, "最短路径时间为: " + time);
                 }
-                //画出路径，点的位置在routePlanningSystem.points[path[i]]中，两点之间画线，背景图为map.jpg
+                System.out.println("path: ");
+                for(int i = 0; i < path.length; i++){
+                    if(path[i] == -1){
+                        break;
+                    }
+                    System.out.print(path[i] + " ");
+                }
+                //画出路径，点的位置在routePlanningSystem.point[path[i]]中，两点之间画线，背景图为map.jpg
                 SwingUtilities.invokeLater(() -> {
-                    PathLoader loader = new PathLoader(path, routePlanningSystem.points);
+                    PathLoader loader = new PathLoader(path, routePlanningSystem.point);
                     loader.setVisible(true);
                     loader.loadImage("map.jpg"); // 将 "map.jpg" 替换为实际的图片路径
                 });
@@ -193,7 +198,7 @@ class SinglePointRouteInputWindow extends JFrame {
 
 }
 
-// 多点路线输入窗口
+// 多点路线输入窗口,代码逻辑与单点路线输入窗口类似，只是多了一个终点输入框，以及多个终点的处理，其余逻辑相同，不再赘述
 class MultiPointRouteInputWindow extends JFrame{
     private final JTextField startField;
     private final JTextField endsField;
@@ -333,9 +338,9 @@ class MultiPointRouteInputWindow extends JFrame{
                 }
                 JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "最短路径时间为: " + time);
             }
-            //画出路径，点的位置在routePlanningSystem.points[path[i]]中，两点之间画线，背景图为map.jpg
+            //画出路径，点的位置在routePlanningSystem.point[path[i]]中，两点之间画线，背景图为map.jpg
             SwingUtilities.invokeLater(() -> {
-                var loader = new PathLoader(path, routePlanningSystem.points);
+                var loader = new PathLoader(path, routePlanningSystem.point);
                 loader.setVisible(true);
                 loader.loadImage("map.jpg"); // 将 "map.jpg" 替换为实际的图片路径
             });
@@ -345,34 +350,38 @@ class MultiPointRouteInputWindow extends JFrame{
 
 // 路径加载器，用于显示路径
 class PathLoader extends JFrame {
-    private ImageIcon imageIcon;
-    private final JLabel label;
-    private int imageWidth; // Add this line to store the original image width
-    private int imageHeight; // Add this line to store the original image height
+    private ImageIcon imageIcon; // 用于存储图像的图标
+    private final JLabel label; // 用于显示图像的标签
+    private int imageWidth; // 存储原始图像宽度
+    private int imageHeight; // 存储原始图像高度
 
-    public PathLoader(int[] path, MyPoint[] points) {
+    // 构造函数，接收路径和点的数组
+    public PathLoader(int[] path, MyPoint[] point) {
 
-        setTitle("Image Loader");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setTitle("Image Loader"); // 设置窗口标题
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // 设置窗口关闭时的操作
 
+        // 创建一个标签，重写其paintComponent方法以在其上绘制路径
         label = new JLabel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.setColor(Color.RED);
+                g.setColor(Color.RED); // 设置绘制颜色为红色
 
+                // 遍历路径中的每一对点，绘制一条从第一个点到第二个点的线
                 for (int i = 0; i < path.length - 1; i++) {
-                    int x1 = (int) (points[path[i]].x * getWidth() / (double) imageWidth);
-                    int y1 = (int) (points[path[i]].y * getHeight() / (double) imageHeight);
-                    int x2 = (int) (points[path[i + 1]].x * getWidth() / (double) imageWidth);
-                    int y2 = (int) (points[path[i + 1]].y * getHeight() / (double) imageHeight);
-                    g.drawLine(x1, y1, x2, y2);
+                    int x1 = (int) (point[path[i]].x * getWidth() / (double) imageWidth);
+                    int y1 = (int) (point[path[i]].y * getHeight() / (double) imageHeight);
+                    int x2 = (int) (point[path[i + 1]].x * getWidth() / (double) imageWidth);
+                    int y2 = (int) (point[path[i + 1]].y * getHeight() / (double) imageHeight);
+                    g.drawLine(x1, y1, x2, y2); // 绘制线
                 }
             }
         };
 
-        getContentPane().add(label, BorderLayout.CENTER);
+        getContentPane().add(label, BorderLayout.CENTER); // 将标签添加到窗口的中心位置
 
+        // 添加一个组件监听器，当窗口大小改变时，调整图像的大小
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -380,35 +389,35 @@ class PathLoader extends JFrame {
             }
         });
 
-        setSize(800, 1200);
-        setLocationRelativeTo(null);
+        setSize(400, 600); // 设置窗口的初始大小
+        setLocationRelativeTo(null); // 将窗口位置设置在屏幕中央
     }
 
+    // 加载图像, imagePath为背景图像的路径
     public void loadImage(String imagePath) {
-        imageIcon = new ImageIcon(imagePath);
-        imageWidth = imageIcon.getIconWidth(); // Store the original image width
-        imageHeight = imageIcon.getIconHeight(); // Store the original image height
-        label.setIcon(imageIcon);
-        pack();
+        imageIcon = new ImageIcon(imagePath); // 加载图像
+        imageWidth = imageIcon.getIconWidth(); // 存储原始图像的宽度
+        imageHeight = imageIcon.getIconHeight(); // 存储原始图像的高度
+        label.setIcon(imageIcon); // 将图像设置到标签中
+        pack(); // 调整窗口大小以适应标签的首选大小
     }
 
+    // 调整图像的大小以适应标签的大小
     private void resizeImage() {
-        if (imageIcon != null) {
-            Dimension size = label.getSize();
+        if (imageIcon != null) { // 如果图像已经加载
+            Dimension size = label.getSize(); // 获取标签的当前大小
+            // 将图像缩放以适应标签的大小
             Image scaledImage = imageIcon.getImage().getScaledInstance(size.width, size.height, Image.SCALE_SMOOTH);
-            ImageIcon scaledImageIcon = new ImageIcon(scaledImage);
-            label.setIcon(scaledImageIcon);
+            ImageIcon scaledImageIcon = new ImageIcon(scaledImage); // 创建一个新的图像图标
+            label.setIcon(scaledImageIcon); // 将缩放后的图像设置到标签中
         }
     }
 }
-
 // 图片加载器，用于显示图片
 class ImageLoader extends JFrame {
 
-    private ImageIcon imageIcon;
-    private final JLabel label;
-
-
+    private ImageIcon imageIcon; // 用于存储图像的图标
+    private final JLabel label; // 用于显示图像的标签
 
     public ImageLoader() {
         setTitle("Image Loader"); // 设置窗口标题
@@ -426,13 +435,11 @@ class ImageLoader extends JFrame {
             }
         });
 
-        setSize(800, 1200); // 设置窗口默认大小为800x1200
+        setSize(400, +00); // 设置窗口默认大小为800x1200
         setLocationRelativeTo(null); // 将窗口置于屏幕中央
     }
-    /**
-     * 加载并显示图片
-     * @param imagePath 图片的路径
-     */
+
+   //加载并显示图片,imagePath 图片的路径
     public void loadImage(String imagePath) {
         // 加载图片
         imageIcon = new ImageIcon(imagePath);
@@ -441,9 +448,7 @@ class ImageLoader extends JFrame {
         pack(); // 调整窗口大小以适应图片大小
     }
 
-    /**
-     * 调整图片大小以适应标签大小
-     */
+    //调整图片大小以适应标签大小
     private void resizeImage() {
         if (imageIcon != null) {
             // 获取标签的当前大小
@@ -455,6 +460,4 @@ class ImageLoader extends JFrame {
             label.setIcon(scaledImageIcon);
         }
     }
-
-
 }
