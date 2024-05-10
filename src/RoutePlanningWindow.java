@@ -37,7 +37,6 @@ public class RoutePlanningWindow extends JFrame {
         viewMapButton.addActionListener(_ -> SwingUtilities.invokeLater(() -> {
             ImageLoader loader = new ImageLoader();
             loader.setVisible(true);
-            // 示例用法
             loader.loadImage("map.jpg"); // 将 "map.jpg" 替换为实际的图片路径
         }));
 
