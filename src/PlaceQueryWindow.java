@@ -85,16 +85,21 @@ public class PlaceQueryWindow extends JFrame {
                     JOptionPane.showMessageDialog(null, "请输入当前位置");
                     return;
                 }
+                PlaceQuerySystem placeQuerySystem = new PlaceQuerySystem();
+                int positionId = placeQuerySystem.getPointId(position);
+                if(positionId == -1) {
+                    JOptionPane.showMessageDialog(null, "当前位置不存在");
+                    return;
+                }
                 String[] places = new String[1000];
                 double[] distances = new double[1000];
+                int num;
                 if(straightDistanceRadioButton.isSelected()) {
                     System.out.println("直线距离");
-                    PlaceQuerySystem placeQuerySystem = new PlaceQuerySystem();
-                    int num = placeQuerySystem.PlaceQuery(position, "", true, places, distances);
+                    num = placeQuerySystem.PlaceQuery(positionId, "", true, places, distances);
                 }else {
                     System.out.println("路径距离");
-                    PlaceQuerySystem placeQuerySystem = new PlaceQuerySystem();
-                    int num = placeQuerySystem.PlaceQuery(position, "", false, places, distances);
+                    num = placeQuerySystem.PlaceQuery(positionId, "", false, places, distances);
                 }
                 // Test data
                 String[] places3 = {
@@ -115,7 +120,7 @@ public class PlaceQueryWindow extends JFrame {
                         140.6, 210.9, 190.2, 280.5, 330.7
                 };
 
-                PlaceDistanceWindow placeDistanceWindow = new PlaceDistanceWindow(places3, distances3);
+                PlaceDistanceWindow placeDistanceWindow = new PlaceDistanceWindow(places3, distances3,num);
                 placeDistanceWindow.setVisible(true);
             });
         }
@@ -185,19 +190,24 @@ public class PlaceQueryWindow extends JFrame {
                     JOptionPane.showMessageDialog(this, "请输入查询场所");
                     return;
                 }
+                PlaceQuerySystem placeQuerySystem = new PlaceQuerySystem();
+                int positionId = placeQuerySystem.getPointId(position);
+                if(positionId == -1) {
+                    JOptionPane.showMessageDialog(null, "当前位置不存在");
+                    return;
+                }
                 String[] places = new String[1000];
                 double[] distances = new double[1000];
+                int num;
                 if(straightDistanceRadioButton.isSelected()) {
                     System.out.println("直线距离");
-                    PlaceQuerySystem placeQuerySystem = new PlaceQuerySystem();
-                    int num = placeQuerySystem.PlaceQuery(position, place, true, places, distances);
+                    num = placeQuerySystem.PlaceQuery(positionId, place, true, places, distances);
                 }else {
                     System.out.println("路径距离");
-                    PlaceQuerySystem placeQuerySystem = new PlaceQuerySystem();
-                    int num = placeQuerySystem.PlaceQuery(position, place, false, places, distances);
+                    num = placeQuerySystem.PlaceQuery(positionId, place, false, places, distances);
                 }
 
-                PlaceDistanceWindow placeDistanceWindow = new PlaceDistanceWindow(places, distances);
+                PlaceDistanceWindow placeDistanceWindow = new PlaceDistanceWindow(places, distances,num);
                 placeDistanceWindow.setVisible(true);
             });
         }
@@ -208,7 +218,7 @@ public class PlaceQueryWindow extends JFrame {
 
 class PlaceDistanceWindow extends JFrame {
 
-    public PlaceDistanceWindow(String[] places, double[] distances) {
+    public PlaceDistanceWindow(String[] places, double[] distances,int num) {
 
         // 设置窗口标题
         setTitle("场所距离");
@@ -225,7 +235,7 @@ class PlaceDistanceWindow extends JFrame {
         tableModel.addColumn("距离/m");
 
         // 将数据添加到表格模型中
-        for (int i = 0; i < places.length; i++) {
+        for (int i = 0; i < num; i++) {
             tableModel.addRow(new Object[]{places[i], distances[i]});
         }
 
