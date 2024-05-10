@@ -52,7 +52,6 @@ public class RoutePlanningWindow extends JFrame {
 class SinglePointRouteInputWindow extends JFrame {
     private final JTextField startField;
     private final JTextField endField;
-    private final JButton submitButton;
 
     private String start;
     private String end;
@@ -110,7 +109,7 @@ class SinglePointRouteInputWindow extends JFrame {
         // Create UI components
         startField = new JTextField(20);
         endField = new JTextField(20);
-        submitButton = new JButton("提交");
+        JButton submitButton = new JButton("提交");
 
 
         JPanel startPanel = new JPanel();
@@ -198,7 +197,6 @@ class SinglePointRouteInputWindow extends JFrame {
 class MultiPointRouteInputWindow extends JFrame{
     private final JTextField startField;
     private final JTextField endsField;
-    private final JButton submitButton;
 
     private String start;
     private String ends;
@@ -256,7 +254,7 @@ class MultiPointRouteInputWindow extends JFrame{
         // Create UI components
         startField = new JTextField(20);
         endsField = new JTextField(20);
-        submitButton = new JButton("提交");
+        JButton submitButton = new JButton("提交");
 
 
         JPanel startPanel = new JPanel();
