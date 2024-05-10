@@ -9,11 +9,11 @@ public class PlaceQuerySystem {
     int pointNum = 0;// 点的数量
 
 
-    MyPoint[] points = new MyPoint[MAX_POINT];// 点表
+    MyPoint[] point = new MyPoint[MAX_POINT];// 点表
 
     // 边的邻接表
     int[] heads = new int[MAX_POINT];// 头指针
-    MyEdge[] edges = new MyEdge[MAX_EDGE];// 边表
+    MyEdge[] edge = new MyEdge[MAX_EDGE];// 边表
     int edgeNum = 0;// 边的数量
 
 
@@ -23,13 +23,13 @@ public class PlaceQuerySystem {
 
 
     void addPoint(String name, int x, int y, String type) {
-        points[pointNum] = new MyPoint(name, x, y, type);
+        point[pointNum] = new MyPoint(name, x, y, type);
         heads[pointNum] = -1;
         pointNum++;
     }
 
     void addEdge(int from, int to, double length, double crowding) {
-        edges[edgeNum] = new MyEdge(from, to, heads[from],length, crowding);
+        edge[edgeNum] = new MyEdge(from, to, heads[from],length, crowding);
         heads[from] = edgeNum;
         edgeNum++;
     }
@@ -37,7 +37,7 @@ public class PlaceQuerySystem {
     // 获取点的编号
     int getPointId(String name) {
         for (int i = 0; i < pointNum; i++) {
-            if (points[i].name.equals(name)) {
+            if (point[i].name.equals(name)) {
                 return i;
             }
         }
@@ -46,8 +46,8 @@ public class PlaceQuerySystem {
 
     void loadFromFile() {
         try {
-            // Load points
-            Scanner scanner = new Scanner(new File("points.txt"));
+            // Load point
+            Scanner scanner = new Scanner(new File("point.txt"));
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split(",");
@@ -55,8 +55,8 @@ public class PlaceQuerySystem {
             }
             scanner.close();
 
-            // Load edges
-            scanner = new Scanner(new File("edges.txt"));
+            // Load edge
+            scanner = new Scanner(new File("edge.txt"));
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split(",");
@@ -65,7 +65,7 @@ public class PlaceQuerySystem {
             scanner.close();
 
         } catch (FileNotFoundException e) {
-            System.out.println("points.txt or edges.txt not found.");
+            System.out.println("point.txt or edge.txt not found.");
             e.printStackTrace();
         }
     }
@@ -82,7 +82,7 @@ public class PlaceQuerySystem {
         double[] distance=new double[pointNum];
         for(int i=0;i<pointNum;i++)
         {
-            distance[i]=Math.sqrt((points[i].x-points[position].x)*(points[i].x-points[position].x)+(points[i].y-points[position].y)*(points[i].y-points[position].y));
+            distance[i]=Math.sqrt((point[i].x-point[position].x)*(point[i].x-point[position].x)+(point[i].y-point[position].y)*(point[i].y-point[position].y));
         }
         DoubleQuickSort.quickSort(distance,0,pointNum-1);
         
@@ -90,78 +90,83 @@ public class PlaceQuerySystem {
         if(place.isEmpty()){
             for(int i=0;i<pointNum;i++)
             {
-                ansPlaces[i]=points[i].name;
+                ansPlaces[i]=point[i].name;
                 ansDistances[i]=distance[i];
             }
+            return pointNum;
         }
         else{
+            int count=0;
             for(int i=0;i<pointNum;i++)
             {
-                if(KMP.kmpMatch(points[i].name,place)!=-1)
+                if(KMP.kmpMatch(point[i].name,place)!=-1)
                 {
-                    ansPlaces[0]=points[i].name;
-                    ansDistances[0]=distance[i];
-                    return 1;
+                    ansPlaces[count]=point[i].name;
+                    ansDistances[count]=distance[i];
+                    count++;
                 }
             }
+            return count;
         }
-        return pointNum;
-    }
 
+    }
 
     int PlaceQueryOfEdgeDistance(int position, String place, String[] ansPlaces, double[] ansDistances) {
         double scale = 0.65;
         // 使用dij计算所有点到 position 点的距离
-        double[] distance=new double[pointNum];
-
-        boolean[] visited = new boolean[pointNum];
+        //迪杰斯特拉算法
+        double []dist = new double[pointNum];
+        boolean []visited = new boolean[pointNum];
         for (int i = 0; i < pointNum; i++) {
-            distance[i] = Double.MAX_VALUE;
+            dist[i] = Double.MAX_VALUE;
             visited[i] = false;
         }
-        distance[position] = 0;
+        dist[position] = 0;
         for(int i=1;i<pointNum;i++){//循环n-1次,每次找到一个最短路径
             double mindis = Double.MAX_VALUE;//找到未访问的点中距离最小的点的距离
-            int updateId = -1;//更新的点的编号
-            for(int nextEdgeId=heads[position];nextEdgeId!=-1;nextEdgeId=edges[nextEdgeId].nextId){
-                if(!visited[nextEdgeId] && distance[nextEdgeId]<mindis){
-                    mindis = distance[nextEdgeId];
-                    updateId = nextEdgeId;
+            int updateId = -1;
+            for(int j=0;j<pointNum;j++){//找到最近的点
+                if(!visited[j] && dist[j]<mindis){
+                    mindis = dist[j];
+                    updateId = j;
                 }
             }
-            if(updateId==-1){
+            if(updateId==-1){//找不到未访问的点
                 break;
             }
             visited[updateId] = true;
-            for(int nextEdgeId=heads[updateId];nextEdgeId!=-1;nextEdgeId=edges[nextEdgeId].nextId){
-                if(!visited[nextEdgeId] && distance[updateId]+edges[nextEdgeId].length<distance[nextEdgeId]){
-                    distance[nextEdgeId] = distance[updateId]+edges[nextEdgeId].length;
+            for(int u=heads[updateId];u!=-1;u=edge[u].nextId){// 根据updateId更新其他点的距离
+                if(!visited[edge[u].to] && dist[updateId]+edge[u].length<dist[edge[u].to]){
+                    dist[edge[u].to] = dist[updateId]+edge[u].length;
                 }
             }
         }
 
-        DoubleQuickSort.quickSort(distance,0,pointNum-1);
+        DoubleQuickSort.quickSort(dist,0,pointNum-1);
 
 
         if(place.isEmpty()){
             for(int i=0;i<pointNum;i++)
             {
-                ansPlaces[i]=points[i].name;
-                ansDistances[i]=distance[i]*scale;
+                ansPlaces[i]=point[i].name;
+                ansDistances[i]=dist[i]*scale;
             }
+            return pointNum;
         }
         else{
+            int count=0;
             for(int i=0;i<pointNum;i++)
             {
-                if(KMP.kmpMatch(points[i].name,place)!=-1)
+                if(KMP.kmpMatch(point[i].name,place)!=-1)
                 {
-                    ansPlaces[0]=points[i].name;
-                    ansDistances[0]=distance[i]*scale;
-                    return 1;
+                    ansPlaces[count]=point[i].name;
+                    ansDistances[count]=dist[i]*scale;
+                    count++;
                 }
             }
+            return count;
         }
-        return pointNum;
+
     }
 
 }
