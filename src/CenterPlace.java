@@ -10,11 +10,11 @@ public class CenterPlace {
 
     public CenterPlace(String name, String category, List<String> keywords, double popularity, double rating, List<String> features) {
         this.name = name;
-        this.category = category;
-        this.keywords = keywords;
-        this.popularity = popularity;
-        this.rating = rating;
-        this.features = features;
+        this.category = category;//类别
+        this.keywords = keywords;//关键词
+        this.popularity = popularity;//热度
+        this.rating = rating;//评价
+        this.features = features;//特点
     }
 
     // Getters

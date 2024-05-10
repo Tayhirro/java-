@@ -4,11 +4,20 @@ import java.io.PrintWriter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * UserManagementSystem 类，用于管理用户的注册、登录和信息更新。
+ */
 public class UserManagementSystem {
-    private Map<String, User> usersDB = new HashMap<>();
-    private Map<String, String> sessionDB = new HashMap<>();
+    private Map<String, User> usersDB = new HashMap<>(); // 用户数据库
+    private Map<String, String> sessionDB = new HashMap<>(); // 会话数据库
 
-    // 用户注册
+    /**
+     * 用户注册。
+     * @param username 用户名
+     * @param password 密码
+     * @param email 邮箱
+     * @return 如果注册成功，则返回 true，否则返回 false。
+     */
     public boolean register(String username, String password, String email){
         if (!usersDB.containsKey(username)) {
             User newUser = new User(username, password, email);
@@ -18,7 +27,12 @@ public class UserManagementSystem {
         return false;
     }
 
-    // 用户登录
+    /**
+     * 用户登录。
+     * @param username 用户名
+     * @param password 密码
+     * @return 如果登录成功，则返回会话 ID，否则返回 null。
+     */
     public String login(String username, String password) {
         if(usersDB.containsKey(username)&&usersDB.get(username).getPassword().equals(password)) {
             String sessionId = generateSessionId();
@@ -28,7 +42,13 @@ public class UserManagementSystem {
         return null;
     }
 
-    // 更新信息
+    /**
+     * 更新用户信息。
+     * @param sessionId 会话 ID
+     * @param newEmail 新的邮箱
+     * @param additionalInfo 额外的信息
+     * @return 如果更新成功，则返回 true，否则返回 false。
+     */
     public boolean updateProfile(String sessionId, String newEmail, Map<String, String> additionalInfo) {
         if (sessionDB.containsKey(sessionId)) {
             String username = sessionDB.get(sessionId);
@@ -48,7 +68,10 @@ public class UserManagementSystem {
         return false;
     }
 
-    // 保存用户信息到文件
+    /**
+     * 将用户信息保存到文件。
+     * @param filename 文件名
+     */
     public void saveUsersToFile(String filename) {
         try (PrintWriter writer = new PrintWriter(new File(filename))) {
             for (User user : usersDB.values()) {
@@ -62,6 +85,10 @@ public class UserManagementSystem {
         }
     }
 
+    /**
+     * 从文件中加载用户信息。
+     * @param filename 文件名
+     */
     public void loadUsersFromFile(String filename) {
         try (Scanner scanner = new Scanner(new File(filename))) {
             while (scanner.hasNextLine()) {
@@ -73,11 +100,19 @@ public class UserManagementSystem {
         }
     }
 
+    /**
+     * 根据用户名获取用户。
+     * @param username 用户名
+     * @return 用户
+     */
     public User getUserByUsername(String username) {
         return usersDB.get(username);
     }
 
-    // Generate session ID
+    /**
+     * 生成会话 ID。
+     * @return 会话 ID
+     */
     private String generateSessionId() {
         return UUID.randomUUID().toString();
     }
