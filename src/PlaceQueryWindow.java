@@ -2,10 +2,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-
 // 场所查询模块
 public class PlaceQueryWindow extends JFrame {
 
