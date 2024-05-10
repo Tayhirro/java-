@@ -110,6 +110,7 @@ public class PlaceQuerySystem {
 
 
     int PlaceQueryOfEdgeDistance(int position, String place, String[] ansPlaces, double[] ansDistances) {
+        double scale = 0.65;
         // 使用dij计算所有点到 position 点的距离
         double[] distance=new double[pointNum];
 
@@ -146,7 +147,7 @@ public class PlaceQuerySystem {
             for(int i=0;i<pointNum;i++)
             {
                 ansPlaces[i]=points[i].name;
-                ansDistances[i]=distance[i];
+                ansDistances[i]=distance[i]*scale;
             }
         }
         else{
@@ -155,7 +156,7 @@ public class PlaceQuerySystem {
                 if(KMP.kmpMatch(points[i].name,place)!=-1)
                 {
                     ansPlaces[0]=points[i].name;
-                    ansDistances[0]=distance[i];
+                    ansDistances[0]=distance[i]*scale;
                     return 1;
                 }
             }

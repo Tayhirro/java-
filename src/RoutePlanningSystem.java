@@ -27,7 +27,7 @@ class MyEdge {
     int nextId;// 下一条边的边编号,用于邻接表
 
     // 边的属性
-    double length;// 边的长度,单位m
+    double length;// 边的长度,像素点长度，比例为1m:0.65像素,用于计算长度,场所查询
     double crowding;// 拥挤度,0-1,1表示无拥挤,0表示很拥挤，用于计算时间，time=(length)/(speed*crowding)
 
 
@@ -137,7 +137,7 @@ public class RoutePlanningSystem {
     //迪杰斯特拉算法,返回最短路径长度,路径存储在path数组中
     double dijkstraLength(int startId, int endId, String edgeType, int[] path) {
         MyEdge[] edge;
-        int heads[];
+        int []heads;
         switch (edgeType) {
             case "sidewalk":
               edge = sidewalk;
@@ -155,9 +155,9 @@ public class RoutePlanningSystem {
                 System.out.println("Error: dijkstraLength :unknown type");
                 return -1;
         }
-        int prev[] = new int[MAX_POINT];
-        double dist[] = new double[MAX_POINT];
-        boolean visited[] = new boolean[MAX_POINT];
+        int []prev = new int[MAX_POINT];
+        double []dist = new double[MAX_POINT];
+        boolean []visited = new boolean[MAX_POINT];
         for (int i = 0; i < pointNum; i++) {
             dist[i] = Double.MAX_VALUE;
             prev[i] = -1;
@@ -198,7 +198,7 @@ public class RoutePlanningSystem {
     //迪杰斯特拉算法,返回最短时间,路径存储在path数组中 time=(length*crowding)/speed
     double dijkstraTime(int startId, int endId, String edgeType, int[] path) {
         MyEdge[] edge;
-        int heads[];
+        int []heads;
         int speed;//速度,m/s
         switch (edgeType) {
             case "sidewalk":
@@ -220,9 +220,9 @@ public class RoutePlanningSystem {
                 System.out.println("Error: dijkstraLength :unknown type");
                 return -1;
         }
-        int prev[] = new int[MAX_POINT];
-        double dist[] = new double[MAX_POINT];
-        boolean visited[] = new boolean[MAX_POINT];
+        int []prev = new int[MAX_POINT];
+        double []dist = new double[MAX_POINT];
+        boolean []visited = new boolean[MAX_POINT];
         for (int i = 0; i < pointNum; i++) {
             dist[i] = Double.MAX_VALUE;
             prev[i] = -1;
