@@ -134,7 +134,7 @@ public class RoutePlanningSystem {
         }
     }
 
-    //迪杰斯特拉算法,返回最短时间,路径存储在path数组中 time=(length*crowding)/speed
+    //迪杰斯特拉算法,返回最短时间,路径存储在path数组中 time=(length*crowding)/speed，处理函数
     double dijkstra(int startId, int endId, String edgeType,boolean isTime,int[] path) {
 
         //传入数据初始化
@@ -176,10 +176,14 @@ public class RoutePlanningSystem {
                 weight[i] = edge[i].length;
             }
         }
-
-        //迪杰斯特拉算法
-        int []prev = new int[pointNum];
         double []dist = new double[pointNum];
+        return dijkstra(startId,endId,edge,heads,weight,path,dist);
+    }
+
+    //迪杰斯特拉算法
+    double dijkstra(int startId, int endId,MyEdge[] edge, int []heads ,double[] weight,int[] path,double []dist) {
+
+        int []prev = new int[pointNum];
         boolean []visited = new boolean[pointNum];
         for (int i = 0; i < pointNum; i++) {
             dist[i] = Double.MAX_VALUE;
@@ -199,14 +203,18 @@ public class RoutePlanningSystem {
             if(updateId==-1){//找不到未访问的点
                 break;
             }
-            if(updateId==endId){//找到终点
+            if(updateId==endId){//找到终点,开启提前退出
                 int pathId = 0;
 
-                System.out.println("path:");
+                int []temppath = new int[pointNum];
                 for(int j=endId;j!=-1;j=prev[j]){
-                    path[pathId++] = j;
-                    System.out.println(point[j].name);
+                    temppath[pathId++] = j;
                 }
+                //倒置path
+                for(int j=pathId-1;j>=0;j--){
+                    path[pathId-j-1] = temppath[j];
+                }
+
                 System.out.println("dist:"+dist[endId]);
                 return dist[endId];
             }
@@ -218,13 +226,15 @@ public class RoutePlanningSystem {
                 }
             }
         }
-        System.out.println("warning: dij : there is no path");
+        if(endId!=-1)
+            System.out.println("warning: dij : there is no path between "+point[startId].name+" and "+point[endId].name);
         return -1;
+
     }
 
-    //旅行商问题,返回最短路径长度,路径存储在path数组中
+    //旅行商问题,返回最短路径长度,路径存储在path数组中,预处理函数
     double tsp(int startId, int[] endId, String edgeType,boolean isTime, int[] path) {
-        //传入数据初始化
+        //传入数据预处理
         MyEdge[] edge;
         int []heads;
         int speed;
@@ -259,15 +269,114 @@ public class RoutePlanningSystem {
                 weight[i] = edge[i].length;
             }
         }
+        int cycleNum = endId.length+1;
+        int []pointId = new int[cycleNum];
+        double [][]shortestDist = new double[cycleNum][cycleNum];
+        for(int i=0;i<cycleNum-1;i++){
+            pointId[i] = endId[i];
+        }
+        pointId[endId.length] = startId;
+        //利用dij计算两点间最短路径，存储在shortestDist中
+        for(int cycleI=0;cycleI<cycleNum;cycleI++) {
+            //迪杰斯特拉算法
+            double[] dist = new double[pointNum];
 
+            dijkstra(pointId[cycleI],-1,edge,heads,weight,path,dist);
 
+            for(int cycleJ=0;cycleJ<cycleNum;cycleJ++){
+                shortestDist[cycleI][cycleJ] = dist[pointId[cycleJ]];
+            }
+        }
+        int []shortPath = new int[cycleNum+1];
+        double dist= tsp(cycleNum,shortestDist,shortPath);
+        //将编号转换为点的编号
+        for(int i=0;i<=cycleNum;i++){
+            shortPath[i]=pointId[shortPath[i]];
+        }
+        System.out.println("path:");
+        for(int i=0;i<=cycleNum;i++){
+            System.out.print(point[shortPath[i]].name+" ");
+        }
+        System.out.println();
+        //path填充
+        int[] segPath=new int[pointNum];
+        double[] distTemp=new double[pointNum];
+        int pathId=0;
+        for(int i=0;i<cycleNum;i++){
+            dijkstra(shortPath[i],shortPath[i+1],edge,heads,weight,segPath,distTemp);
+            for(int j=0;j<pointNum;j++){
+                path[pathId++]=segPath[j];
+            }
+        }
 
-
-        System.out.println("Error: tsp :return -1");
-        return -1;
+        return dist;
     }
 
+    //动态规划求解旅行商问题
+    static double tsp(int N,double[][] dist,int[] path){
+        System.out.println("环路节点数:"+N);
+        final int M = 1 << (N - 1);
+        final double INF = 1e7;
+        double[][] dp = new double[N][M];
+        for (int i = 0; i < N; i++) {
+            dp[i][0] = dist[i][0];
+        }
+        //动态规划求解
+        for (int j = 1; j < M; j++) {
+            for (int i = 0; i < N; i++) {
+                dp[i][j] = INF;
+                if (((j >> (i - 1)) & 1) == 1) {
+                    continue;
+                }
+                for (int k = 1; k < N; k++) {
+                    if (((j >> (k - 1)) & 1) == 0) {
+                        continue;
+                    }
+                    if (dp[i][j] > dist[i][k] + dp[k][j ^ (1 << (k - 1))]) {
+                        dp[i][j] = dist[i][k] + dp[k][j ^ (1 << (k - 1))];
+                    }
+                }
+            }
+        }
+        //回溯路径
+        boolean[] visited=new boolean[N];
+        for(int i=0;i<N;i++){
+            visited[i]=false;
+        }
+        //前驱节点编号
+        int pioneer = 0, S = M - 1, temp=0;
+        double min = INF;
+        int pathId = 0;
+        //把起点结点编号加入容器
+        path[pathId++] = 0;
 
+        while (!isVisited(visited,N)) {
+            for (int i = 1; i < N; i++) {
+                if (visited[i] == false && (S & (1 << (i - 1))) != 0) {
+                    if (min > dist[i][pioneer] + dp[i][(S ^ (1 << (i - 1)))]) {
+                        min = dist[i][pioneer] + dp[i][(S ^ (1 << (i - 1)))];
+                        temp = i;
+                    }
+                }
+            }
+            pioneer = temp;
+            path[pathId++] = pioneer;
+            visited[pioneer] = true;
+            S = S ^ (1 << (pioneer - 1));
+            min = INF;
+        }
+
+        return  dp[0][M - 1];
+    }
+    //判断结点是否都以访问,不包括0号结点
+    static boolean isVisited(boolean visited[],int N) {
+        for (int i = 1; i < N; i++) {
+            if (visited[i] == false) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 
 }

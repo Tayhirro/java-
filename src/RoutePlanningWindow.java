@@ -311,8 +311,9 @@ class MultiPointRouteInputWindow extends JFrame{
                 // 在窗口中打印错误信息，而不是在控制台中打印
                 JOptionPane.showMessageDialog(MultiPointRouteInputWindow.this, "起点不存在");
             }
-            int []endArray = new int[1000];
+
             String[] endArrayString = ends.split(" ");
+            int []endArray = new int[endArrayString.length];
             for (int i = 0; i < endArrayString.length; i++) {
                 int endId = routePlanningSystem.getPointId(endArrayString[i]);
                 if (endId == -1) {
@@ -322,7 +323,7 @@ class MultiPointRouteInputWindow extends JFrame{
                 endArray[i] = endId;
             }
             // 调用路线规划系统的方法，获取路径，并在窗口绘画路径
-            int[] path = new int[1000];
+            int[] path = new int[2000];
             if (sorting.equals("length")) {
                 double length = routePlanningSystem.tsp(startId, endArray, transportation, false,path);
                 if(length == -1){
