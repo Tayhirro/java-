@@ -19,7 +19,7 @@ public class LoginWindow extends JFrame {
     private RecommendationSystem recommendationSystem; // 推荐系统
     private SearchSystem searchSystem; // 搜索系统
     private List<String> userInterests; // 用户兴趣列表
-
+    private CenterPlaceDataLoader dataLoader; // 数据加载器
     /**
      * LoginWindow 类的构造函数。
      * 它初始化窗口，设置标题、大小、默认关闭操作和位置。
@@ -32,8 +32,7 @@ public class LoginWindow extends JFrame {
         ums.loadUsersFromFile("users.txt");
 
         // 创建数据加载器实例
-        CenterPlaceDataLoader dataLoader = new CenterPlaceDataLoader("CenterPlace.txt");
-
+        this.dataLoader = new CenterPlaceDataLoader("CenterPlace.txt");
         // 创建推荐系统实例
         recommendationSystem = new RecommendationSystem(dataLoader);
 
@@ -81,7 +80,7 @@ public class LoginWindow extends JFrame {
                     setVisible(false);
                     dispose();
                     User user = ums.getUserByUsername(username);
-                    new MainWindow(recommendationSystem, searchSystem,userInterests).setVisible(true);
+                    new MainWindow(recommendationSystem, searchSystem,userInterests,dataLoader).setVisible(true);
                     showPreferenceWindow(user, ums); // 显示偏好窗口
 
                 } else {
@@ -163,7 +162,7 @@ public class LoginWindow extends JFrame {
             frame.dispose();
         });
 
-        preferencePanel.add(cbSport);
+        preferencePanel.add(cbSport);   
         preferencePanel.add(cbRest);
         preferencePanel.add(cbEat);
         preferencePanel.add(cbStudy);

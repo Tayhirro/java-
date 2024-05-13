@@ -10,6 +10,7 @@ public class SearchSystem {
      * SearchSystem 类的构造函数。
      * @param dataLoader 数据加载器，用于从文件中加载中心地点数据。
      */
+    
     public SearchSystem(CenterPlaceDataLoader dataLoader) {
         centerPlaces = dataLoader.getCenterPlaces(); // 初始化中心地点数据
     }

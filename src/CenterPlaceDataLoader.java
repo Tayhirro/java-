@@ -30,7 +30,7 @@ public class CenterPlaceDataLoader {
      * @param filename 从中加载中心地点数据的文件的名称。
      */
     private void loadCenterPlacesFromFile(String filename) {
-        try (Scanner scanner = new Scanner(new File(filename))) {
+        try (Scanner scanner = new Scanner(new File(filename),"UTF-8")) {
             while (scanner.hasNextLine()) {
                 String[] centerPlaceData = scanner.nextLine().split(",");
                 String name = centerPlaceData[0];
@@ -44,6 +44,8 @@ public class CenterPlaceDataLoader {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        
+        
     }
 
     /**

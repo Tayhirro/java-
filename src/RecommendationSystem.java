@@ -22,6 +22,7 @@ public class RecommendationSystem {
      * @return 推荐的中心地点列表
      */
     public List<CenterPlace> recommendCenterPlaces(double userPopularityWeight, double userRatingWeight, List<String> userInterests) {
+        // 将所有中心地点存储在一个列表中
         List<CenterPlace> allCenterPlaces = new ArrayList<>();
         for (CenterPlace centerPlace : centerPlaces) {
             allCenterPlaces.add(centerPlace);
