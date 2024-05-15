@@ -13,25 +13,24 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.text.DecimalFormat;
+
 import java.util.Map;
 public class MainWindow extends JFrame {    
-    private JFrame frame;
-    private JPanel contentPanel;
-    private JPanel tabBarPanel;
-    private JButton tab1Button;
-    private JButton tab2Button;
-    private JButton tab3Button;
-    private JButton tab4Button;
+    private JFrame frame;   // 窗口
+    private JPanel contentPanel;    // 内容面板
+    private JPanel tabBarPanel;     // 选项卡面板
+    private JButton tab1Button;   // 选项卡按钮1
+    private JButton tab2Button;  // 选项卡按钮2
+    private JButton tab3Button; // 选项卡按钮3
+    private JButton tab4Button; // 选项卡按钮4
+
+
+
+
 
 //-----------------推荐系统---------------------
     private RecommendationSystem recommendationSystem; // 推荐系统
@@ -41,14 +40,14 @@ public class MainWindow extends JFrame {
 
 
     private CenterPlaceDataLoader dataLoader; // 数据加载器
-    private List<CenterPlace> searchResults;
-    private JPanel subPage1ContentPanel;
-    private JPanel subPage1TabBarPanel;
-    private JButton subPage1Tab1Button;
-    private JButton subPage1Tab2Button;
-    private JButton subPage1Tab3Button;
-    private HashSet<String> tagList;
-    private JList<String> tagListJList;
+    private List<CenterPlace> searchResults;    //搜索结果
+    private JPanel subPage1ContentPanel;    // 子页面1的内容面板
+    private JPanel subPage1TabBarPanel;     // 子页面1的子选项卡面板    
+    private JButton subPage1Tab1Button;    // 子页面1的子选项卡按钮1
+    private JButton subPage1Tab2Button;   // 子页面1的子选项卡按钮2
+    private JButton subPage1Tab3Button; // 子页面1的子选项卡按钮3
+    private HashSet<String> tagList;    // 标签列表
+    private JList<String> tagListJList; // 标签列表的 JList 组件
 //---------------------------------------------
 //前十推荐
     private List<CenterPlace> top10CenterPlaces;
@@ -110,37 +109,37 @@ public class MainWindow extends JFrame {
 //-----------------路线规划---------------------
 
 
-    private JPanel subPage2ContentPanel;
-    private JPanel subPage2TabBarPanel;
-    private JButton subPage2Tab1Button;
-    private JButton subPage2Tab2Button;
-    private JButton subPage2Tab3Button;
+    private JPanel subPage2ContentPanel; // 子页面2的内容面板
+    private JPanel subPage2TabBarPanel; // 子页面2的子选项卡面板
+    private JButton subPage2Tab1Button; // 子页面2的子选项卡按钮1
+    private JButton subPage2Tab2Button; // 子页面2的子选项卡按钮2
+    private JButton subPage2Tab3Button;// 子页面2的子选项卡按钮3
     
 
 //-----------------场所查询---------------------
     
-        private JPanel subPage3ContentPanel;
-        private JPanel subPage3TabBarPanel;
-        private JButton subPage3Tab1Button;
-        private JButton subPage3Tab2Button;
-        private JButton subPage3Tab3Button;
+        private JPanel subPage3ContentPanel;    // 子页面3的内容面板
+        private JPanel subPage3TabBarPanel;// 子页面3的子选项卡面板
+        private JButton subPage3Tab1Button;     // 子页面3的子选项卡按钮1
+        private JButton subPage3Tab2Button;    // 子页面3的子选项卡按钮2
+        private JButton subPage3Tab3Button;   // 子页面3的子选项卡按钮3
 
 
 
 //-----------------游学日记---------------------
+        private JButton submitButton;   // 提交按钮
+        private ButtonGroup ratingButtonGroup;  // 评分等级选择单选框组
+        private Diary diary; // 日记
 
 
 
 
-
-
-
-    public MainWindow(RecommendationSystem recommendationSystem, SearchSystem searchSystem, List<String> userInterests, CenterPlaceDataLoader dataLoader) {
+    public MainWindow(RecommendationSystem recommendationSystem, SearchSystem searchSystem, List<String> userInterests, CenterPlaceDataLoader dataLoader,User user) {
         this.recommendationSystem = recommendationSystem;
         this.userInterests = userInterests;
         this.searchSystem = searchSystem;
         this.dataLoader = dataLoader;
-
+        this.diary = new Diary(user);
         // 从文件中读取标签列表
         List<CenterPlace> centerPlaces = dataLoader.getCenterPlaces();
         tagList = new HashSet<>(new HashSet<>());
@@ -213,9 +212,9 @@ public class MainWindow extends JFrame {
                     contentPanel.add(label3, BorderLayout.CENTER);
                 } else if (e.getSource() == tab4Button) {
                     contentPanel.removeAll();
-                    JLabel label4 = new JLabel("这是选项卡4的内容");
-                    label4.setHorizontalAlignment(SwingConstants.CENTER);
-                    contentPanel.add(label4, BorderLayout.CENTER);
+                    contentPanel.add(createSubPage4ContentPanel(), BorderLayout.CENTER);
+                
+
                 }
 
                 contentPanel.revalidate();
@@ -405,6 +404,20 @@ public class MainWindow extends JFrame {
         subPagePanel.add(subPage1ContentPanel, BorderLayout.CENTER);
 
         return subPagePanel;
+    }    // 刷新subPage1ContentPanel显示的内容
+    private void refreshSubPage1ContentPanel(List<CenterPlace> places) {
+        JPanel messagePanel = new JPanel();
+        messagePanel.setBorder(BorderFactory.createEmptyBorder(30, 0, 0, 0));   
+        StringBuilder message = new StringBuilder("Search Results:\n");
+        for (CenterPlace centerPlace : places) {
+            message.append(centerPlace.getName()).append("\n");
+        }
+        JLabel subPageLabel2 = new JLabel(message.toString());
+        subPageLabel2.setHorizontalAlignment(SwingConstants.CENTER);
+        messagePanel.add(subPageLabel2);  
+        subPage1ContentPanel.add(messagePanel, BorderLayout.NORTH);
+        frame.revalidate(); // 重新验证并刷新界面
+
     }
     // 创建子页面2的内容面板
     private JPanel createSubPage2ContentPanel() {
@@ -431,21 +444,33 @@ public class MainWindow extends JFrame {
                 // 根据点击的子选项卡按钮切换内容
                 if (e.getSource() == subPage2Tab1Button) {
                     subPage2ContentPanel.removeAll();
-                    //显示地图
-                    //创建地图
-                    MapView mapView = new MapView();
 
+
+//------------------------------------------------------------------------------------------------------------------------------------------------
+//users begin
+
+
+//users end
+//------------------------------------------------------------------------------------------------------------------------------------------------
 
 
                 } else if (e.getSource() == subPage2Tab2Button) {
                     subPage2ContentPanel.removeAll();
+//------------------------------------------------------------------------------------------------------------------------------------------------
+//users begin
 
-                    
 
 
+//users end
+//------------------------------------------------------------------------------------------------------------------------------------------------
                 } else if (e.getSource() == subPage2Tab3Button) {
                     subPage2ContentPanel.removeAll();
+//------------------------------------------------------------------------------------------------------------------------------------------------
+//users begin
 
+
+//users end
+//------------------------------------------------------------------------------------------------------------------------------------------------
                     
                 }
                 subPage2ContentPanel.revalidate();
@@ -462,21 +487,125 @@ public class MainWindow extends JFrame {
         subPagePanel.add(subPage2ContentPanel, BorderLayout.CENTER);
         return subPagePanel;
     }
+    private JPanel createSubPage4ContentPanel(){
+        subPage3ContentPanel = new JPanel();
+        subPage3TabBarPanel = new JPanel(new GridLayout(1, 3));
+        subPage3Tab1Button = createTabButton("撰写日记");
+        subPage3Tab2Button = createTabButton("热度");
+        subPage3Tab3Button= createTabButton("评分");
+        
+        // 添加子选项卡按钮到子选项卡面板
+        subPage3TabBarPanel.add(subPage3Tab1Button);
+        subPage3TabBarPanel.add(subPage3Tab2Button);
+        subPage3TabBarPanel.add(subPage3Tab3Button);
+        // 设置子选项卡面板在顶部
+        subPage3TabBarPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+        subPage3TabBarPanel.setBackground(Color.WHITE);
+        // 设置子选项卡内容面板的布局和背景颜色
+        subPage3ContentPanel.setLayout(new BorderLayout());
+        subPage3ContentPanel.setBackground(Color.LIGHT_GRAY);
+        // 创建子选项卡按钮的事件监听器
+        ActionListener subPageTabButtonListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // 根据点击的子选项卡按钮切换内容
+                if (e.getSource() == subPage3Tab1Button) {
+                    subPage3ContentPanel.removeAll();
+                    //显示输入框
+                    JTextArea searchField = new JTextArea();
+                    searchField.setPreferredSize(new Dimension(200, 400));
+                    subPage3ContentPanel.add(searchField, BorderLayout.NORTH);
+                    //显示“请输入日记”
+                    searchField.setText("请输入日记");
+                    //单选框
+                     // 下方评分等级选择单选框
+                    JPanel ratingPanel = new JPanel();
+                    ratingPanel.setLayout(new FlowLayout(FlowLayout.LEFT)); // 设置为水平对齐
+                    ratingButtonGroup = new ButtonGroup();
 
-    // 刷新subPage1ContentPanel显示的内容
-    private void refreshSubPage1ContentPanel(List<CenterPlace> places) {
-        JPanel messagePanel = new JPanel();
-        messagePanel.setBorder(BorderFactory.createEmptyBorder(30, 0, 0, 0));   
-        StringBuilder message = new StringBuilder("Search Results:\n");
-        for (CenterPlace centerPlace : places) {
-            message.append(centerPlace.getName()).append("\n");
-        }
-        JLabel subPageLabel2 = new JLabel(message.toString());
-        subPageLabel2.setHorizontalAlignment(SwingConstants.CENTER);
-        messagePanel.add(subPageLabel2);  
-        subPage1ContentPanel.add(messagePanel, BorderLayout.NORTH);
-        frame.revalidate(); // 重新验证并刷新界面
 
-    }
+                    JRadioButton radioButton1 = new JRadioButton("Rating 1");
+                    JRadioButton radioButton2 = new JRadioButton("Rating 2");
+                    JRadioButton radioButton3 = new JRadioButton("Rating 3");
+                    JRadioButton radioButton4 = new JRadioButton("Rating 4");
+                    JRadioButton radioButton5 = new JRadioButton("Rating 5");
+                    ratingButtonGroup.add(radioButton1);
+                    ratingButtonGroup.add(radioButton2);
+                    ratingButtonGroup.add(radioButton3);
+                    ratingButtonGroup.add(radioButton4);
+                    ratingButtonGroup.add(radioButton5);
+                    ratingPanel.add(radioButton1);
+                    ratingPanel.add(radioButton2);
+                    ratingPanel.add(radioButton3);
+                    ratingPanel.add(radioButton4);
+                    ratingPanel.add(radioButton5);
+                    
+                    subPage3ContentPanel.add(ratingPanel, BorderLayout.CENTER);
+                    //添加按钮
+                    submitButton = new JButton("Submit");
+                    submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // 处理提交按钮的点击事件
+                // 在这里编写提交按钮的逻辑
+                // 可以获取输入框的文本内容：searchField.getText()
+                // 可以获取选中的评分等级：ratingButtonGroup.getSelection() 
+                // 可以根据需要进行相应的处理
+                System.out.println("Submit button clicked");
+                System.out.println("Search text: " + searchField.getText());    
+
+                diary.writeInContent(searchField.getText());        //将日记写入文件
+                
+
+                ButtonModel selectedButtonModel = ratingButtonGroup.getSelection(); 
+
+
+                if (radioButton1.getModel() == selectedButtonModel) {   
+                    
+                } else if (radioButton3.getModel() == selectedButtonModel) {    
+                    
+                } else if (radioButton4.getModel() == selectedButtonModel) {    
+
+                } else if (radioButton5.getModel() == selectedButtonModel) {    
+                    
+                } else {    
+        
+                }   
+            }
+        });
+                subPage3ContentPanel.add(submitButton, BorderLayout.SOUTH);
+                pack(); 
+                setLocationRelativeTo(null);    
+                setVisible(true);
+                frame.revalidate();
+                }
+                else if(e.getSource()== subPage3Tab2Button){
+                    subPage3ContentPanel.removeAll();
+                    //显示热度
+                    //根据热度来进行排序，热度如果一样则根据评分来进行排序，如果都一样则随便
+
+
+                }
+                else if(e.getSource()== subPage3Tab3Button){
+                    subPage3ContentPanel.removeAll();
+                    //显示评分
+                    //根据评分来进行排序，评分如果一样则根据热度来进行排序，如果都一样则随便
+
+
+                }
+            }
+        };
+        // 给子选项卡按钮添加事件监听器
+        subPage3Tab1Button.addActionListener(subPageTabButtonListener);
+        subPage3Tab2Button.addActionListener(subPageTabButtonListener);
+        subPage3Tab3Button.addActionListener(subPageTabButtonListener);
+        // 将子选项卡面板和子选项卡内容面板添加到子页面中
+        JPanel subPagePanel = new JPanel(new BorderLayout());
+        subPagePanel.add(subPage3TabBarPanel, BorderLayout.NORTH);
+        subPagePanel.add(subPage3ContentPanel, BorderLayout.CENTER);
+        return subPagePanel;
+    }    
+    
+
 }
 

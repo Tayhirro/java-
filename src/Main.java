@@ -7,13 +7,13 @@ public class Main {
 
         // 创建数据加载器实例-- 读取文件
         CenterPlaceDataLoader dataLoader = new CenterPlaceDataLoader("CenterPlace.txt");
-
         // 创建推荐系统和搜索系统实例   
         RecommendationSystem recommendationSystem = new RecommendationSystem(dataLoader);
         SearchSystem searchSystem = new SearchSystem(dataLoader);
 
         // 使用推荐系统和搜索系统
         List<String> userInterests =new ArrayList<>();
+
 
 
 

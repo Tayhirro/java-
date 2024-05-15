@@ -20,6 +20,7 @@ public class LoginWindow extends JFrame {
     private SearchSystem searchSystem; // 搜索系统
     private List<String> userInterests; // 用户兴趣列表
     private CenterPlaceDataLoader dataLoader; // 数据加载器
+    public String username; // 用户名
     /**
      * LoginWindow 类的构造函数。
      * 它初始化窗口，设置标题、大小、默认关闭操作和位置。
@@ -69,7 +70,7 @@ public class LoginWindow extends JFrame {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String username = usernameField.getText();
+                username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
 
                 // 调用 UserManagementSystem 的登录方法
@@ -77,12 +78,15 @@ public class LoginWindow extends JFrame {
                 if (sessionId != null) {
                     System.out.println("登录成功，会话ID：" + sessionId);
                     // 关闭登录窗口并打开主窗口
+
+
                     setVisible(false);
                     dispose();
                     User user = ums.getUserByUsername(username);
-                    new MainWindow(recommendationSystem, searchSystem,userInterests,dataLoader).setVisible(true);
+                    new MainWindow(recommendationSystem, searchSystem,userInterests,dataLoader,user).setVisible(true);
                     showPreferenceWindow(user, ums); // 显示偏好窗口
-
+                    
+                    // 创建日记实例
                 } else {
                     System.out.println("登录失败");
                 }
