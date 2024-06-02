@@ -21,4 +21,9 @@ class SpotManagement {
         // path="data\\
     }
 
+    public boolean findSpot(String name) {
+
+        return true;
+    }
+
 }

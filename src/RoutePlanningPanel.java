@@ -10,13 +10,13 @@ import javax.swing.*;
 
 class RoutePlanningPanel extends JPanel {
 
-    JPanel submitPanel; // 提交的面板
-    JPanel pathPanel; // 路径面板
-    GraphPanel graphPanel; // 图形面板
-    JPanel titlePanel; // 标题面板
-    User currUser;// 当前用户
-    UserManagement userManagement;// 用户管理对象
-    SpotManagement spotManagement;// 景点管理对象
+    private JPanel submitPanel; // 提交的面板
+    private JPanel pathPanel; // 路径面板
+    private GraphPanel graphPanel; // 图形面板
+    private JPanel titlePanel; // 标题面板
+    private User currUser;// 当前用户
+    private UserManagement userManagement;// 用户管理对象
+    private SpotManagement spotManagement;// 景点管理对象
 
     public RoutePlanningPanel(User currUser, UserManagement userManagement, SpotManagement spotManagement) {
         this.currUser = currUser;
@@ -28,7 +28,7 @@ class RoutePlanningPanel extends JPanel {
         // 创建图形面板
         graphPanel = new GraphPanel("source\\map.jpg");
         // 创建提交面板
-        submitPanel = new FormPanel(graphPanel);// 创建表单面板,并传入图形面板,用于数据交互
+        submitPanel = new FormPanel(graphPanel, spotManagement);// 创建表单面板,并传入图形面板,用于数据交互
 
         // 设置整个面板的布局为GridBagLayout
         setLayout(new GridBagLayout());
@@ -37,26 +37,30 @@ class RoutePlanningPanel extends JPanel {
         // 将三个面板添加到整个面板中
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 2; // 标题面板占据2列宽
+        gbc.gridwidth = 5; // 标题面板占据5列宽
+        gbc.gridheight = 1; // 标题面板占据1行高
+        gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 0.1;
-        gbc.fill = GridBagConstraints.BOTH;
         add(titlePanel, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1; // submitPanel 占据 1 列宽
-        gbc.weightx = 0.07; // submitPanel 占据 20% 的宽度
-        gbc.weighty = 0.9;
+        gbc.gridheight = 9; // submitPanel 占据 9 行高
+
         gbc.fill = GridBagConstraints.BOTH;
-        submitPanel.setPreferredSize(new Dimension(125, 0)); // 设置 submitPanel 宽度为 100
+        gbc.weightx = 0.0;
+        gbc.weighty = 1.0;
+
         add(submitPanel, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 1;
-        gbc.gridwidth = 1; // graphPanel 占据 1 列宽
-        gbc.weightx = 0.93; // graphPanel 占据 80% 的宽度
-        gbc.weighty = 0.9;
+        gbc.gridwidth = 4; // graphPanel 占据 1 列宽
+        gbc.gridheight = 9; // graphPanel 占据 1 行高
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         add(graphPanel, gbc);
 
@@ -83,8 +87,8 @@ class TitlePanel extends JPanel {
         gbc.anchor = GridBagConstraints.CENTER;
         add(titleLabel, gbc);
 
-        // 设置标题面板的背景色和边框
-        setBackground(new Color(240, 240, 240));
+        // 设置标题面板的背景色灰色和边框
+        setBackground(Color.LIGHT_GRAY);
         setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
     }
 }
@@ -92,22 +96,24 @@ class TitlePanel extends JPanel {
 class FormPanel extends JPanel {
 
     JTextField startField;
+    JTextField spotField;
     List<JPanel> destinationPanels;
     JPanel destinationContainerPanel;
     JButton addButton, submitButton;
     RoutePlanningSystem routePlanningSystem;// 路线规划系统
+    SpotManagement spotManagement;// 景点管理对象
     GraphPanel graphPanel;// 图形面板
 
-    JRadioButton lengthButton = new JRadioButton("长度");
-    JRadioButton timeButton = new JRadioButton("时间");
+    // 创建单选按钮
+    JRadioButton lengthButton = new JRadioButton("距离排序");
+    JRadioButton timeButton = new JRadioButton("时间排序");
     JRadioButton walkingButton = new JRadioButton("步行");
     JRadioButton bikingButton = new JRadioButton("骑行");
     JRadioButton drivingButton = new JRadioButton("驾车");
 
-    public FormPanel(GraphPanel graph) {
+    public FormPanel(GraphPanel graph, SpotManagement spotManagement) {
         this.graphPanel = graph;
-        setLayout(new BorderLayout(10, 10));
-        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        this.spotManagement = spotManagement;
 
         // 创建按钮组，使单选按钮互斥
         ButtonGroup sortingGroup = new ButtonGroup();
@@ -123,9 +129,30 @@ class FormPanel extends JPanel {
         lengthButton.setSelected(true);
         walkingButton.setSelected(true);
 
+        initializeUI();
+        routePlanningSystem = new RoutePlanningSystem();
+    }
+
+    private void initializeUI() {
+        setLayout(new BorderLayout(10, 10));
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        // 创建景区选择面版spotPanel
+        JPanel spotPanel = new JPanel(new GridLayout(3, 1, 5, 5));
+        JLabel spotLabel = new JLabel("景区名称:");
+        spotField = new JTextField(12);
+        JButton spotButton = new JButton("确定");
+        spotButton.setPreferredSize(new Dimension(40, 20));
+        JPanel spotButtonPanel = new JPanel(new BorderLayout());
+        spotButtonPanel.setPreferredSize(new Dimension(50, 20));
+        spotButtonPanel.add(spotButton, BorderLayout.CENTER);
+        spotButton.addActionListener(e -> findSpot());
+        spotPanel.add(spotLabel, BorderLayout.WEST);
+        spotPanel.add(spotField, BorderLayout.CENTER);
+        spotPanel.add(spotButtonPanel, BorderLayout.EAST);
+
         // 创建单选按钮的面板
         JPanel sortingPanel = new JPanel(new GridLayout(2, 1, 0, 0));
-
         JPanel sortingButtonPanel = new JPanel(new GridLayout(1, 2, 0, 0));
         sortingButtonPanel.add(lengthButton);
         sortingButtonPanel.add(timeButton);
@@ -151,7 +178,8 @@ class FormPanel extends JPanel {
         addressPanel.add(endLabel);
 
         // Create a panel for the address and buttons
-        JPanel firstPanel = new JPanel(new GridLayout(3, 1, 10, 10));
+        JPanel firstPanel = new JPanel(new GridLayout(4, 1, 10, 10));
+        firstPanel.add(spotPanel);
         firstPanel.add(sortingPanel);
         firstPanel.add(transportationPanel);
         firstPanel.add(addressPanel);
@@ -172,8 +200,19 @@ class FormPanel extends JPanel {
         buttonPanel.add(submitButton);
 
         add(buttonPanel, BorderLayout.SOUTH);
-        setSize(100, 400);
-        routePlanningSystem = new RoutePlanningSystem();
+
+    }
+
+    void findSpot() {
+
+        String spotname = spotField.getText();
+        if (!spotManagement.findSpot(spotname)) {
+            //弹出提示框，提示景点不存在
+            JOptionPane.showMessageDialog(this, "景点不存在", "错误", JOptionPane.ERROR_MESSAGE);
+        }
+        System.err.println("find spot");
+        JOptionPane.showMessageDialog(this, "选择景点成功", "成功", JOptionPane.ERROR_MESSAGE);
+
     }
 
     void addDestinationPanel() {

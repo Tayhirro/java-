@@ -12,6 +12,10 @@ public class MainWindow {
     private final CardLayout cardLayout;// 卡片布局
 
     public MainWindow(UserManagement userManagement, User currUser) {
+        this.userManagement = userManagement;
+        this.currUser = currUser;
+        this.spotManagement = new SpotManagement();
+
         frame = new JFrame("游学推荐系统");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 800);
@@ -37,9 +41,6 @@ public class MainWindow {
 
         frame.setVisible(true);
 
-        this.userManagement = userManagement;
-        this.currUser = currUser;
-        this.spotManagement = new SpotManagement();
     }
 
     // 创建欢迎页面

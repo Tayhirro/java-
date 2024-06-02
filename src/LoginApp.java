@@ -5,8 +5,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
 public class LoginApp {
+
     private final JFrame frame;// 主窗口
     private JPanel panel;// 面板
     private final CardLayout cardLayout;// 卡片布局
@@ -31,7 +31,10 @@ public class LoginApp {
         frame.pack();// 调整窗口大小
         frame.setResizable(false);// 禁止调整窗口大小
         frame.setVisible(true);// 显示窗口
+    }
 
+    public void showWindow() {
+        this.frame.setVisible(true);
     }
 
     // 创建注册面板
@@ -167,7 +170,7 @@ public class LoginApp {
         gbc.gridx = 1;
         fieldsPanel.add(passwordField, gbc);
 
-        JPanel buttonsPanel =new JPanel();
+        JPanel buttonsPanel = new JPanel();
         JButton loginButton = new JButton("登录");
         JButton toRegisterButton = new JButton("去注册");
         buttonsPanel.add(loginButton);
@@ -189,10 +192,10 @@ public class LoginApp {
                 }
 
                 currentUser = userManagement.login(account, password);
-                
+
                 if (currentUser != null) {// 登录成功
-            
-                     new MainWindow (userManagement,currentUser);
+
+                    new MainWindow(userManagement, currentUser);
                     //关闭登录窗口
                     frame.dispose();
 
@@ -211,10 +214,9 @@ public class LoginApp {
 
         return loginPanel;
     }
-    public User getuser(){
+
+    public User getuser() {
         return currentUser;
     }
 
-    
 }
-
