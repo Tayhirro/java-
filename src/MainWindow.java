@@ -56,9 +56,12 @@ public class MainWindow {
         instructionArea.setText("""
                         欢迎来到游学推荐系统！
                         
-                        这个系统可以帮助您规划旅行路线、查询周边场所、推荐美食和记录游学日记。
+                        这个系统的功能包括：
+                        推荐游学地点、规划旅行路线、查询周边场所、推荐美食、记录游学日记
+
                         使用下方的按钮可以切换到相应的功能页面。
                         祝您使用愉快！""");
+        instructionArea.setFont(new Font("微软雅黑", Font.PLAIN, 16));
         instructionArea.setEditable(false);
         instructionArea.setLineWrap(true);
         instructionArea.setWrapStyleWord(true);
@@ -74,7 +77,7 @@ public class MainWindow {
 
     // 创建游学推荐页面，在别的类中实现
     private JPanel createRecommendationPanel() {
-        RecommendationPanel recommendationPanel = new RecommendationPanel(currUser, userManagement, spotManagement);
+        RoutePlanningPanel recommendationPanel = new RoutePlanningPanel(currUser, userManagement, spotManagement);
         return recommendationPanel;
     }
 
@@ -106,20 +109,27 @@ public class MainWindow {
     // 创建导航面板,包含5个按钮
     private JPanel createNavigationPanel() {
         JPanel panel = new JPanel(new GridLayout(1, 5, 10, 0)); // 设置网格布局，并增加水平间距
+        //设置按钮大小
+        Dimension buttonSize = new Dimension(120, 40);
 
         JButton recommendationButton = new JButton("游学推荐");
+        recommendationButton.setPreferredSize(buttonSize);
         recommendationButton.addActionListener(e -> cardLayout.show(mainPanel, "Recommendation")); // 使用Lambda表达式简化代码
 
         JButton routePlanningButton = new JButton("路径规划");
+        routePlanningButton.setPreferredSize(buttonSize);
         routePlanningButton.addActionListener(e -> cardLayout.show(mainPanel, "RoutePlanning"));
 
         JButton locationQueryButton = new JButton("场所查询");
+        locationQueryButton.setPreferredSize(buttonSize);
         locationQueryButton.addActionListener(e -> cardLayout.show(mainPanel, "LocationQuery"));
 
         JButton foodRecommendationButton = new JButton("美食推荐");
+        foodRecommendationButton.setPreferredSize(buttonSize);
         foodRecommendationButton.addActionListener(e -> cardLayout.show(mainPanel, "FoodRecommendation"));
 
         JButton studyDiaryButton = new JButton("游学日记");
+        studyDiaryButton.setPreferredSize(buttonSize);
         studyDiaryButton.addActionListener(e -> cardLayout.show(mainPanel, "StudyDiary"));
 
         panel.add(recommendationButton);

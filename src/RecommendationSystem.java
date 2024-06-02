@@ -1,8 +1,6 @@
-import javax.swing.*;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class RecommendationSystem {
@@ -14,7 +12,6 @@ public class RecommendationSystem {
     private List<Spot> spots;// 所有景点
     private List<Spot> schools;// 学校
     private List<Spot> attractions;// 景点
-
 
     RecommendationSystem(User currUser, UserManagement userManagement, SpotManagement spotManagement) {
         this.currUser = currUser;
@@ -108,4 +105,3 @@ public class RecommendationSystem {
         return filteredSpots;
     }
 }
-
