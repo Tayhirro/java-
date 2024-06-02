@@ -328,7 +328,6 @@ class FormPanel extends JPanel {
         }
         int[] pointx = new int[path[0]];
         int[] pointy = new int[path[0]];
-        JOptionPane.showMessageDialog(this, path[0] - 1, "", JOptionPane.ERROR_MESSAGE);
         for (int i = 0; i < path[0]; i++) {
             pointx[i] = routePlanningSystem.point[path[i + 1]].x;
             pointy[i] = routePlanningSystem.point[path[i + 1]].y;
