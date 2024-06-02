@@ -106,7 +106,11 @@ class SpotManagement {
     private void loadSpotData() {
         spots.add(new Spot("故宫", "attraction", 2000, 4.8, "北京", "故宫是中国著名的景点", Arrays.asList("景点", "古建筑"), new String[]{"source/gugong.jpg"}, new Spot[]{}));
         spots.add(new Spot("颐和园", "attraction", 1500, 4.7, "北京", "颐和园是中国著名的景点", Arrays.asList("景点", "古建筑"), new String[]{"source/yiheyuan.jpg"}, new Spot[]{}));
+        spots.add(new Spot("长城", "attraction", 3000, 4.9, "北京", "长城是中国著名的景点", Arrays.asList("景点", "古建筑"), new String[]{"source/changcheng.jpg"}, new Spot[]{}));
+        spots.add(new Spot("天安门", "attraction", 2500, 4.8, "北京", "天安门是中国著名的景点", Arrays.asList("景点", "古建筑"), new String[]{"source/tiananmen.jpg"}, new Spot[]{}));
         spots.add(new Spot("北京邮电大学", "school", 1000, 4.5, "北京", "北京邮电大学是中国著名的学府", Arrays.asList("学府", "名校","211"), new String[]{"source/bupt.jpg"}, new Spot[]{spots.get(0)}));
+        spots.add(new Spot("清华大学", "school", 3000, 4.9, "北京", "清华大学是中国著名的学府", Arrays.asList("学府", "名校","985"), new String[]{"source/thu.jpg"}, new Spot[]{spots.get(1)}));
+        spots.add(new Spot("北京大学", "school", 2500, 4.8, "北京", "北京大学是中国著名的学府", Arrays.asList("学府", "名校","985"), new String[]{"source/pku.jpg"}, new Spot[]{spots.get(2)}));
         try (ObjectInputStream pis = new ObjectInputStream(new FileInputStream(path))) {// 读取地点数据文件
             spots = (ArrayList<Spot>) pis.readObject();// 读取地点数据库
         } catch (IOException | ClassNotFoundException e) {

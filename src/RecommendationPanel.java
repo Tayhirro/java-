@@ -12,6 +12,7 @@ public class RecommendationPanel extends JPanel {
     private final UserManagement userManagement;// 用户管理对象
     private final SpotManagement spotManagement;// 景点管理对象
 
+
     private JTextField searchField;// 搜索框
     private JComboBox<String> sortComboBox;// 排序下拉框
     private JPanel preferencePanel;// 偏好设置面板
@@ -27,8 +28,6 @@ public class RecommendationPanel extends JPanel {
         this.currUser = currUser;
         this.userManagement = userManagement;
         this.spotManagement = spotManagement;
-
-
 
         this.recommendationSystem = new RecommendationSystem(currUser, userManagement, spotManagement);
 
