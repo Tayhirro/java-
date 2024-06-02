@@ -6,13 +6,12 @@ public class MainWindow {
 
     private final User currUser;// 当前用户
     private final UserManagement userManagement;// 用户管理对象
+    private final SpotManagement spotManagement;// 景点管理对象
     private final JFrame frame;// 主窗口
     private final JPanel mainPanel;// 主面板
     private final CardLayout cardLayout;// 卡片布局
 
     public MainWindow(UserManagement userManagement, User currUser) {
-        this.userManagement = userManagement;
-        this.currUser = currUser;
         frame = new JFrame("游学推荐系统");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 800);
@@ -37,6 +36,10 @@ public class MainWindow {
         cardLayout.show(mainPanel, "Welcome"); // 默认显示欢迎页面
 
         frame.setVisible(true);
+
+        this.userManagement = userManagement;
+        this.currUser = currUser;
+        this.spotManagement = new SpotManagement();
     }
 
     // 创建欢迎页面
@@ -70,31 +73,31 @@ public class MainWindow {
 
     // 创建游学推荐页面，在别的类中实现
     private JPanel createRecommendationPanel() {
-        RecommendationPanel recommendationPanel = new RecommendationPanel(currUser);
+        RecommendationPanel recommendationPanel = new RecommendationPanel(currUser, userManagement, spotManagement);
         return recommendationPanel;
     }
 
     // 创建路径规划页面，在别的类中实现
     private JPanel createRoutePlanningPanel() {
-        RoutePlanningPanel routePlanningPanel = new RoutePlanningPanel();
+        RoutePlanningPanel routePlanningPanel = new RoutePlanningPanel(currUser, userManagement, spotManagement);
         return routePlanningPanel;
     }
 
     // 创建场所查询页面，在别的类中实现
     private JPanel createLocationQueryPanel() {
-        LocationQueryPanel locationQueryPanel = new LocationQueryPanel();
+        LocationQueryPanel locationQueryPanel = new LocationQueryPanel(currUser, userManagement, spotManagement);
         return locationQueryPanel;
     }
 
     // 创建美食推荐页面，在别的类中实现
     private JPanel createFoodRecommendationPanel() {
-        FoodRecommendationPanel foodRecommendationPanel = new FoodRecommendationPanel();
+        FoodRecommendationPanel foodRecommendationPanel = new FoodRecommendationPanel(currUser, userManagement, spotManagement);
         return foodRecommendationPanel;
     }
 
     // 创建游学日记页面，在别的类中实现
     private JPanel createStudyDiaryPanel() {
-        StudyDiaryPanel studyDiaryPanel = new StudyDiaryPanel(userManagement, currUser);
+        StudyDiaryPanel studyDiaryPanel = new StudyDiaryPanel(currUser, userManagement, spotManagement);
         return studyDiaryPanel;
 
     }

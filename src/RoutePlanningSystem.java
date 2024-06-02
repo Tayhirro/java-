@@ -1,6 +1,7 @@
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 // 点类
@@ -128,6 +129,25 @@ public class RoutePlanningSystem {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        // //打印读入的数据
+        // System.out.println("point:" + pointNum);
+        // for (int i = 0; i < pointNum; i++) {
+        //     System.out.println(point[i].name + " " + point[i].x + " " + point[i].y + " " + point[i].type);
+        //     System.out.println("sidewalkHeads:" + sidewalkHeads[i] + " cyclewayHeads:" + cyclewayHeads[i] + " roadHeads:" + roadHeads[i]);
+        // }
+        // System.out.println("sidewalkEdgeNum:" + sidewalkEdgeNum);
+        // for (int i = 0; i < sidewalkEdgeNum; i++) {
+        //     System.out.println(sidewalk[i].from + " " + sidewalk[i].to + " " + sidewalk[i].length + " " + sidewalk[i].crowding);
+        // }
+
+        // System.out.println("cyclewayEdgeNum:" + cyclewayEdgeNum);
+        // for (int i = 0; i < cyclewayEdgeNum; i++) {
+        //     System.out.println(cycleway[i].from + " " + cycleway[i].to + " " + cycleway[i].length + " " + cycleway[i].crowding);
+        // }
+        // System.out.println("roadEdgeNum:" + roadEdgeNum);
+        // for (int i = 0; i < roadEdgeNum; i++) {
+        //     System.out.println(road[i].from + " " + road[i].to + " " + road[i].length + " " + road[i].crowding);
+        // }
     }
 
     //迪杰斯特拉算法,返回最短时间,路径存储在path数组中 time=(length*crowding)/speed，处理函数
@@ -172,7 +192,8 @@ public class RoutePlanningSystem {
             }
         }
         double[] dist = new double[pointNum];
-        return dijkstra(startId, endId, edge, heads, weight, path, dist);
+        double ret = dijkstra(startId, endId, edge, heads, weight, path, dist);
+        return ret;
     }
 
     //迪杰斯特拉算法
@@ -186,33 +207,33 @@ public class RoutePlanningSystem {
             visited[i] = false;
         }
         dist[startId] = 0;
-        for (int i = 1; i < pointNum; i++) {//循环n-1次,每次找到一个最短路径
+        for (int i = 1; i <= pointNum; i++) {//循环n-1次,每次找到一个最短路径
             double mindis = Double.MAX_VALUE;//找到未访问的点中距离最小的点的距离
-            int updateId = -1;
+            int updateId = -2;
             for (int j = 0; j < pointNum; j++) {//找到最近的点
                 if (!visited[j] && dist[j] < mindis) {
                     mindis = dist[j];
                     updateId = j;
                 }
             }
-            if (updateId == -1) {//找不到未访问的点
+            if (updateId == -2) {//找不到未访问的点
                 break;
             }
             if (updateId == endId) {//找到终点,开启提前退出
-                int pathId = 0;
+                path[0] = 0;
 
                 int[] temppath = new int[pointNum];
                 for (int j = endId; j != -1; j = prev[j]) {
-                    temppath[pathId++] = j;
-                }
-                //倒置path
-                for (int j = pathId - 1; j >= 0; j--) {
-                    path[pathId - j - 1] = temppath[j];
+                    temppath[path[0]++] = j;
                 }
 
-                System.out.println("dist:" + dist[endId]);
+                //倒置path
+                for (int j = path[0] - 1; j >= 0; j--) {
+                    path[path[0] - j] = temppath[j];
+                }
                 return dist[endId];
             }
+
             visited[updateId] = true;
             for (int u = heads[updateId]; u != -1; u = edge[u].nextId) {// 根据updateId更新其他点的距离
                 if (!visited[edge[u].to] && dist[updateId] + weight[u] < dist[edge[u].to]) {
@@ -265,61 +286,74 @@ public class RoutePlanningSystem {
             }
         }
         int cycleNum = endId.length + 1;
-        int[] pointId = new int[cycleNum];
+        int[] cyclepointId = new int[cycleNum];
         double[][] shortestDist = new double[cycleNum][cycleNum];
         for (int i = 0; i < cycleNum - 1; i++) {
-            pointId[i] = endId[i];
+            cyclepointId[i] = endId[i];
         }
-        pointId[endId.length] = startId;
+        cyclepointId[endId.length] = startId;
         //利用dij计算两点间最短路径，存储在shortestDist中
         for (int cycleI = 0; cycleI < cycleNum; cycleI++) {
             //迪杰斯特拉算法
             double[] dist = new double[pointNum];
 
-            dijkstra(pointId[cycleI], -1, edge, heads, weight, path, dist);
+            dijkstra(cyclepointId[cycleI], -1, edge, heads, weight, path, dist);
 
             for (int cycleJ = 0; cycleJ < cycleNum; cycleJ++) {
-                shortestDist[cycleI][cycleJ] = dist[pointId[cycleJ]];
+                shortestDist[cycleI][cycleJ] = dist[cyclepointId[cycleJ]];
             }
-        }
+        }//√
+
         int[] shortPath = new int[cycleNum + 1];
         double dist = tsp(cycleNum, shortestDist, shortPath);
         //将编号转换为点的编号
         for (int i = 0; i <= cycleNum; i++) {
-            shortPath[i] = pointId[shortPath[i]];
+            shortPath[i] = cyclepointId[shortPath[i]];
         }
-        System.out.println("path:");
+        System.out.println("shortpath:");
         for (int i = 0; i <= cycleNum; i++) {
-            System.out.print(point[shortPath[i]].name + " ");
+            System.out.print(shortPath[i] + " ");
         }
         System.out.println();
+
         //path填充
-        int[] segPath = new int[pointNum];
-        double[] distTemp = new double[pointNum];
-        int pathId = 0;
+        int[] segPath = new int[pointNum + 5];
+        double[] distTemp = new double[pointNum + 5];
+        path[0] = 0;
+        path[++path[0]] = shortPath[0];
         for (int i = 0; i < cycleNum; i++) {
             dijkstra(shortPath[i], shortPath[i + 1], edge, heads, weight, segPath, distTemp);
-            for (int j = 0; j < pointNum; j++) {
-                path[pathId++] = segPath[j];
+
+            for (int j = 2; j <= segPath[0]; j++) {
+                path[++path[0]] = segPath[j];
             }
         }
 
+        System.err.println("path:" + path[0]);
+        for (int i = 1; i <= path[0]; i++) {
+            System.err.print(point[path[i]].name + " ");
+        }
+        System.err.println("tsp:" + dist);
         return dist;
     }
 
-    //动态规划求解旅行商问题
+    //动态规划求解旅行商问题,有bug，待修复
     static double tsp(int N, double[][] dist, int[] path) {
         System.out.println("环路节点数:" + N);
         final int M = 1 << (N - 1);
         final double INF = 1e7;
         double[][] dp = new double[N][M];
+        int[][] parent = new int[N][M];
+
+        // Initialize DP table
         for (int i = 0; i < N; i++) {
+            Arrays.fill(dp[i], INF);
             dp[i][0] = dist[i][0];
         }
-        //动态规划求解
+
+        // Dynamic programming to solve TSP
         for (int j = 1; j < M; j++) {
             for (int i = 0; i < N; i++) {
-                dp[i][j] = INF;
                 if (((j >> (i - 1)) & 1) == 1) {
                     continue;
                 }
@@ -327,38 +361,24 @@ public class RoutePlanningSystem {
                     if (((j >> (k - 1)) & 1) == 0) {
                         continue;
                     }
-                    if (dp[i][j] > dist[i][k] + dp[k][j ^ (1 << (k - 1))]) {
-                        dp[i][j] = dist[i][k] + dp[k][j ^ (1 << (k - 1))];
+                    double cost = dist[i][k] + dp[k][j ^ (1 << (k - 1))];
+                    if (dp[i][j] > cost) {
+                        dp[i][j] = cost;
+                        parent[i][j] = k;
                     }
                 }
             }
         }
-        //回溯路径
-        boolean[] visited = new boolean[N];
-        for (int i = 0; i < N; i++) {
-            visited[i] = false;
-        }
-        //前驱节点编号
-        int pioneer = 0, S = M - 1, temp = 0;
-        double min = INF;
-        int pathId = 0;
-        //把起点结点编号加入容器
-        path[pathId++] = 0;
 
-        while (!isVisited(visited, N)) {
-            for (int i = 1; i < N; i++) {
-                if (visited[i] == false && (S & (1 << (i - 1))) != 0) {
-                    if (min > dist[i][pioneer] + dp[i][(S ^ (1 << (i - 1)))]) {
-                        min = dist[i][pioneer] + dp[i][(S ^ (1 << (i - 1)))];
-                        temp = i;
-                    }
-                }
-            }
-            pioneer = temp;
-            path[pathId++] = pioneer;
-            visited[pioneer] = true;
-            S = S ^ (1 << (pioneer - 1));
-            min = INF;
+        // Reconstruct the path
+        int last = 0;
+        int S = M - 1;
+        path[0] = 0;
+        for (int i = 1; i < N; i++) {
+            int next = parent[last][S];
+            path[i] = next;
+            S ^= (1 << (next - 1));
+            last = next;
         }
 
         return dp[0][M - 1];

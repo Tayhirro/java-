@@ -1,9 +1,11 @@
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class User implements Serializable {
+
     private final String name;
     private final String account;
     private final char[] password;
@@ -36,14 +38,14 @@ public class User implements Serializable {
 }
 
 class UserManagement {
+
     private Map<String, User> userDatabase;// 用户数据库
     private AtomicLong idCounter;// 用户ID计数器
     private String dataFile;// 用户数据文件
-    
-    //按需添加更多属性和方法  
 
-    public UserManagement(String dataFile) {// 构造方法
-        this.dataFile = dataFile;
+    //按需添加更多属性和方法  
+    public UserManagement() {// 构造方法
+        dataFile = "data\\userData.ser";
         userDatabase = new HashMap<>();
         idCounter = new AtomicLong(1);
         loadUserData();

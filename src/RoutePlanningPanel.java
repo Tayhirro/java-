@@ -14,15 +14,21 @@ class RoutePlanningPanel extends JPanel {
     JPanel pathPanel; // 路径面板
     GraphPanel graphPanel; // 图形面板
     JPanel titlePanel; // 标题面板
+    User currUser;// 当前用户
+    UserManagement userManagement;// 用户管理对象
+    SpotManagement spotManagement;// 景点管理对象
 
-    public RoutePlanningPanel() {
+    public RoutePlanningPanel(User currUser, UserManagement userManagement, SpotManagement spotManagement) {
+        this.currUser = currUser;
+        this.userManagement = userManagement;
+        this.spotManagement = spotManagement;
 
         // 创建标题面板
         titlePanel = new TitlePanel("路线规划");
-        // 创建提交面板
-        submitPanel = new FormPanel(graphPanel);
         // 创建图形面板
         graphPanel = new GraphPanel("source\\map.jpg");
+        // 创建提交面板
+        submitPanel = new FormPanel(graphPanel);// 创建表单面板,并传入图形面板,用于数据交互
 
         // 设置整个面板的布局为GridBagLayout
         setLayout(new GridBagLayout());
@@ -98,8 +104,8 @@ class FormPanel extends JPanel {
     JRadioButton bikingButton = new JRadioButton("骑行");
     JRadioButton drivingButton = new JRadioButton("驾车");
 
-    public FormPanel(GraphPanel graphPanel) {
-        this.graphPanel = graphPanel;
+    public FormPanel(GraphPanel graph) {
+        this.graphPanel = graph;
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -243,32 +249,64 @@ class FormPanel extends JPanel {
             endArray[i] = endId;
         }
         // 调用路线规划系统的方法，获取路径，并在窗口绘画路径
-        int[] path = new int[2000];
-        if (sorting.equals("length")) {
-            double length = routePlanningSystem.tsp(startId, endArray, transportation, false, path);
-            if (length == -1) {
-                //弹出提示框，提示路径不存在
-                JOptionPane.showMessageDialog(this, "路径不存在", "错误", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+        int[] path = new int[1000];//path[0]存储路径的长度
 
-        } else if (sorting.equals("time")) {
-            double time = routePlanningSystem.tsp(startId, endArray, transportation, true, path);
-            if (time == -1) {
-                //弹出提示框，提示路径不存在
-                JOptionPane.showMessageDialog(this, "路径不存在", "错误", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+        //单点路径规划
+        if (destinations.size() == 1) {
+            if (sorting.equals("length")) {
+                double length = routePlanningSystem.dijkstra(startId, endArray[0], transportation, false, path);
+                if (length == -1) {
+                    //弹出提示框，提示路径不存在
+                    JOptionPane.showMessageDialog(this, "路径不存在", "错误", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
+            } else if (sorting.equals("time")) {
+                double time = routePlanningSystem.dijkstra(startId, endArray[0], transportation, true, path);
+                if (time == -1) {
+                    //弹出提示框，提示路径不存在
+                    JOptionPane.showMessageDialog(this, "路径不存在", "错误", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+            }
+        } else {//多点路径规划
+            if (sorting.equals("length")) {
+                double length = routePlanningSystem.tsp(startId, endArray, transportation, false, path);
+                if (length == -1) {
+                    //弹出提示框，提示路径不存在
+                    JOptionPane.showMessageDialog(this, "路径不存在", "错误", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+            } else if (sorting.equals("time")) {
+                double time = routePlanningSystem.tsp(startId, endArray, transportation, true, path);
+                if (time == -1) {
+                    //弹出提示框，提示路径不存在
+                    JOptionPane.showMessageDialog(this, "路径不存在", "错误", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+            }
         }
-        graphPanel.drawPath(path);
+        int[] pointx = new int[path[0]];
+        int[] pointy = new int[path[0]];
+        JOptionPane.showMessageDialog(this, path[0] - 1, "", JOptionPane.ERROR_MESSAGE);
+        for (int i = 0; i < path[0]; i++) {
+            pointx[i] = routePlanningSystem.point[path[i + 1]].x;
+            pointy[i] = routePlanningSystem.point[path[i + 1]].y;
+            System.out.println("x:" + pointx[i] + " y:" + pointy[i] + " id:" + path[i + 1]);
+        }
+
+        graphPanel.drawPath(pointx, pointy);
     }
 }
 
 class GraphPanel extends JPanel {
 
     private BufferedImage graphImage;
-    private int[] path;
+    private int[] pointx = new int[0];  // Initialize to prevent null pointer issues
+    private int[] pointy = new int[0];  // Initialize to prevent null pointer issues
 
     // Constructor that loads the image from the file path
     public GraphPanel(String graphFile) {
@@ -278,33 +316,38 @@ class GraphPanel extends JPanel {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "无法加载图像: " + graphFile, "错误", JOptionPane.ERROR_MESSAGE);
         }
-        path = new int[0];
     }
 
     // Method to set the path to be drawn and repaint the panel
-    public void drawPath(int[] path) {
-        this.path = path;
+    public void drawPath(int[] pointx, int[] pointy) {
+        if (pointx.length != pointy.length) {
+            throw new IllegalArgumentException("pointx and pointy must have the same length");
+        }
+        this.pointx = pointx;
+        this.pointy = pointy;
         repaint();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g; // Convert to Graphics2D
         if (graphImage != null) {
             // Draw the image
-            g.drawImage(graphImage, 0, 0, this.getWidth(), this.getHeight(), null);
+            g2d.drawImage(graphImage, 0, 0, this.getWidth(), this.getHeight(), null);
         }
 
         // Draw the path if it exists
-        if (path != null && path.length > 1) {
-            g.setColor(Color.RED);
-            for (int i = 0; i < path.length - 1; i++) {
-                // You need to map your path points to coordinates, this is just an example
-                int x1 = mapToX(path[i]);
-                int y1 = mapToY(path[i]);
-                int x2 = mapToX(path[i + 1]);
-                int y2 = mapToY(path[i + 1]);
-                g.drawLine(x1, y1, x2, y2);
+        if (pointx.length > 1 && pointy.length > 1) {
+            g2d.setColor(Color.RED);
+            g2d.setStroke(new BasicStroke(3)); // Set line width to 3
+            for (int i = 0; i < pointx.length - 1; i++) {
+                // Map your path points to coordinates
+                int x1 = mapToX(pointx[i]);
+                int y1 = mapToY(pointy[i]);
+                int x2 = mapToX(pointx[i + 1]);
+                int y2 = mapToY(pointy[i + 1]);
+                g2d.drawLine(x1, y1, x2, y2);
             }
         }
     }
@@ -312,11 +355,11 @@ class GraphPanel extends JPanel {
     // Example mapping method - replace with your actual mapping logic
     private int mapToX(int point) {
         // Example mapping - replace with actual logic
-        return point % this.getWidth();
+        return point; // Simple example: assuming pointx already in coordinate space
     }
 
     private int mapToY(int point) {
         // Example mapping - replace with actual logic
-        return point / this.getWidth();
+        return point; // Simple example: assuming pointy already in coordinate space
     }
 }
