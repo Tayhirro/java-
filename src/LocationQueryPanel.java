@@ -219,7 +219,6 @@ class TablePanel extends JPanel {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         // 内容不可编辑，但可以选择
         table.setEnabled(false);
-        table.setRowSelectionAllowed(true);
 
         // 创建表格的滚动面板
         JScrollPane scrollPane = new JScrollPane(table);
