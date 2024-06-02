@@ -140,7 +140,7 @@ class FormPanel extends JPanel {
         // 创建景区选择面版spotPanel
         JPanel spotPanel = new JPanel(new GridLayout(3, 1, 5, 5));
         JLabel spotLabel = new JLabel("景区名称:");
-        spotField = new JTextField(12);
+        spotField = new JTextField(13);
         JButton spotButton = new JButton("确定");
         spotButton.setPreferredSize(new Dimension(40, 20));
         JPanel spotButtonPanel = new JPanel(new BorderLayout());
@@ -172,7 +172,7 @@ class FormPanel extends JPanel {
         JPanel addressPanel = new JPanel(new GridLayout(3, 1, 5, 0));
         JLabel startLabel = new JLabel("起始地址:");
         JLabel endLabel = new JLabel("目的地址:");
-        startField = new JTextField(12);
+        startField = new JTextField(13);
         addressPanel.add(startLabel);
         addressPanel.add(startField);
         addressPanel.add(endLabel);
@@ -208,10 +208,8 @@ class FormPanel extends JPanel {
         String spotname = spotField.getText();
         if (!spotManagement.findSpot(spotname)) {
             //弹出提示框，提示景点不存在
-            JOptionPane.showMessageDialog(this, "景点不存在", "错误", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "景区/学校不存在", "错误", JOptionPane.ERROR_MESSAGE);
         }
-        System.err.println("find spot");
-        JOptionPane.showMessageDialog(this, "选择景点成功", "成功", JOptionPane.ERROR_MESSAGE);
 
     }
 
@@ -237,7 +235,7 @@ class FormPanel extends JPanel {
 
     JPanel createDestinationPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 4));
-        JTextField field = new JTextField(12);
+        JTextField field = new JTextField(13);
         JButton removeButton = new JButton("-");
         removeButton.setPreferredSize(new Dimension(20, 20));
         removeButton.setFont(removeButton.getFont().deriveFont(Font.BOLD, 6));
