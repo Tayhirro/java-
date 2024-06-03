@@ -1,0 +1,83 @@
+
+V
+java:S1220""Move this file to a named package.J$9bef2262-1e96-4246-9dfc-e830d898900e
+Œ
+java:S1192Ç"ODefine a constant instead of duplicating this literal "Search Results" 3 times.(•¹©„J$46d217b3-f045-44f0-b4e6-de0f66776f92
+Ž
+java:S1192Ç"QDefine a constant instead of duplicating this literal "No results found" 3 times.(•¹©„J$4646ac3e-0733-47a2-9912-ed61f7ab6e79
+ˆ
+java:S11920"LDefine a constant instead of duplicating this literal "attraction" 10 times.(ì€¡J$ca99b54b-7a2a-4bcf-b3aa-b36348ef0ad0
+ˆ
+java:S1192/"GDefine a constant instead of duplicating this literal "school" 9 times.(¼­ÈÜüÿÿÿÿJ$6ab2cb1d-4698-4225-83a6-1ba5cc43d7d8
+Ÿ
+java:S1450"^Remove the "preferencePanel" field and declare it as a local variable in the relevant methods.(Û²åðÿÿÿÿÿJ$cc56c43a-884e-4450-97cd-cd628904e577
+q
+java:S1948"0Make "userManagement" transient or serializable.(å˜´®øÿÿÿÿJ$1ee4f093-338a-4594-8ef7-e677e13ba547
+l
+java:S1948"0Make "spotManagement" transient or serializable.(ŒëÃ¨J$cc992453-4d90-4271-9973-1241f7bfa65d
+w
+java:S1948"6Make "recommendationSystem" transient or serializable.(ž¦âøÿÿÿÿJ$459fc5b3-3b63-4b71-9584-7284926cc6d7
+}
+java:S3252O"AUse static access with "javax.swing.SwingConstants" for "CENTER".(°‡¬¶J$be0e9d0b-e9f8-4c9d-a4b2-de796e7d0986
+}
+java:S3252S"AUse static access with "javax.swing.SwingConstants" for "CENTER".(„¹×ÖJ$1f5a709b-42b0-4097-9f9d-4e51b879843b
+}
+java:S3252l"AUse static access with "javax.swing.SwingConstants" for "CENTER".(¢äžÅJ$aed3661c-06a1-4d97-a280-a3bcaa2911b9
+‚
+java:S3252p"AUse static access with "javax.swing.SwingConstants" for "CENTER".(úŒå¥þÿÿÿÿJ$b535c076-0eb1-4533-b0cd-697a961f5b5c
+~
+java:S3252Ž"AUse static access with "javax.swing.SwingConstants" for "CENTER".(°‡¬¶J$902f9c84-f088-43ca-b73e-3906b342ef82
+~
+java:S3252’"AUse static access with "javax.swing.SwingConstants" for "CENTER".(„¹×ÖJ$1ccf6cc0-8117-4235-a83a-92626fc77f4d
+~
+java:S3252ª"AUse static access with "javax.swing.SwingConstants" for "CENTER".(¢äžÅJ$a805130c-6f7a-4faa-b06c-4cf20b964662
+ƒ
+java:S3252®"AUse static access with "javax.swing.SwingConstants" for "CENTER".(úŒå¥þÿÿÿÿJ$0625b085-a6cc-4fa0-bca5-a4639fb764bb
+·
+java:S6204Á"zReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()' and ensure that the list is unmodified.(‹Å’ƒJ$59025a9d-abc1-49ce-b7fe-ba7afa1287fc
+¼
+java:S6204Â"zReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()' and ensure that the list is unmodified.(îŠº÷ÿÿÿÿÿJ$b70c3665-51d3-4160-9249-58862c734b2e
+{
+java:S1155Æ">Use isEmpty() to check whether the collection is empty or not.(ó²˜äJ$1179b809-60ed-47a7-a6d9-ef31063a380f
+{
+java:S1155Æ">Use isEmpty() to check whether the collection is empty or not.(ó²˜äJ$d9c375a1-b4a6-492c-93a4-8b4517e4b41f
+€
+java:S1155Ê">Use isEmpty() to check whether the collection is empty or not.(°ª æÿÿÿÿÿJ$f51baa89-2f02-41fd-9527-dea9ee0d7e4d
+€
+java:S1155Ñ">Use isEmpty() to check whether the collection is empty or not.(¾¿ÔÕøÿÿÿÿJ$cf89c782-3cc1-4bc5-9f66-150fbceade31
+¼
+java:S6204ß"zReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()' and ensure that the list is unmodified.(Äãð³úÿÿÿÿJ$d1529514-2f0c-4448-b326-feeb3d1a66db
+·
+java:S6204à"zReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()' and ensure that the list is unmodified.(§ÞíôJ$8b166e96-874f-4cf2-877e-0fc3d1d15db4
+{
+java:S1155ä">Use isEmpty() to check whether the collection is empty or not.(ó²˜äJ$1dd9892c-f038-4711-b61d-2d7ccde36e87
+{
+java:S1155ä">Use isEmpty() to check whether the collection is empty or not.(ó²˜äJ$16038bc7-a8d1-4db9-8833-30fdb8ea50c7
+€
+java:S1155è">Use isEmpty() to check whether the collection is empty or not.(°ª æÿÿÿÿÿJ$6fd09fa8-4149-492d-af5c-6b1e23b442f7
+€
+java:S1155ï">Use isEmpty() to check whether the collection is empty or not.(¾¿ÔÕøÿÿÿÿJ$6944d646-b344-4972-b94c-0a558e3dcf8b
+~
+java:S3252Š"AUse static access with "javax.swing.SwingConstants" for "CENTER".(¢äžÅJ$1dd48c1f-0548-4bef-9de3-61ed07fb1a5b
+ƒ
+java:S3252Ž"AUse static access with "javax.swing.SwingConstants" for "CENTER".(úŒå¥þÿÿÿÿJ$09d82b59-301c-4f07-ae79-cc83b1ccc22a
+
+java:S3776¤"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(ŸÛÈ¯J$f6699a64-57ec-4402-9123-c4e21578bb58
+¼
+java:S6204Ö"zReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()' and ensure that the list is unmodified.(þãÖªûÿÿÿÿJ$a5df1669-dba9-4330-9c21-d5aec75f1593
+·
+java:S6204×"zReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()' and ensure that the list is unmodified.(ÒÅýîJ$d4b085cf-e2f3-4fbc-99dc-1906357858e5
+{
+java:S1155Û">Use isEmpty() to check whether the collection is empty or not.(ó²˜äJ$2bccb5dc-895b-4ed2-a551-6e3cfda44f87
+{
+java:S1155Û">Use isEmpty() to check whether the collection is empty or not.(ó²˜äJ$19b61e74-5b8a-47e9-ba15-a6d07b321eee
+€
+java:S1155ß">Use isEmpty() to check whether the collection is empty or not.(°ª æÿÿÿÿÿJ$acea6011-c3a0-4f2d-8484-1c2336848ad6
+€
+java:S1155æ">Use isEmpty() to check whether the collection is empty or not.(¾¿ÔÕøÿÿÿÿJ$a0174202-9716-45c3-8bfc-870c330d1156
+m
+java:S1068",Remove this unused "currUser" private field.(Ê“åÇùÿÿÿÿJ$bb7d3150-0310-47e3-891f-fbfd8ba45222
+s
+java:S1068"2Remove this unused "userManagement" private field.(å˜´®øÿÿÿÿJ$89c77eec-27cc-4425-8b92-4ecb89dff6fa
+n
+java:S1068"2Remove this unused "spotManagement" private field.(ŒëÃ¨J$f2cf56b2-ff11-41a3-b77b-4d4120db460d

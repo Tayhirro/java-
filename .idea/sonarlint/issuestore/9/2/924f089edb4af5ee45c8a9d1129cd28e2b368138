@@ -1,0 +1,15 @@
+
+7
+java:S1220""Move this file to a named package.8­£εύ1
+Y
+java:S1854
+"<Remove this useless assignment to local variable "loginApp".(Ηΰ”8―£εύ1
+Q
+java:S1874"/Remove this use of "install"; it is deprecated.(Ηςωÿÿÿÿ8―£εύ1
+J
+java:S1481
+"-Remove this unused "loginApp" local variable.(Ηΰ”8±£εύ1
+Z
+java:S1128"8Remove this unused import 'com.formdev.flatlaf.FlatLaf'.(π—Μ›ÿÿÿÿÿ8±£εύ1
+_
+java:S1128"=Remove this unused import 'com.formdev.flatlaf.FlatLightLaf'.(Δªσÿύÿÿÿÿ8±£εύ1

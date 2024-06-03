@@ -1,0 +1,13 @@
+
+0
+java:S1220""Move this file to a named package.
+o
+java:S1450"TRemove the "spots" field and declare it as a local variable in the relevant methods.(¯©Úßÿÿÿÿÿ
+
+java:S6204-"zReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()' and ensure that the list is unmodified.(ª™¨¹
+
+java:S62049"zReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()' and ensure that the list is unmodified.(Âşé
+G
+java:S1068",Remove this unused "currUser" private field.(Ê“åÇùÿÿÿÿ
+M
+java:S1068	"2Remove this unused "userManagement" private field.(å˜´®øÿÿÿÿ

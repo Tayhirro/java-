@@ -1,0 +1,54 @@
+
+g	java:S117ƒ"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¸»¾Ó
+K
+java:S1066ž"/Merge this if statement with the enclosing one.(¡›Ê¦þÿÿÿÿ
+0
+java:S1220""Move this file to a named package.
+o
+java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(™…øñ
+t
+java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(²É¨‡úÿÿÿÿ
+L
+java:S1141¨"5Extract this nested try block into a separate method.(®ÏØÃ
+L
+java:S1141í"5Extract this nested try block into a separate method.(²žìÐ
+t	java:S135Ž"YReduce the total number of break and continue statements in this loop to use at most one.(ÁÔš‰ùÿÿÿÿ
+7
+java:S1643y"Use a StringBuilder instead.(äÆÎÖüÿÿÿÿ
+7
+java:S1643{"Use a StringBuilder instead.(°±Œüÿÿÿÿ
+3
+java:S1643•"Use a StringBuilder instead.(ÌŽ¡
+8
+java:S1643˜"Use a StringBuilder instead.(·Ëùÿÿÿÿ
+8
+java:S1643 "Use a StringBuilder instead.(·Ëùÿÿÿÿ
+\
+java:S1126"AReplace this if-then-else statement by a single return statement.(Ž¹”Êùÿÿÿÿ
+C
+java:S1481&"(Remove this unused "len" local variable.(¤í´‚þÿÿÿÿ
+>	java:S108<")Either remove or fill this block of code.(‹±ÃÆ
+N
+java:S1117t"8Rename "code" which hides the field declared at line 19.(²çÎÒ
+\
+java:S2147Ä"ECombine this catch with the one at line 194, which has the same body.(ï­£Ä
+D
+java:S1481‘"(Remove this unused "len" local variable.(¤í´‚þÿÿÿÿ
+\
+java:S2147ÿ"ECombine this catch with the one at line 253, which has the same body.(ï­£Ä
+D
+java:S1481Ô"(Remove this unused "len" local variable.(¤í´‚þÿÿÿÿ
+n
+java:S3776‡"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(Ÿ­¡×ûÿÿÿÿ
+[
+java:S1854ˆ"?Remove this useless assignment to local variable "filenameOut".(—ŒË¢ÿÿÿÿÿ
+2
+java:S3626¡"Remove this redundant jump.(ÉŠ©ƒ
+<
+java:S2129ˆ" Remove this "String" constructor(—ŒË¢ÿÿÿÿÿ
+<
+java:S2129‰" Remove this "String" constructor(ÀÕÈãþÿÿÿÿ
+7
+java:S2129Š" Remove this "String" constructor(Þ¿­
+I
+java:S1128".Remove this unused import 'java.util.Scanner'.(ÒÜÅ¸úÿÿÿÿ

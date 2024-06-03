@@ -1,0 +1,23 @@
+
+>
+java:S1604I"(Make this anonymous inner class a lambda(ÖãºÂ
+C
+java:S1604d"(Make this anonymous inner class a lambda(¢’–ìúÿÿÿÿ
+j
+java:S1104"TMake username a static final constant or non-public and provide accessors if needed.(ï²¢
+0
+java:S1220""Move this file to a named package.
+g
+java:S1192–"KDefine a constant instead of duplicating this literal "preference" 4 times.(Ñ¦œ¹ûÿÿÿÿ
+e
+java:S1192$"JDefine a constant instead of duplicating this literal "users.txt" 3 times.(ë÷íøÿÿÿÿ
+Q
+java:S1948"6Make "recommendationSystem" transient or serializable.(Åúôáÿÿÿÿÿ
+_
+java:S32522"IUse static access with "javax.swing.WindowConstants" for "EXIT_ON_CLOSE".(àÊˆË
+E	java:S106R"+Replace this use of System.out by a logger.(˜É§Áûÿÿÿÿ
+E	java:S106^"+Replace this use of System.out by a logger.(´×¦ùÿÿÿÿ
+W
+java:S1117g"<Rename "username" which hides the field declared at line 26.(Œš¼âûÿÿÿÿ
+B
+java:S1068"'Remove this unused "ums" private field.(„š¶ıÿÿÿÿ
