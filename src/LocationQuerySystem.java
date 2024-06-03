@@ -44,6 +44,11 @@ public class LocationQuerySystem {
                 return i;
             }
         }
+        for (int i = 0; i < pointNum; i++) {
+            if (KMP.kmpMatch(point[i].name, name) != -1) {
+                return i;
+            }
+        }
         return -1;
     }
 
@@ -164,9 +169,6 @@ public class LocationQuerySystem {
             }
             if (KMP.kmpMatch(point[distwithid[i].id].name, query) != -1 && (category.equals("所有") || point[distwithid[i].id].type.equals(category))) {
                 if ((point[distwithid[i].id].type.equals("道路"))) {
-                    continue;
-                }
-                if (distwithid[i].dist == 0) {
                     continue;
                 }
                 ansLocations[count] = point[distwithid[i].id].name;
