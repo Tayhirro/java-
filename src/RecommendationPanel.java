@@ -61,7 +61,6 @@ public class RecommendationPanel extends JPanel {
         attractionScrollPane = getRightPanel();
 
 
-
         add(leftPanel, BorderLayout.WEST);
         add(schoolScrollPane, BorderLayout.CENTER);
         add(attractionScrollPane, BorderLayout.EAST);
@@ -92,6 +91,10 @@ public class RecommendationPanel extends JPanel {
                 public void mouseExited(MouseEvent e) {
                     restoreOriginalState();
                 }
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    showSpotDetails(spot);
+                }
             });
         }
 
@@ -110,6 +113,36 @@ public class RecommendationPanel extends JPanel {
         ItemPanel.add(Tags);
 
         return ItemPanel;
+    }
+
+    private void showSpotDetails(Spot spot) {
+        JFrame detailsFrame = new JFrame("Spot Details");
+        detailsFrame.setSize(400, 600);
+        detailsFrame.setLayout(new BorderLayout());
+
+        JLabel nameLabel = new JLabel(spot.getName(), JLabel.CENTER);
+        detailsFrame.add(nameLabel, BorderLayout.NORTH);
+
+        JPanel imagesPanel = new JPanel();
+        imagesPanel.setLayout(new BoxLayout(imagesPanel, BoxLayout.Y_AXIS));
+        for (String imagePath : spot.getImages()) {
+            ImageIcon originalIcon = new ImageIcon(imagePath);
+            Image originalImage = originalIcon.getImage();
+            Image scaledImage = originalImage.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+            JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
+            imagesPanel.add(imageLabel);
+        }
+        JScrollPane imagesScrollPane = new JScrollPane(imagesPanel);
+        detailsFrame.add(imagesScrollPane, BorderLayout.CENTER);
+
+        JTextArea descriptionArea = new JTextArea(spot.getDescription());
+        descriptionArea.setLineWrap(true);
+        descriptionArea.setWrapStyleWord(true);
+        descriptionArea.setEditable(false);
+        JScrollPane descriptionScrollPane = new JScrollPane(descriptionArea);
+        detailsFrame.add(descriptionScrollPane, BorderLayout.SOUTH);
+
+        detailsFrame.setVisible(true);
     }
 
     private void displaySpots(List<Spot> spots, String type, Map<Spot, JPanel> schoolItemPanel) {
@@ -137,10 +170,10 @@ public class RecommendationPanel extends JPanel {
     private void performSearch() {
         String query = searchField.getText();
         List<Spot> filteredSpots = recommendationSystem.searchSpots(query);
-        display(filteredSpots);
+        display(filteredSpots,false);
     }
 
-    private void display(List<Spot> filteredSpots) {
+    private void display(List<Spot> filteredSpots,boolean type) {
         List<Spot> schools = filteredSpots.stream().filter(spot -> spot.getType().equals("school")).collect(Collectors.toList());
         List<Spot> attractions = filteredSpots.stream().filter(spot -> spot.getType().equals("attraction")).collect(Collectors.toList());
 
@@ -151,18 +184,27 @@ public class RecommendationPanel extends JPanel {
             return;
         }
         if(!schools.isEmpty() && !attractions.isEmpty()) {
-            displaySpots(schools, "school", schoolItemPanelSt);
-            displaySpots(attractions, "attraction", attractionItemPanel);
-            remove(schoolScrollPane);
-            remove(attractionScrollPane);
-            if (schoolScrollPane.getParent() == null) {
-                add(schoolScrollPane, BorderLayout.CENTER);
+            if(type){
+                displaySpots(schools, "school", schoolItemPanelDy);
+                remove(schoolScrollPane);
+                if (schoolScrollPane.getParent() == null) {
+                    add(schoolScrollPane, BorderLayout.CENTER);
+                }
             }
+            else{
+                displaySpots(schools, "school", schoolItemPanelSt);
+                remove(schoolScrollPane);
+                if (schoolScrollPane.getParent() == null) {
+                    add(schoolScrollPane, BorderLayout.CENTER);
+                }
+            }
+            displaySpots(attractions, "attraction", attractionItemPanel);
+            remove(attractionScrollPane);
             if (attractionScrollPane.getParent() == null) {
                 add(attractionScrollPane, BorderLayout.EAST);
             }
         }
-        else if(schools.isEmpty() && !attractions.isEmpty()){
+        else if(schools.isEmpty()){
             displaySpots(attractions, "attraction", attractionItemPanel);
             remove(schoolScrollPane);
             remove(attractionScrollPane);
@@ -170,12 +212,22 @@ public class RecommendationPanel extends JPanel {
                 add(attractionScrollPane, BorderLayout.CENTER);
             }
         }
-        else if(!schools.isEmpty() && attractions.isEmpty()){
-            displaySpots(schools, "school", schoolItemPanelSt);
-            remove(attractionScrollPane);
-            remove(schoolScrollPane);
-            if (schoolScrollPane.getParent() == null) {
-                add(schoolScrollPane, BorderLayout.CENTER);
+        else {
+            if(type){
+                displaySpots(schools, "school", schoolItemPanelDy);
+                remove(attractionScrollPane);
+                remove(schoolScrollPane);
+                if (schoolScrollPane.getParent() == null) {
+                    add(schoolScrollPane, BorderLayout.CENTER);
+                }
+            }
+            else{
+                displaySpots(schools, "school", schoolItemPanelSt);
+                remove(schoolScrollPane);
+                remove(attractionScrollPane);
+                if (schoolScrollPane.getParent() == null) {
+                    add(schoolScrollPane, BorderLayout.CENTER);
+                }
             }
         }
 
@@ -188,7 +240,7 @@ public class RecommendationPanel extends JPanel {
         List<Spot> spots = recommendationSystem.getAllSpots();
         List<Spot> sortedSpots = recommendationSystem.sortSpots(spots, sortCriteria);
 
-        display(sortedSpots);
+        display(sortedSpots,false);
     }
 
 
@@ -216,7 +268,7 @@ public class RecommendationPanel extends JPanel {
         // 恢复右部景点展示逻辑
         schoolScrollPane.setVisible(true);
         attractionScrollPane.setVisible(true);
-        display(recommendationSystem.getAllSpots());
+        display(recommendationSystem.getAllSpots(),true);
         setLayout(new GridLayout(1, 3));
     }
 
@@ -280,7 +332,7 @@ public class RecommendationPanel extends JPanel {
 
             List<Spot> recommendedSpots = recommendationSystem.filterAndSortSpots(selectedPreferences);
 
-            display(recommendedSpots);
+            display(recommendedSpots,false);
         });
         preferencePanel.add(recommendButton);
 
