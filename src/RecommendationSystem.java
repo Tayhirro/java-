@@ -47,9 +47,9 @@ public class RecommendationSystem {
 
     public List<Spot> sortSpots(List<Spot> spots, String criteria) {
         Comparator<Spot> comparator = null;
-        if ("Sort by Popularity".equals(criteria)) {
+        if ("热度".equals(criteria)) {
             comparator = Comparator.comparingLong(Spot::getPopularity).reversed();
-        } else if ("Sort by Rating".equals(criteria)) {
+        } else if ("评分".equals(criteria)) {
             comparator = Comparator.comparingDouble(Spot::getScore).reversed();
         }
 

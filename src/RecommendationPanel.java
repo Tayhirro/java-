@@ -51,14 +51,16 @@ public class RecommendationPanel extends JPanel {
             attractionItemPanel.put(spot, panel);
         }
 
-        setLayout(new BorderLayout());
-        add(new JLabel("游学推荐页面"), BorderLayout.CENTER);
+//        setLayout(new BorderLayout());
+        setLayout(new GridLayout(1, 3));
 
         leftPanel = getLeftPanel();
 
         schoolScrollPane = getMiddlePanel();
 
         attractionScrollPane = getRightPanel();
+
+
 
         add(leftPanel, BorderLayout.WEST);
         add(schoolScrollPane, BorderLayout.CENTER);
@@ -140,7 +142,7 @@ public class RecommendationPanel extends JPanel {
 
     private void display(List<Spot> filteredSpots) {
         List<Spot> schools = filteredSpots.stream().filter(spot -> spot.getType().equals("school")).collect(Collectors.toList());
-        List<Spot> attractions = filteredSpots.stream().filter(spot -> spot.getType().equals("attraction")).toList();
+        List<Spot> attractions = filteredSpots.stream().filter(spot -> spot.getType().equals("attraction")).collect(Collectors.toList());
 
         schoolPanel.removeAll();
         attractionPanel.removeAll();
@@ -148,20 +150,37 @@ public class RecommendationPanel extends JPanel {
             JOptionPane.showMessageDialog(this, "No results found", "Search Results", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
-        if(!schools.isEmpty()) {
+        if(!schools.isEmpty() && !attractions.isEmpty()) {
             displaySpots(schools, "school", schoolItemPanelSt);
-            schoolScrollPane.setVisible(true);
+            displaySpots(attractions, "attraction", attractionItemPanel);
+            remove(schoolScrollPane);
+            remove(attractionScrollPane);
+            if (schoolScrollPane.getParent() == null) {
+                add(schoolScrollPane, BorderLayout.CENTER);
+            }
+            if (attractionScrollPane.getParent() == null) {
+                add(attractionScrollPane, BorderLayout.EAST);
+            }
         }
-        else{
-            schoolScrollPane.setVisible(false);
+        else if(schools.isEmpty() && !attractions.isEmpty()){
+            displaySpots(attractions, "attraction", attractionItemPanel);
+            remove(schoolScrollPane);
+            remove(attractionScrollPane);
+            if (attractionScrollPane.getParent() == null) {
+                add(attractionScrollPane, BorderLayout.CENTER);
+            }
         }
-        if(!attractions.isEmpty()) {
+        else if(!schools.isEmpty() && attractions.isEmpty()){
             displaySpots(schools, "school", schoolItemPanelSt);
-            attractionScrollPane.setVisible(true);
+            remove(attractionScrollPane);
+            remove(schoolScrollPane);
+            if (schoolScrollPane.getParent() == null) {
+                add(schoolScrollPane, BorderLayout.CENTER);
+            }
         }
-        else{
-            attractionScrollPane.setVisible(false);
-        }
+
+        revalidate();
+        repaint();
     }
 
     private void sortResults() {
@@ -195,8 +214,10 @@ public class RecommendationPanel extends JPanel {
     }
     private void restoreOriginalState() {
         // 恢复右部景点展示逻辑
-        List<Spot> attractions = recommendationSystem.getInitialAttractions();
-        displaySpots(attractions, "attraction", schoolItemPanelDy);
+        schoolScrollPane.setVisible(true);
+        attractionScrollPane.setVisible(true);
+        display(recommendationSystem.getAllSpots());
+        setLayout(new GridLayout(1, 3));
     }
 
 
@@ -206,16 +227,25 @@ public class RecommendationPanel extends JPanel {
         leftPanel.setLayout(new BorderLayout());
 
         JPanel searchPanel = new JPanel();
-        searchPanel.setLayout(new FlowLayout());
+        searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.Y_AXIS));
+
+        JPanel fieldPanel = new JPanel();
+        fieldPanel.setLayout(new FlowLayout());
         searchField = new JTextField(15);
-        JButton searchButton = new JButton("Search");
+        fieldPanel.add(searchField);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout());
+        JButton searchButton = new JButton("搜索");
         searchButton.addActionListener(e -> performSearch());
-        searchPanel.add(searchField);
-        searchPanel.add(searchButton);
+        buttonPanel.add(searchButton);
+
+        searchPanel.add(fieldPanel);
+        searchPanel.add(buttonPanel);
 
         JPanel sortPanel = new JPanel();
         sortPanel.setLayout(new FlowLayout());
-        sortComboBox = new JComboBox<>(new String[]{"Sort by Popularity", "Sort by Rating"});
+        sortComboBox = new JComboBox<>(new String[]{"选择排序方式","热度", "评分"});
         sortComboBox.addActionListener(e -> sortResults());
         sortPanel.add(sortComboBox);
 
@@ -253,6 +283,10 @@ public class RecommendationPanel extends JPanel {
             display(recommendedSpots);
         });
         preferencePanel.add(recommendButton);
+
+        JButton backButton = new JButton("返回初始状态");
+        backButton.addActionListener(e -> restoreOriginalState());
+        preferencePanel.add(backButton);
 
         leftPanel.add(searchPanel, BorderLayout.NORTH);
         leftPanel.add(sortPanel, BorderLayout.CENTER);
