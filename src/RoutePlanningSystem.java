@@ -113,6 +113,11 @@ public class RoutePlanningSystem {
                 return i;
             }
         }
+        for (int i = 0; i < pointNum; i++) {
+            if (point[i].name.contains(name)) {
+                return i;
+            }
+        }
         return -1;
     }
 
