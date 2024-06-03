@@ -80,15 +80,25 @@ public class RoutePlanningSystem {
                 sidewalk[sidewalkEdgeNum] = new MyEdge(from, to, sidewalkHeads[from], length, crowding);
                 sidewalkHeads[from] = sidewalkEdgeNum;
                 sidewalkEdgeNum++;
+                sidewalk[sidewalkEdgeNum] = new MyEdge(to, from, sidewalkHeads[to], length, crowding);
+                sidewalkHeads[to] = sidewalkEdgeNum;
+                sidewalkEdgeNum++;
+
                 break;
             case "cycleway":
                 cycleway[cyclewayEdgeNum] = new MyEdge(from, to, cyclewayHeads[from], length, crowding);
                 cyclewayHeads[from] = cyclewayEdgeNum;
                 cyclewayEdgeNum++;
+                cycleway[cyclewayEdgeNum] = new MyEdge(to, from, cyclewayHeads[to], length, crowding);
+                cyclewayHeads[to] = cyclewayEdgeNum;
+                cyclewayEdgeNum++;
                 break;
             case "road":
                 road[roadEdgeNum] = new MyEdge(from, to, roadHeads[from], length, crowding);
                 roadHeads[from] = roadEdgeNum;
+                roadEdgeNum++;
+                road[roadEdgeNum] = new MyEdge(to, from, roadHeads[to], length, crowding);
+                roadHeads[to] = roadEdgeNum;
                 roadEdgeNum++;
                 break;
             default:
@@ -306,17 +316,18 @@ public class RoutePlanningSystem {
 
         int[] shortPath = new int[cycleNum + 1];
         double dist = tsp(cycleNum, shortestDist, shortPath);
+
         //将编号转换为点的编号
         for (int i = 0; i <= cycleNum; i++) {
             shortPath[i] = cyclepointId[shortPath[i]];
         }
         System.out.println("shortpath:");
         for (int i = 0; i <= cycleNum; i++) {
-            System.out.print(shortPath[i] + " ");
+            System.out.print(point[shortPath[i]].name + " ");
         }
         System.out.println();
 
-        //path填充
+        //path填充,有bug，待修复
         int[] segPath = new int[pointNum + 5];
         double[] distTemp = new double[pointNum + 5];
         path[0] = 0;

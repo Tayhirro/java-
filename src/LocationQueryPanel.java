@@ -32,9 +32,9 @@ public class LocationQueryPanel extends JPanel {
         this.userManagement = userManagement;
         this.spotManagement = spotManagement;
 
-        locations = new String[locationQuerySystem.MAX_POINT];
-        type = new String[locationQuerySystem.MAX_POINT];
-        distances = new double[locationQuerySystem.MAX_POINT];
+        locations = new String[1000];
+        type = new String[1000];
+        distances = new double[1000];
         // (1) 展示景区或者学校内部设施数量
         num = locationQuerySystem.initData(locations, type, distances);
         System.err.println("num: " + num);
@@ -63,7 +63,9 @@ public class LocationQueryPanel extends JPanel {
         // (3) 类别过滤
         JPanel filterPanel = new JPanel(new BorderLayout());
         filterPanel.setBorder(BorderFactory.createTitledBorder("类别"));
-        categoryComboBox = new JComboBox<>(new String[]{"所有", "教学楼", "宿舍楼", "生活设施", "体育设施", "行政办公", "家属区", "其他"});
+        categoryComboBox = new JComboBox<>(new String[]{"所有", "生活设施", "教学楼", "公寓楼", "食堂", "体育场所"});
+        //弹出一个提示message
+        System.err.println("new2");
         filterPanel.add(categoryComboBox, BorderLayout.CENTER);
 
         // (4) 名称查询
@@ -173,12 +175,18 @@ public class LocationQueryPanel extends JPanel {
         }
         int positionId = locationQuerySystem.getPointId(userLocation); // 获取位置ID
         if (positionId == -1) {
-            JOptionPane.showMessageDialog(null, "当前位置不存在", "错误", JOptionPane.ERROR_MESSAGE); // 如果位置不存在，则弹出提示框
-            return;
-        }
-        // 所在地
-        num = locationQuerySystem.LocationQuery(positionId, query, range, category, locations, type, distances); // 查询附近场所
+            if (!userLocation.equals("") && userLocation != null) {
+                JOptionPane.showMessageDialog(null, "当前位置:" + userLocation + "不存在", "错误", JOptionPane.ERROR_MESSAGE); // 如果位置不存在，则弹出提示框
+                return;
+            } else {
+                num = locationQuerySystem.LocationQuery(query, category, locations, type, distances); // 查询附近场所
 
+            }
+
+        } // 所在地
+        else {
+            num = locationQuerySystem.LocationQuery(positionId, query, range, category, locations, type, distances); // 查询附近场所
+        }
         // 更新显示
         displayPanel.update(locations, type, distances, num);
 

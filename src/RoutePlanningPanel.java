@@ -186,7 +186,10 @@ class FormPanel extends JPanel {
         add(firstPanel, BorderLayout.NORTH);
 
         destinationPanels = new ArrayList<>();
-        destinationContainerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        destinationContainerPanel = new JPanel();
+        // 设置目的地面板的布局为FlowLayout，每个组件一行
+        destinationContainerPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 5));
+        destinationContainerPanel.setPreferredSize(new Dimension(0, 200));
         addDestinationPanel();
         add(destinationContainerPanel, BorderLayout.CENTER);
 
@@ -200,7 +203,6 @@ class FormPanel extends JPanel {
         buttonPanel.add(submitButton);
 
         add(buttonPanel, BorderLayout.SOUTH);
-
     }
 
     void findSpot() {
@@ -214,7 +216,6 @@ class FormPanel extends JPanel {
     }
 
     void addDestinationPanel() {
-
         JPanel panel = createDestinationPanel();
         destinationContainerPanel.add(panel);
         destinationPanels.add(panel);
@@ -384,6 +385,7 @@ class GraphPanel extends JPanel {
                 int x2 = mapToX(pointx[i + 1]);
                 int y2 = mapToY(pointy[i + 1]);
                 g2d.drawLine(x1, y1, x2, y2);
+
             }
         }
     }
@@ -391,11 +393,14 @@ class GraphPanel extends JPanel {
     // Example mapping method - replace with your actual mapping logic
     private int mapToX(int point) {
         // Example mapping - replace with actual logic
-        return point; // Simple example: assuming pointx already in coordinate space
+        //708 1000
+        int ret = point * 708 / 1000;
+        return ret; // Simple example: assuming pointx already in coordinate space
     }
 
     private int mapToY(int point) {
         // Example mapping - replace with actual logic
-        return point; // Simple example: assuming pointy already in coordinate space
+        int ret = point * 525 / 1000;
+        return ret; // Simple example: assuming pointy already in coordinate space
     }
 }
