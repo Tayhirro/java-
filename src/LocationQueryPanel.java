@@ -113,38 +113,12 @@ public class LocationQueryPanel extends JPanel {
 
         displayPanel = new TablePanel(locations, type, distances, num);
 
-        // 使用 GridBagLayout 布局
-        setLayout(new GridBagLayout());
+        // 使用 BorderLayout 设置内容面板
+        setLayout(new BorderLayout());
 
-        // 标题面板
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 5; // 标题面板占据5列宽
-        gbc.gridheight = 1; // 标题面板占据1行高
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
-        gbc.weighty = 0.1;
-        add(titlePanel, gbc);
-
-        // 查询面板, 侧边栏面板
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 1; // submitPanel 占据 1 列宽
-        gbc.gridheight = 9; // submitPanel 占据 9 行高
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 0.0;
-        gbc.weighty = 1.0;
-        add(sidebarPanel, gbc);
-
-        // 展示面板
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.gridwidth = 4; // graphPanel 占据 4 列宽
-        gbc.gridheight = 9; // graphPanel 占据 9 行高
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(displayPanel, gbc);
+        add(titlePanel, BorderLayout.NORTH); // 添加标题面板到内容面板
+        add(sidebarPanel, BorderLayout.WEST); // 添加侧边栏到内容面板
+        add(displayPanel, BorderLayout.CENTER); // 添加显示面板到内容面板
 
         // 添加事件监听器（示例，实际功能需要后端支持）
         searchButton.addActionListener(new ActionListener() {

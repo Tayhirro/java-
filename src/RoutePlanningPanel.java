@@ -29,44 +29,17 @@ class RoutePlanningPanel extends JPanel {
         graphPanel = new GraphPanel("source\\map.jpg");
         graphPanel.setPreferredSize(new Dimension(871, 1253));
         JScrollPane scrollPane = new JScrollPane(graphPanel);
+        Panel panel = new Panel();
+        panel.setLayout(new BorderLayout());
+        panel.add(scrollPane, BorderLayout.CENTER);
         // 创建提交面板
         submitPanel = new FormPanel(graphPanel, spotManagement);// 创建表单面板,并传入图形面板,用于数据交互
 
         // 设置整个面板的布局为GridBagLayout
-        setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-
-        // 将三个面板添加到整个面板中
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 5; // 标题面板占据5列宽
-        gbc.gridheight = 1; // 标题面板占据1行高
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
-        gbc.weighty = 0.1;
-        add(titlePanel, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 1; // submitPanel 占据 1 列宽
-        gbc.gridheight = 9; // submitPanel 占据 9 行高
-
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
-
-        // 设置 submitPanel 的宽度固定
-        submitPanel.setMaximumSize(new Dimension(100, 0));
-        add(submitPanel, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.gridwidth = 4; // graphPanel 占据 1 列宽
-        gbc.gridheight = 9; // graphPanel 占据 1 行高
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(scrollPane, gbc);
+        setLayout(new BorderLayout());
+        add(titlePanel, BorderLayout.NORTH);
+        add(panel, BorderLayout.CENTER);
+        add(submitPanel, BorderLayout.WEST);
 
     }
 
@@ -75,13 +48,14 @@ class RoutePlanningPanel extends JPanel {
 class TitlePanel extends JPanel {
 
     public TitlePanel(String title) {
-        setPreferredSize(new Dimension(0, 20)); // Set title panel height
+        setPreferredSize(new Dimension(0, 50)); // Set title panel height
         setLayout(new GridBagLayout());
 
         // 添加标题标签
         JLabel titleLabel = new JLabel(title);
+        // 设置标题标签的字体、大小和粗细，颜色为白色
         titleLabel.setFont(new Font("微软雅黑", Font.BOLD, 24));
-
+        titleLabel.setForeground(Color.WHITE);
         // 设置标题标签在标题面板中的位置
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -92,7 +66,7 @@ class TitlePanel extends JPanel {
         add(titleLabel, gbc);
 
         // 设置标题面板的背景色灰色和边框
-        setBackground(Color.LIGHT_GRAY);
+        setBackground(Color.GRAY);
         setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
     }
 }
@@ -245,6 +219,7 @@ class FormPanel extends JPanel {
         JPanel panel = createDestinationPanel();
         destinationContainerPanel.add(panel);
         destinationPanels.add(panel);
+        destinationContainerPanel.setSize(new Dimension(150, destinationPanels.size() * 30));
         destinationContainerPanel.revalidate();
         destinationContainerPanel.repaint();
         repaint();
