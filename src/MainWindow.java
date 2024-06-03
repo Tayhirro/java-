@@ -77,7 +77,7 @@ public class MainWindow {
 
     // 创建游学推荐页面，在别的类中实现
     private JPanel createRecommendationPanel() {
-        RecommendationPanel recommendationPanel = new RecommendationPanel(currUser, userManagement, spotManagement);
+        RoutePlanningPanel recommendationPanel = new RoutePlanningPanel(currUser, userManagement, spotManagement);
         return recommendationPanel;
     }
 

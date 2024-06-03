@@ -27,6 +27,8 @@ class RoutePlanningPanel extends JPanel {
         titlePanel = new TitlePanel("路线规划");
         // 创建图形面板
         graphPanel = new GraphPanel("source\\map.jpg");
+        graphPanel.setPreferredSize(new Dimension(871, 1253));
+        JScrollPane scrollPane = new JScrollPane(graphPanel);
         // 创建提交面板
         submitPanel = new FormPanel(graphPanel, spotManagement);// 创建表单面板,并传入图形面板,用于数据交互
 
@@ -51,8 +53,10 @@ class RoutePlanningPanel extends JPanel {
 
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.0;
-        gbc.weighty = 1.0;
+        gbc.weighty = 0.0;
 
+        // 设置 submitPanel 的宽度固定
+        submitPanel.setMaximumSize(new Dimension(100, 0));
         add(submitPanel, gbc);
 
         gbc.gridx = 1;
@@ -62,7 +66,7 @@ class RoutePlanningPanel extends JPanel {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-        add(graphPanel, gbc);
+        add(scrollPane, gbc);
 
     }
 
@@ -99,7 +103,7 @@ class FormPanel extends JPanel {
     JTextField spotField;
     List<JPanel> destinationPanels;
     JPanel destinationContainerPanel;
-    JButton addButton, submitButton;
+    JButton addButton, submitButton, zoomInButton, zoomOutButton;
     RoutePlanningSystem routePlanningSystem;// 路线规划系统
     SpotManagement spotManagement;// 景点管理对象
     GraphPanel graphPanel;// 图形面板
@@ -193,14 +197,36 @@ class FormPanel extends JPanel {
         addDestinationPanel();
         add(destinationContainerPanel, BorderLayout.CENTER);
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 5, 5));
+
+        JPanel buttonPanel1 = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        zoomInButton = new JButton("放大");
+        zoomInButton.addActionListener(e -> {
+            graphPanel.scale *= 1.1;
+            graphPanel.revalidate();
+            graphPanel.repaint();
+        });
+        buttonPanel1.add(zoomInButton);
+
+        zoomOutButton = new JButton("缩小");
+        zoomOutButton.addActionListener(e -> {
+            graphPanel.scale /= 1.1;
+            graphPanel.revalidate();
+            graphPanel.repaint();
+        });
+        buttonPanel1.add(zoomOutButton);
+
+        JPanel buttonPanel2 = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
         addButton = new JButton("+");
         addButton.addActionListener(e -> addDestinationPanel());
-        buttonPanel.add(addButton);
+        buttonPanel2.add(addButton);
 
         submitButton = new JButton("确定");
         submitButton.addActionListener(e -> handleSubmit());
-        buttonPanel.add(submitButton);
+        buttonPanel2.add(submitButton);
+
+        buttonPanel.add(buttonPanel1);
+        buttonPanel.add(buttonPanel2);
 
         add(buttonPanel, BorderLayout.SOUTH);
     }
@@ -229,7 +255,7 @@ class FormPanel extends JPanel {
             destinationContainerPanel.remove(panel);
             destinationPanels.remove(panel);
             destinationContainerPanel.revalidate();
-            destinationContainerPanel.repaint();//
+            destinationContainerPanel.repaint();
             repaint();
         }
     }
@@ -344,6 +370,7 @@ class GraphPanel extends JPanel {
     private BufferedImage graphImage;
     private int[] pointx = new int[0];  // Initialize to prevent null pointer issues
     private int[] pointy = new int[0];  // Initialize to prevent null pointer issues
+    public double scale = 1.0;
 
     // Constructor that loads the image from the file path
     public GraphPanel(String graphFile) {
@@ -362,6 +389,7 @@ class GraphPanel extends JPanel {
         }
         this.pointx = pointx;
         this.pointy = pointy;
+        revalidate();
         repaint();
     }
 
@@ -371,7 +399,8 @@ class GraphPanel extends JPanel {
         Graphics2D g2d = (Graphics2D) g; // Convert to Graphics2D
         if (graphImage != null) {
             // Draw the image
-            g2d.drawImage(graphImage, 0, 0, this.getWidth(), this.getHeight(), null);
+            g2d.scale(scale, scale);
+            g2d.drawImage(graphImage, 0, 0, null);
         }
 
         // Draw the path if it exists
@@ -380,27 +409,17 @@ class GraphPanel extends JPanel {
             g2d.setStroke(new BasicStroke(3)); // Set line width to 3
             for (int i = 0; i < pointx.length - 1; i++) {
                 // Map your path points to coordinates
-                int x1 = mapToX(pointx[i]);
-                int y1 = mapToY(pointy[i]);
-                int x2 = mapToX(pointx[i + 1]);
-                int y2 = mapToY(pointy[i + 1]);
-                g2d.drawLine(x1, y1, x2, y2);
+
+                g2d.drawLine(pointx[i], pointy[i], pointx[i + 1], pointy[i + 1]);
 
             }
         }
     }
 
-    // Example mapping method - replace with your actual mapping logic
-    private int mapToX(int point) {
-        // Example mapping - replace with actual logic
-        //708 1000
-        int ret = point * 708 / 1000;
-        return ret; // Simple example: assuming pointx already in coordinate space
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension((int) (graphImage.getWidth() * scale), (int) (graphImage.getHeight() * scale));
     }
 
-    private int mapToY(int point) {
-        // Example mapping - replace with actual logic
-        int ret = point * 540 / 1000;
-        return ret; // Simple example: assuming pointy already in coordinate space
-    }
+    // Example mapping method - replace with your actual mapping logic
 }
