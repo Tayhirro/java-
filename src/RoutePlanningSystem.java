@@ -246,6 +246,13 @@ public class RoutePlanningSystem {
                 for (int j = path[0] - 1; j >= 0; j--) {
                     path[path[0] - j] = temppath[j];
                 }
+                System.out.println("from " + point[startId].name + " to " + point[endId].name + " :");
+                System.out.println("dijlen" + dist[endId] + "  path:" + path[0]);
+                for (int j = 1; j <= path[0]; j++) {
+                    System.out.print(point[path[j]].name + " ");
+                }
+                System.out.println();
+
                 return dist[endId];
             }
 
@@ -266,40 +273,45 @@ public class RoutePlanningSystem {
 
     //旅行商问题,返回最短路径长度,路径存储在path数组中,预处理函数
     double tsp(int startId, int[] endId, String edgeType, boolean isTime, int[] path) {
-        //传入数据预处理
+        //传入数据初始化
         MyEdge[] edge;
         int[] heads;
         int speed;
+        int edgeNum;
         switch (edgeType) {
             case "sidewalk":
                 edge = sidewalk;
                 heads = sidewalkHeads;
+                edgeNum = sidewalkEdgeNum;
                 speed = 1;
                 break;
             case "cycleway":
                 edge = cycleway;
                 heads = cyclewayHeads;
+                edgeNum = cyclewayEdgeNum;
                 speed = 5;
                 break;
             case "road":
                 edge = road;
                 heads = roadHeads;
+                edgeNum = roadEdgeNum;
                 speed = 10;
                 break;
             default:
-                System.out.println("Error: tsp :unknown type");
+                System.out.println("Error: dijkstraLength :unknown type");
                 return -1;
         }
-        double[] weight = new double[MAX_POINT];
+        double[] weight = new double[edgeNum];
         if (isTime) {
-            for (int i = 0; i < pointNum; i++) {
+            for (int i = 0; i < edgeNum; i++) {
                 weight[i] = edge[i].length / edge[i].crowding / speed;
             }
         } else {
-            for (int i = 0; i < pointNum; i++) {
+            for (int i = 0; i < edgeNum; i++) {
                 weight[i] = edge[i].length;
             }
         }
+
         int cycleNum = endId.length + 1;
         int[] cyclepointId = new int[cycleNum];
         double[][] shortestDist = new double[cycleNum][cycleNum];
@@ -344,13 +356,15 @@ public class RoutePlanningSystem {
         path[++path[0]] = shortPath[0];
         for (int i = 0; i < cycleNum; i++) {
             double seglen = dijkstra(shortPath[i], shortPath[i + 1], edge, heads, weight, segPath, distTemp);
-            System.out.println("seglen:" + seglen);
+
             for (int j = 2; j <= segPath[0]; j++) {
                 path[++path[0]] = segPath[j];
             }
-        }
 
-        System.err.println("path:" + path[0]);
+            segPath[0] = 0;
+        }
+        System.out.println();
+        System.err.println("totle path:" + path[0]);
         for (int i = 1; i <= path[0]; i++) {
             System.err.print(point[path[i]].name + " ");
         }
