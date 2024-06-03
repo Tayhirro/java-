@@ -313,6 +313,11 @@ public class RoutePlanningSystem {
                 shortestDist[cycleI][cycleJ] = dist[cyclepointId[cycleJ]];
             }
         }//√
+        System.out.println("shortestDist:");
+        for (int i = 0; i < cycleNum; i++) {
+            System.out.print(point[cyclepointId[i]].name + " ");
+        }
+        System.out.println();
 
         int[] shortPath = new int[cycleNum + 1];
         double dist = tsp(cycleNum, shortestDist, shortPath);
@@ -333,8 +338,8 @@ public class RoutePlanningSystem {
         path[0] = 0;
         path[++path[0]] = shortPath[0];
         for (int i = 0; i < cycleNum; i++) {
-            dijkstra(shortPath[i], shortPath[i + 1], edge, heads, weight, segPath, distTemp);
-
+            double seglen = dijkstra(shortPath[i], shortPath[i + 1], edge, heads, weight, segPath, distTemp);
+            System.out.println("seglen:" + seglen);
             for (int j = 2; j <= segPath[0]; j++) {
                 path[++path[0]] = segPath[j];
             }
@@ -351,6 +356,13 @@ public class RoutePlanningSystem {
     //动态规划求解旅行商问题,有bug，待修复
     static double tsp(int N, double[][] dist, int[] path) {
         System.out.println("环路节点数:" + N);
+        System.out.println("距离矩阵:");
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                System.out.print(dist[i][j] + " ");
+            }
+            System.out.println();
+        }
         final int M = 1 << (N - 1);
         final double INF = 1e7;
         double[][] dp = new double[N][M];

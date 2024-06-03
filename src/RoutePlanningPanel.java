@@ -332,7 +332,7 @@ class FormPanel extends JPanel {
         for (int i = 0; i < path[0]; i++) {
             pointx[i] = routePlanningSystem.point[path[i + 1]].x;
             pointy[i] = routePlanningSystem.point[path[i + 1]].y;
-            System.out.println("x:" + pointx[i] + " y:" + pointy[i] + " id:" + path[i + 1]);
+
         }
 
         graphPanel.drawPath(pointx, pointy);
@@ -400,7 +400,7 @@ class GraphPanel extends JPanel {
 
     private int mapToY(int point) {
         // Example mapping - replace with actual logic
-        int ret = point * 525 / 1000;
+        int ret = point * 540 / 1000;
         return ret; // Simple example: assuming pointy already in coordinate space
     }
 }

@@ -6,18 +6,32 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class User implements Serializable {
 
-    private final String name;
-    private final String account;
-    private final char[] password;
-    private final long id;
+    private String name;
+    private String account;
+    private char[] password;
+    private long id;
+    private int dairynum;// 日记数量
     private boolean isWelcome = true;// 是否显示欢迎页面
     //按需添加更多属性和方法
+
+    public User() {
+        // 无参数构造函数
+    }
 
     public User(String name, String account, char[] password, long id) {
         this.name = name;
         this.account = account;
         this.password = password;
         this.id = id;
+        dairynum = 0;
+    }
+
+    public User(String name, String account, char[] password, long id, int dairynum) {
+        this.name = name;
+        this.account = account;
+        this.password = password;
+        this.id = id;
+        this.dairynum = dairynum;
     }
 
     public String getName() {
@@ -26,6 +40,14 @@ public class User implements Serializable {
 
     public String getAccount() {
         return account;
+    }
+
+    public int getDairynum() {
+        return dairynum;
+    }
+
+    public void setDairynum(int dairynum) {
+        this.dairynum = dairynum;
     }
 
     public char[] getPassword() {
@@ -45,7 +67,7 @@ class UserManagement {
 
     //按需添加更多属性和方法  
     public UserManagement() {// 构造方法
-        dataFile = "data\\userData.ser";
+        dataFile = "Data\\userData.ser";
         userDatabase = new HashMap<>();
         idCounter = new AtomicLong(1);
         loadUserData();
@@ -86,5 +108,14 @@ class UserManagement {
             return user;
         }
         return null;
+    }
+
+    public int getDiarynum(User user) {
+        return user.getDairynum();
+    }
+
+    public void setDiarynum(User user, int dairynum) {
+        user.setDairynum(dairynum);
+        saveUserData();
     }
 }
