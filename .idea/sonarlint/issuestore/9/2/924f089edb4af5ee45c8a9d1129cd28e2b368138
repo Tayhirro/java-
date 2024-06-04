@@ -1,7 +1,9 @@
 
-
-java:S1854"<Remove this useless assignment to local variable "loginApp".(š è8‚Ş¯•ş1J$c16fb64e-ddce-4ad5-9211-473b537c213d
-r
-java:S1874"/Remove this use of "install"; it is deprecated.(¤€²å8ƒŞ¯•ş1J$fda42bf1-adff-4951-8834-d7196ee18e6d
-p
-java:S1481"-Remove this unused "loginApp" local variable.(š è8‡Ş¯•ş1J$dfe3d6df-28ba-45d7-b2f8-61c9d08eeaf9
+Y
+java:S1854"<Remove this useless assignment to local variable "loginApp".(š è8š ç—ş1
+L
+java:S1874"/Remove this use of "install"; it is deprecated.(¤€²å8š ç—ş1
+J
+java:S1481"-Remove this unused "loginApp" local variable.(š è8¦ ç—ş1
+L
+java:S1128"0Remove this unused import 'com.formdev.flatlaf'.(éñw8¦ ç—ş1

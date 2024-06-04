@@ -1,27 +1,27 @@
 
-k
-java:S1604"(Make this anonymous inner class a lambda(•ªŒ•8Œ •ş1J$3fa96c45-340f-4701-8c7d-d64ce52f0f6c
-p
-java:S1604'"(Make this anonymous inner class a lambda(¶„«şıÿÿÿÿ8Œ •ş1J$c93f931f-720f-4974-a49e-389c5c8eb5dc
-p
-java:S16043"(Make this anonymous inner class a lambda(¾™£ùşÿÿÿÿ8Œ •ş1J$5032b65a-bb3a-46d3-aa4a-5e9eae369a7f
-±
-java:S1488P"iImmediately return this expression instead of assigning it to the temporary variable "composeDiaryPanel".(õ÷­Çşÿÿÿÿ8Œ •ş1J$548b4633-e2d4-4217-98e7-b7762246e730
-ª
-java:S1488T"bImmediately return this expression instead of assigning it to the temporary variable "diaryPanel".(¦ŸÜ‰ıÿÿÿÿ8Œ •ş1J$14ec3b78-5b8b-428d-97cd-6cf5c8dbbc0d
-°
-java:S1488X"hImmediately return this expression instead of assigning it to the temporary variable "diarySearchPanel".(¬ÇØóıÿÿÿÿ8 •ş1J$6da59d45-4d64-4508-9347-ce725c2fc47f
-
-java:S1192""MDefine a constant instead of duplicating this literal " was clicked" 3 times.(½ÚÃÿ8 •ş1J$a78cb416-16c2-4aa7-8b6e-64275527ac0d
+E
+java:S1604"(Make this anonymous inner class a lambda(•ªŒ•8úÔæ—ş1
+J
+java:S1604'"(Make this anonymous inner class a lambda(¶„«şıÿÿÿÿ8ûÔæ—ş1
+J
+java:S16043"(Make this anonymous inner class a lambda(¾™£ùşÿÿÿÿ8ûÔæ—ş1
 ‹
-java:S1192""HDefine a constant instead of duplicating this literal "Button " 3 times.(½ÚÃÿ8 •ş1J$1ed55b07-214c-4b59-9eb3-28c2988df5fd
-x
-java:S1948"0Make "userManagement" transient or serializable.(…â¡èıÿÿÿÿ8¦Œæåı1J$7823dace-4b64-4c9c-85d0-9de83a0c0247
-u
-java:S1948"2Make "studyDiarySystem" transient or serializable.(Û­Öã8¸ø¸•ş1J$332d7458-77a6-49c8-8329-e24ba47e428b
-m	java:S106""+Replace this use of System.out by a logger.(½ÚÃÿ8’ •ş1J$5c9e4d2b-a01e-4bf0-9915-043b76ac329f
-m	java:S106."+Replace this use of System.out by a logger.(‘ïÙÈ8’ •ş1J$dc70677a-9171-4f2f-8119-453e5218e798
-r	java:S106:"+Replace this use of System.out by a logger.(ó˜¼Òıÿÿÿÿ8’ •ş1J$99a534eb-003c-4412-960e-b6e28d1ee95d
-	java:S100O"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(º¿•8— •ş1J$1ac18cdc-3536-4ebd-89e4-14722e1d6ef9
-•	java:S100S"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÿŒğ„úÿÿÿÿ8˜ •ş1J$73749b22-3947-498b-a7f7-e7c0d9a167f8
-	java:S100W"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ù×Æƒ8˜ •ş1J$63982389-2a82-44c3-b4d6-4b3e5c9b9d11
+java:S1488P"iImmediately return this expression instead of assigning it to the temporary variable "composeDiaryPanel".(õ÷­Çşÿÿÿÿ8üÔæ—ş1
+„
+java:S1488T"bImmediately return this expression instead of assigning it to the temporary variable "diaryPanel".(¦ŸÜ‰ıÿÿÿÿ8ÿÔæ—ş1
+Š
+java:S1488X"hImmediately return this expression instead of assigning it to the temporary variable "diarySearchPanel".(¬ÇØóıÿÿÿÿ8Õæ—ş1
+j
+java:S1192""MDefine a constant instead of duplicating this literal " was clicked" 3 times.(½ÚÃÿ8Õæ—ş1
+e
+java:S1192""HDefine a constant instead of duplicating this literal "Button " 3 times.(½ÚÃÿ8Õæ—ş1
+R
+java:S1948"0Make "userManagement" transient or serializable.(…â¡èıÿÿÿÿ8Õæ—ş1
+O
+java:S1948"2Make "studyDiarySystem" transient or serializable.(Û­Öã8Õæ—ş1
+G	java:S106""+Replace this use of System.out by a logger.(½ÚÃÿ8Õæ—ş1
+G	java:S106."+Replace this use of System.out by a logger.(‘ïÙÈ8Õæ—ş1
+L	java:S106:"+Replace this use of System.out by a logger.(ó˜¼Òıÿÿÿÿ8Õæ—ş1
+j	java:S100O"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(º¿•8Õæ—ş1
+o	java:S100S"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÿŒğ„úÿÿÿÿ8Õæ—ş1
+j	java:S100W"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ù×Æƒ8Õæ—ş1

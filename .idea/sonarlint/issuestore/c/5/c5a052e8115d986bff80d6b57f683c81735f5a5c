@@ -1,13 +1,13 @@
 
-²
-java:S1488S"jImmediately return this expression instead of assigning it to the temporary variable "routePlanningPanel".(­áË¶ùÿÿÿÿ8ŒêÙäı1J$38a2edd2-9901-4733-9436-7d1961760de8
-²
-java:S1488Y"jImmediately return this expression instead of assigning it to the temporary variable "locationQueryPanel".(õÜê¥úÿÿÿÿ8ŒêÙäı1J$e9712369-900a-4112-9d41-5aaf5cdd5ee8
-²
-java:S1488_"oImmediately return this expression instead of assigning it to the temporary variable "foodRecommendationPanel".(¡Áƒ8ŒêÙäı1J$f41e5df6-885f-463a-9e99-a79a73e25b48
-ª
-java:S1488e"gImmediately return this expression instead of assigning it to the temporary variable "studyDiaryPanel".(üõı§8¥Û—•ş1J$582dfa4d-7cd8-4fd5-8e9c-ea819d55c6ea
 Œ
-java:S3252"IUse static access with "javax.swing.WindowConstants" for "EXIT_ON_CLOSE".(¢¡´8“êÙäı1J$0de73076-9457-4bd6-91b6-fac9e7c6a019
+java:S1488S"jImmediately return this expression instead of assigning it to the temporary variable "routePlanningPanel".(­áË¶ùÿÿÿÿ8­öæ—ş1
+Œ
+java:S1488Y"jImmediately return this expression instead of assigning it to the temporary variable "locationQueryPanel".(õÜê¥úÿÿÿÿ8­öæ—ş1
+Œ
+java:S1488_"oImmediately return this expression instead of assigning it to the temporary variable "foodRecommendationPanel".(¡Áƒ8­öæ—ş1
 „
-java:S32526"AUse static access with "javax.swing.SwingConstants" for "CENTER".(ìÀİ‹8—êÙäı1J$9357cb30-2f3d-42f3-93fb-8a0516e9b2b7
+java:S1488e"gImmediately return this expression instead of assigning it to the temporary variable "studyDiaryPanel".(üõı§8­öæ—ş1
+f
+java:S3252"IUse static access with "javax.swing.WindowConstants" for "EXIT_ON_CLOSE".(¢¡´8­öæ—ş1
+^
+java:S32526"AUse static access with "javax.swing.SwingConstants" for "CENTER".(ìÀİ‹8½öæ—ş1

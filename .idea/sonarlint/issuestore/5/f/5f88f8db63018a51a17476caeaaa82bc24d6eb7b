@@ -1,23 +1,23 @@
 
-k
-java:S16042"(Make this anonymous inner class a lambda(äüş¸8Á¿Æ–ş1J$e8fb07d3-af78-4d75-ae68-92e83b6bc0a9
-p
-java:S1604:"(Make this anonymous inner class a lambda(íèßŒûÿÿÿÿ8Á¿Æ–ş1J$80888274-c49a-41ec-81a8-94623d59310b
-k
-java:S1604A"(Make this anonymous inner class a lambda(‰õŸÚ8Á¿Æ–ş1J$4d33a23a-864d-451b-a3ea-47513a7d032f
-k
-java:S1604X"(Make this anonymous inner class a lambda(Üç½ö8æË–ş1J$96639c72-e14f-4fbd-985e-b1e60ac67327
-x
-java:S1948"0Make "userManagement" transient or serializable.(å˜´®øÿÿÿÿ8Ï¿Æ–ş1J$0d2ab4d6-0295-4290-848f-c991f1ae1aac
-v
-java:S1948	".Make "composeDiary" transient or serializable.(‘íòÛùÿÿÿÿ8Ï¿Æ–ş1J$aae469c2-e95f-4e27-a4cb-7efd12557432
-s
+E
+java:S16042"(Make this anonymous inner class a lambda(äüş¸8À¶ê—ş1
+J
+java:S1604:"(Make this anonymous inner class a lambda(íèßŒûÿÿÿÿ8À¶ê—ş1
+E
+java:S1604A"(Make this anonymous inner class a lambda(‰õŸÚ8À¶ê—ş1
+E
+java:S1604X"(Make this anonymous inner class a lambda(Üç½ö8À¶ê—ş1
+R
+java:S1948"0Make "userManagement" transient or serializable.(å˜´®øÿÿÿÿ8Ç¶ê—ş1
+P
+java:S1948	".Make "composeDiary" transient or serializable.(‘íòÛùÿÿÿÿ8Ç¶ê—ş1
+M
 java:S1948
-"0Make "spotManagement" transient or serializable.(Ù°·„8Ï¿Æ–ş1J$80b02465-85a7-4dd5-b852-56d6d25f7116
-t
-java:S1068",Remove this unused "currUser" private field.(Ê“åÇùÿÿÿÿ8Ù¿Æ–ş1J$804f1368-006a-49fa-92b2-a8ac27b35dc6
-z
-java:S1068"2Remove this unused "userManagement" private field.(å˜´®øÿÿÿÿ8Ù¿Æ–ş1J$64660beb-a3ff-441b-8d35-8ef03bdf8744
-u
+"0Make "spotManagement" transient or serializable.(Ù°·„8Ç¶ê—ş1
+N
+java:S1068",Remove this unused "currUser" private field.(Ê“åÇùÿÿÿÿ8Î¶ê—ş1
+T
+java:S1068"2Remove this unused "userManagement" private field.(å˜´®øÿÿÿÿ8Î¶ê—ş1
+O
 java:S1068
-"2Remove this unused "spotManagement" private field.(Ù°·„8Ù¿Æ–ş1J$0134dfce-42d7-499c-ab7e-d167b77f8671
+"2Remove this unused "spotManagement" private field.(Ù°·„8Î¶ê—ş1
