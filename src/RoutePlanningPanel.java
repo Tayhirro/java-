@@ -115,19 +115,10 @@ class FormPanel extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // 创建景区选择面版spotPanel
-        JPanel spotPanel = new JPanel(new GridLayout(3, 1, 5, 5));
-        JLabel spotLabel = new JLabel("景区名称:");
-        spotField = new JTextField(13);
-        JButton spotButton = new JButton("确定");
-        spotButton.setPreferredSize(new Dimension(40, 20));
-        JPanel spotButtonPanel = new JPanel(new BorderLayout());
-        spotButtonPanel.setPreferredSize(new Dimension(50, 20));
-        spotButtonPanel.add(spotButton, BorderLayout.CENTER);
-        spotButton.addActionListener(e -> findSpot());
-        spotPanel.add(spotLabel, BorderLayout.WEST);
+        JPanel spotPanel = new JPanel(new BorderLayout());
+        spotPanel.setBorder(BorderFactory.createTitledBorder("所在景区"));
+        spotField = new JTextField();
         spotPanel.add(spotField, BorderLayout.CENTER);
-        spotPanel.add(spotButtonPanel, BorderLayout.EAST);
 
         // 创建单选按钮的面板
         JPanel sortingPanel = new JPanel(new GridLayout(2, 1, 0, 0));
@@ -147,13 +138,10 @@ class FormPanel extends JPanel {
         transportationPanel.add(transportationButtonPanel);
 
         // Create address fields
-        JPanel addressPanel = new JPanel(new GridLayout(3, 1, 5, 0));
-        JLabel startLabel = new JLabel("起始地址:");
-        JLabel endLabel = new JLabel("目的地址:");
-        startField = new JTextField(13);
-        addressPanel.add(startLabel);
-        addressPanel.add(startField);
-        addressPanel.add(endLabel);
+        JPanel addressPanel = new JPanel(new BorderLayout());
+        addressPanel.setBorder(BorderFactory.createTitledBorder("起始地址:"));
+        startField = new JTextField();
+        addressPanel.add(startField, BorderLayout.CENTER);
 
         // Create a panel for the address and buttons
         JPanel firstPanel = new JPanel(new GridLayout(4, 1, 10, 10));
@@ -168,36 +156,44 @@ class FormPanel extends JPanel {
         // 设置目的地面板的布局为FlowLayout，每个组件一行
         destinationContainerPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 5));
         destinationContainerPanel.setPreferredSize(new Dimension(0, 200));
-        addDestinationPanel();
+        initDestinationPanel();
+
         add(destinationContainerPanel, BorderLayout.CENTER);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 5, 5));
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 5, 30));
+        //设置边框
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 30, 10));
 
         JPanel buttonPanel1 = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+        addButton = new JButton("+");
+        addButton.setPreferredSize(new Dimension(60, 30));
+        addButton.addActionListener(e -> addDestinationPanel());
+        buttonPanel1.add(addButton);
+
+        submitButton = new JButton("确定");
+        submitButton.setPreferredSize(new Dimension(60, 30));
+        submitButton.addActionListener(e -> handleSubmit());
+        buttonPanel1.add(submitButton);
+
+        JPanel buttonPanel2 = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
         zoomInButton = new JButton("放大");
+        zoomInButton.setPreferredSize(new Dimension(60, 30));
         zoomInButton.addActionListener(e -> {
             graphPanel.scale *= 1.1;
             graphPanel.revalidate();
             graphPanel.repaint();
         });
-        buttonPanel1.add(zoomInButton);
+        buttonPanel2.add(zoomInButton);
 
         zoomOutButton = new JButton("缩小");
+        zoomOutButton.setPreferredSize(new Dimension(60, 30));
         zoomOutButton.addActionListener(e -> {
             graphPanel.scale /= 1.1;
             graphPanel.revalidate();
             graphPanel.repaint();
         });
-        buttonPanel1.add(zoomOutButton);
-
-        JPanel buttonPanel2 = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        addButton = new JButton("+");
-        addButton.addActionListener(e -> addDestinationPanel());
-        buttonPanel2.add(addButton);
-
-        submitButton = new JButton("确定");
-        submitButton.addActionListener(e -> handleSubmit());
-        buttonPanel2.add(submitButton);
+        buttonPanel2.add(zoomOutButton);
 
         buttonPanel.add(buttonPanel1);
         buttonPanel.add(buttonPanel2);
@@ -205,13 +201,30 @@ class FormPanel extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    void findSpot() {
+    void initDestinationPanel() {
+        JPanel labelpanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 4));
+        JLabel label = new JLabel("目的地址:");
+        labelpanel.add(label);
+        destinationContainerPanel.add(labelpanel);
+        JPanel panel = createDestinationPanel();
+        destinationContainerPanel.add(panel);
+        destinationPanels.add(panel);
+        destinationContainerPanel.setSize(new Dimension(150, destinationPanels.size() * 30));
+        destinationContainerPanel.revalidate();
+        destinationContainerPanel.repaint();
+        repaint();
+
+    }
+
+    boolean findSpot() {
 
         String spotname = spotField.getText();
         if (!spotManagement.findSpot(spotname)) {
             //弹出提示框，提示景点不存在
             JOptionPane.showMessageDialog(this, "景区/学校不存在", "错误", JOptionPane.ERROR_MESSAGE);
+            return false;
         }
+        return true;
 
     }
 
@@ -248,6 +261,9 @@ class FormPanel extends JPanel {
     }
 
     void handleSubmit() {
+        if (!findSpot()) {
+            return;
+        }
         String start = startField.getText();
         List<String> destinations = new ArrayList<>();
         for (JPanel panel : destinationPanels) {
@@ -276,6 +292,11 @@ class FormPanel extends JPanel {
         if (startId == -1) {
             // 在控制台中打印错误信息
             JOptionPane.showMessageDialog(this, "起点不存在", "错误", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (startId == -2) {
+            JOptionPane.showMessageDialog(this, "起点不能为空", "错误", JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
         int[] endArray = new int[destinations.size()];

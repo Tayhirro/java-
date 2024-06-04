@@ -108,6 +108,9 @@ public class RoutePlanningSystem {
 
     // 获取点的编号
     int getPointId(String name) {
+        if (name.equals("")) {
+            return -2;
+        }
         for (int i = 0; i < pointNum; i++) {
             if (point[i].name.equals(name)) {
                 return i;
