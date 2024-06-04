@@ -246,12 +246,12 @@ public class RoutePlanningSystem {
                 for (int j = path[0] - 1; j >= 0; j--) {
                     path[path[0] - j] = temppath[j];
                 }
-                System.out.println("from " + point[startId].name + " to " + point[endId].name + " :");
-                System.out.println("dijlen" + dist[endId] + "  path:" + path[0]);
-                for (int j = 1; j <= path[0]; j++) {
-                    System.out.print(point[path[j]].name + " ");
-                }
-                System.out.println();
+                // System.out.println("from " + point[startId].name + " to " + point[endId].name + " :");
+                // System.out.println("dijlen" + dist[endId] + "  path:" + path[0]);
+                // for (int j = 1; j <= path[0]; j++) {
+                //     System.out.print(point[path[j]].name + " ");
+                // }
+                // System.out.println();
 
                 return dist[endId];
             }
@@ -330,11 +330,11 @@ public class RoutePlanningSystem {
                 shortestDist[cycleI][cycleJ] = dist[cyclepointId[cycleJ]];
             }
         }//√
-        System.out.println("shortestDist:");
-        for (int i = 0; i < cycleNum; i++) {
-            System.out.print(point[cyclepointId[i]].name + " ");
-        }
-        System.out.println();
+        // System.out.println("shortestDist:");
+        // for (int i = 0; i < cycleNum; i++) {
+        //     System.out.print(point[cyclepointId[i]].name + " ");
+        // }
+        // System.out.println();
 
         int[] shortPath = new int[cycleNum + 1];
         double dist = tsp(cycleNum, shortestDist, shortPath);
@@ -343,11 +343,11 @@ public class RoutePlanningSystem {
         for (int i = 0; i <= cycleNum; i++) {
             shortPath[i] = cyclepointId[shortPath[i]];
         }
-        System.out.println("shortpath:");
-        for (int i = 0; i <= cycleNum; i++) {
-            System.out.print(point[shortPath[i]].name + " ");
-        }
-        System.out.println();
+        // System.out.println("shortpath:");
+        // for (int i = 0; i <= cycleNum; i++) {
+        //     System.out.print(point[shortPath[i]].name + " ");
+        // }
+        // System.out.println();
 
         //path填充,有bug，待修复
         int[] segPath = new int[pointNum + 5];
@@ -363,12 +363,12 @@ public class RoutePlanningSystem {
 
             segPath[0] = 0;
         }
-        System.out.println();
-        System.err.println("totle path:" + path[0]);
-        for (int i = 1; i <= path[0]; i++) {
-            System.err.print(point[path[i]].name + " ");
-        }
-        System.err.println("tsp:" + dist);
+        // System.out.println();
+        // System.err.println("totle path:" + path[0]);
+        // for (int i = 1; i <= path[0]; i++) {
+        //     System.err.print(point[path[i]].name + " ");
+        // }
+        // System.err.println("tsp:" + dist);
         return dist;
     }
 
@@ -376,12 +376,12 @@ public class RoutePlanningSystem {
     static double tsp(int N, double[][] dist, int[] path) {
         System.out.println("环路节点数:" + N);
         System.out.println("距离矩阵:");
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                System.out.print(dist[i][j] + " ");
-            }
-            System.out.println();
-        }
+        // for (int i = 0; i < N; i++) {
+        //     for (int j = 0; j < N; j++) {
+        //         System.out.print(dist[i][j] + " ");
+        //     }
+        //     System.out.println();
+        // }
         final int M = 1 << (N - 1);
         final double INF = 1e7;
         double[][] dp = new double[N][M];

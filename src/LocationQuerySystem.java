@@ -76,15 +76,15 @@ public class LocationQuerySystem {
             System.out.println("point.txt or edge.txt not found.");
             e.printStackTrace();
         }
-        System.out.println("LocationQuerySystem Load data successfully.");
-        System.out.println("Point number: " + pointNum);
-        for (int i = 0; i < pointNum; i++) {
-            System.out.println(point[i].name + " " + point[i].x + " " + point[i].y + " " + point[i].type);
-        }
-        System.out.println("Edge number: " + edgeNum);
-        for (int i = 0; i < edgeNum; i++) {
-            System.out.println(edge[i].from + " " + edge[i].to + " " + edge[i].length + " " + edge[i].crowding);
-        }
+        // System.out.println("LocationQuerySystem Load data successfully.");
+        // System.out.println("Point number: " + pointNum);
+        // for (int i = 0; i < pointNum; i++) {
+        //     System.out.println(point[i].name + " " + point[i].x + " " + point[i].y + " " + point[i].type);
+        // }
+        // System.out.println("Edge number: " + edgeNum);
+        // for (int i = 0; i < edgeNum; i++) {
+        //     System.out.println(edge[i].from + " " + edge[i].to + " " + edge[i].length + " " + edge[i].crowding);
+        // }
 
     }
 
@@ -100,12 +100,11 @@ public class LocationQuerySystem {
                 count++;
             }
         }
-        System.out.println("initData count: " + count);
-        for (int i = 0; i < count; i++) {
-            System.out.println(locations[i] + " " + type[i] + " " + distances[i]);
+        // System.out.println("initData count: " + count);
+        // for (int i = 0; i < count; i++) {
+        //     System.out.println(locations[i] + " " + type[i] + " " + distances[i]);
 
-        }
-
+        // }
         return count;
     }
 
@@ -113,7 +112,7 @@ public class LocationQuerySystem {
         double scale = 0.65;// 比例尺
         // 使用dij计算所有点到 fromid 点的距离
         //迪杰斯特拉算法
-        System.out.println("from: " + fromid + " query: " + query + " range: " + range + " category: " + category);
+        //System.out.println("from: " + fromid + " query: " + query + " range: " + range + " category: " + category);
 
         Distwithid distwithid[] = new Distwithid[MAX_POINT];
         boolean[] visited = new boolean[MAX_POINT];
@@ -175,7 +174,7 @@ public class LocationQuerySystem {
                 ansDistances[count] = distwithid[i].dist * scale;//保留两位小数
                 ansDistances[count] = (double) Math.round(ansDistances[count] * 100) / 100;
                 ansTypes[count] = point[distwithid[i].id].type;
-                System.out.println(ansLocations[count] + " " + ansTypes[count] + " " + ansDistances[count]);
+                // System.out.println(ansLocations[count] + " " + ansTypes[count] + " " + ansDistances[count]);
                 count++;
             }
         }
@@ -195,10 +194,10 @@ public class LocationQuerySystem {
             }
         }
 
-        System.out.println("LocationQuery count: " + count);
-        for (int i = 0; i < count; i++) {
-            System.out.println(ansLocations[i] + " " + ansTypes[i] + " " + ansDistances[i]);
-        }
+        // System.out.println("LocationQuery count: " + count);
+        // for (int i = 0; i < count; i++) {
+        //     System.out.println(ansLocations[i] + " " + ansTypes[i] + " " + ansDistances[i]);
+        // }
         return count;
     }
 

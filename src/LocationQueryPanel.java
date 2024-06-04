@@ -37,10 +37,6 @@ public class LocationQueryPanel extends JPanel {
         distances = new double[1000];
         // (1) 展示景区或者学校内部设施数量
         num = locationQuerySystem.initData(locations, type, distances);
-        System.err.println("num: " + num);
-        for (int i = 0; i < num; i++) {
-            System.err.println(locations[i] + " " + type[i] + " " + distances[i]);
-        }
 
         // 所在景区输入框
         JPanel regionPanel = new JPanel(new BorderLayout());
@@ -64,8 +60,6 @@ public class LocationQueryPanel extends JPanel {
         JPanel filterPanel = new JPanel(new BorderLayout());
         filterPanel.setBorder(BorderFactory.createTitledBorder("类别"));
         categoryComboBox = new JComboBox<>(new String[]{"所有", "生活设施", "教学楼", "公寓楼", "食堂", "体育场所"});
-        //弹出一个提示message
-        System.err.println("new2");
         filterPanel.add(categoryComboBox, BorderLayout.CENTER);
 
         // (4) 名称查询
