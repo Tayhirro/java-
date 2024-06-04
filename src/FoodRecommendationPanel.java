@@ -7,6 +7,8 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 public class FoodRecommendationPanel extends JPanel {
@@ -156,7 +158,7 @@ public class FoodRecommendationPanel extends JPanel {
         TableColumnModel columnModel = resultTable.getColumnModel();
 
         // 设置每列的宽度
-        columnModel.getColumn(0).setPreferredWidth(100); // 名称列
+        columnModel.getColumn(0).setPreferredWidth(150); // 名称列
         columnModel.getColumn(1).setPreferredWidth(50);  // 类别列
         columnModel.getColumn(2).setPreferredWidth(50);  // 评分列
         columnModel.getColumn(3).setPreferredWidth(50);  // 热度列
@@ -170,5 +172,50 @@ public class FoodRecommendationPanel extends JPanel {
             columnModel.getColumn(i).setCellRenderer(centerRenderer);
         }
 
+        // 增加行高
+        resultTable.setRowHeight(25);
+
+        // 设置表格列之间的间距
+        resultTable.setIntercellSpacing(new Dimension(2, 2));
+
+        // 设置表格字体
+        resultTable.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+
+        // 设置表格边框
+        resultTable.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        // 设置表头的字体和背景
+        JTableHeader header = resultTable.getTableHeader();
+        header.setFont(new Font("微软雅黑", Font.BOLD, 16));
+        header.setBackground(Color.GRAY);
+        header.setForeground(Color.WHITE);
+
+        resultTable.setFillsViewportHeight(true);
+        TableColumn nameColumn = columnModel.getColumn(0);
+        nameColumn.setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                c.setBackground(new Color(255, 255, 204));  // 设置背景颜色
+                return c;
+            }
+        });
+        // 设置表格网格线颜色
+        resultTable.setGridColor(Color.LIGHT_GRAY);
+
+        // 设置表格行的颜色
+        resultTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if (!isSelected) {
+                    c.setBackground(row % 2 == 0 ? Color.LIGHT_GRAY : Color.WHITE);
+                } else {
+                    c.setBackground(Color.YELLOW);
+                }
+                return c;
+            }
+        });
+
     }
+
 }
