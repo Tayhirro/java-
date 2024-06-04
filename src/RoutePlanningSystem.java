@@ -216,62 +216,49 @@ public class RoutePlanningSystem {
 
     //迪杰斯特拉算法
     double dijkstra(int startId, int endId, MyEdge[] edge, int[] heads, double[] weight, int[] path, double[] dist) {
-
+        int pointNum = dist.length;
         int[] prev = new int[pointNum];
         boolean[] visited = new boolean[pointNum];
+
         for (int i = 0; i < pointNum; i++) {
             dist[i] = Double.MAX_VALUE;
             prev[i] = -1;
             visited[i] = false;
         }
         dist[startId] = 0;
-        for (int i = 1; i <= pointNum; i++) {//循环n-1次,每次找到一个最短路径
-            double mindis = Double.MAX_VALUE;//找到未访问的点中距离最小的点的距离
-            int updateId = -2;
-            for (int j = 0; j < pointNum; j++) {//找到最近的点
-                if (!visited[j] && dist[j] < mindis) {
-                    mindis = dist[j];
-                    updateId = j;
-                }
-            }
-            if (updateId == -2) {//找不到未访问的点
-                break;
-            }
-            if (updateId == endId) {//找到终点,开启提前退出
-                path[0] = 0;
 
+        PriorityQueue pq = new PriorityQueue(pointNum, dist);
+        pq.insert(startId);
+
+        while (!pq.isEmpty()) {
+            int updateId = pq.delMin();
+
+            if (updateId == endId) {
+                path[0] = 0;
                 int[] temppath = new int[pointNum];
                 for (int j = endId; j != -1; j = prev[j]) {
                     temppath[path[0]++] = j;
                 }
-
-                //倒置path
                 for (int j = path[0] - 1; j >= 0; j--) {
                     path[path[0] - j] = temppath[j];
                 }
-                // System.out.println("from " + point[startId].name + " to " + point[endId].name + " :");
-                // System.out.println("dijlen" + dist[endId] + "  path:" + path[0]);
-                // for (int j = 1; j <= path[0]; j++) {
-                //     System.out.print(point[path[j]].name + " ");
-                // }
-                // System.out.println();
-
                 return dist[endId];
             }
 
             visited[updateId] = true;
-            for (int u = heads[updateId]; u != -1; u = edge[u].nextId) {// 根据updateId更新其他点的距离
+            for (int u = heads[updateId]; u != -1; u = edge[u].nextId) {
                 if (!visited[edge[u].to] && dist[updateId] + weight[u] < dist[edge[u].to]) {
                     dist[edge[u].to] = dist[updateId] + weight[u];
                     prev[edge[u].to] = updateId;
+                    pq.insert(edge[u].to);
                 }
             }
         }
-        if (endId != -1) {
-            System.out.println("warning: dij : there is no path between " + point[startId].name + " and " + point[endId].name);
+        if (endId == -1) {
+            return -2;
         }
+        System.out.println("warning: dij : there is no path between " + point[startId].name + " and " + point[endId].name);
         return -1;
-
     }
 
     //旅行商问题,返回最短路径长度,路径存储在path数组中,预处理函数
@@ -439,4 +426,62 @@ public class RoutePlanningSystem {
         return true;
     }
 
+}
+// 优先队列
+
+class PriorityQueue {
+
+    private int[] heap;
+    private double[] dist;
+    private int size;
+
+    public PriorityQueue(int capacity, double[] dist) {
+        heap = new int[capacity + 1];
+        this.dist = dist;
+        size = 0;
+    }
+
+    public void insert(int x) {
+        heap[++size] = x;
+        swim(size);
+    }
+
+    public int delMin() {
+        int min = heap[1];
+        swap(1, size--);
+        sink(1);
+        heap[size + 1] = 0; // Avoid loitering
+        return min;
+    }
+
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    private void swim(int k) {
+        while (k > 1 && dist[heap[k]] < dist[heap[k / 2]]) {
+            swap(k, k / 2);
+            k = k / 2;
+        }
+    }
+
+    private void sink(int k) {
+        while (2 * k <= size) {
+            int j = 2 * k;
+            if (j < size && dist[heap[j]] > dist[heap[j + 1]]) {
+                j++;
+            }
+            if (dist[heap[k]] <= dist[heap[j]]) {
+                break;
+            }
+            swap(k, j);
+            k = j;
+        }
+    }
+
+    private void swap(int i, int j) {
+        int temp = heap[i];
+        heap[i] = heap[j];
+        heap[j] = temp;
+    }
 }
