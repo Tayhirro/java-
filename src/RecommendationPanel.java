@@ -1,4 +1,4 @@
-import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -6,14 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.swing.*;
 
 // 游学推荐页面
 public class RecommendationPanel extends JPanel {
-
-    private final User currUser;// 当前用户
-    private final UserManagement userManagement;// 用户管理对象
-    private final SpotManagement spotManagement;// 景点管理对象
-
 
     private JTextField searchField;// 搜索框
     private JComboBox<String> sortComboBox;// 排序下拉框
@@ -28,26 +24,22 @@ public class RecommendationPanel extends JPanel {
     private JPanel leftPanel;// 左侧面板
     private RecommendationSystem recommendationSystem;
 
+    public RecommendationPanel(SpotManagement spotManagement) {
 
-    public RecommendationPanel(User currUser, UserManagement userManagement, SpotManagement spotManagement) {
-        this.currUser = currUser;
-        this.userManagement = userManagement;
-        this.spotManagement = spotManagement;
-
-        this.recommendationSystem = new RecommendationSystem(currUser, userManagement, spotManagement);
+        this.recommendationSystem = new RecommendationSystem(spotManagement);
 
         schoolItemPanelDy = new HashMap<>();
         schoolItemPanelSt = new HashMap<>();
         attractionItemPanel = new HashMap<>();
 
         for (Spot spot : recommendationSystem.getInitialSchools()) {
-            JPanel panel = createItemPanel(spot,true);
+            JPanel panel = createItemPanel(spot, true);
             schoolItemPanelDy.put(spot, panel);
-            panel = createItemPanel(spot,false);
+            panel = createItemPanel(spot, false);
             schoolItemPanelSt.put(spot, panel);
         }
         for (Spot spot : recommendationSystem.getInitialAttractions()) {
-            JPanel panel = createItemPanel(spot,false);
+            JPanel panel = createItemPanel(spot, false);
             attractionItemPanel.put(spot, panel);
         }
 
@@ -60,7 +52,6 @@ public class RecommendationPanel extends JPanel {
 
         attractionScrollPane = getRightPanel();
 
-
         add(leftPanel, BorderLayout.WEST);
         add(schoolScrollPane, BorderLayout.CENTER);
         add(attractionScrollPane, BorderLayout.EAST);
@@ -70,7 +61,7 @@ public class RecommendationPanel extends JPanel {
 
     }
 
-    private JPanel createItemPanel(Spot spot,boolean type) {
+    private JPanel createItemPanel(Spot spot, boolean type) {
         JPanel ItemPanel = new JPanel();
         BoxLayout boxLayout = new BoxLayout(ItemPanel, BoxLayout.Y_AXIS);
         ItemPanel.setLayout(boxLayout);
@@ -81,16 +72,18 @@ public class RecommendationPanel extends JPanel {
         JLabel Image = new JLabel(new ImageIcon(scaledImage));
         Image.setAlignmentX(Component.CENTER_ALIGNMENT); // 设置图片居中
 
-        if(type){
+        if (type) {
             Image.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseEntered(MouseEvent e) {
                     updateAttractionsForSchool(spot);
                 }
+
                 @Override
                 public void mouseExited(MouseEvent e) {
                     restoreOriginalState();
                 }
+
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     showSpotDetails(spot);
@@ -170,28 +163,27 @@ public class RecommendationPanel extends JPanel {
     private void performSearch() {
         String query = searchField.getText();
         List<Spot> filteredSpots = recommendationSystem.searchSpots(query);
-        display(filteredSpots,false);
+        display(filteredSpots, false);
     }
 
-    private void display(List<Spot> filteredSpots,boolean type) {
+    private void display(List<Spot> filteredSpots, boolean type) {
         List<Spot> schools = filteredSpots.stream().filter(spot -> spot.getType().equals("school")).collect(Collectors.toList());
         List<Spot> attractions = filteredSpots.stream().filter(spot -> spot.getType().equals("attraction")).collect(Collectors.toList());
 
         schoolPanel.removeAll();
         attractionPanel.removeAll();
-        if(schools.isEmpty() && attractions.isEmpty()) {
+        if (schools.isEmpty() && attractions.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No results found", "Search Results", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
-        if(!schools.isEmpty() && !attractions.isEmpty()) {
-            if(type){
+        if (!schools.isEmpty() && !attractions.isEmpty()) {
+            if (type) {
                 displaySpots(schools, "school", schoolItemPanelDy);
                 remove(schoolScrollPane);
                 if (schoolScrollPane.getParent() == null) {
                     add(schoolScrollPane, BorderLayout.CENTER);
                 }
-            }
-            else{
+            } else {
                 displaySpots(schools, "school", schoolItemPanelSt);
                 remove(schoolScrollPane);
                 if (schoolScrollPane.getParent() == null) {
@@ -203,25 +195,22 @@ public class RecommendationPanel extends JPanel {
             if (attractionScrollPane.getParent() == null) {
                 add(attractionScrollPane, BorderLayout.EAST);
             }
-        }
-        else if(schools.isEmpty()){
+        } else if (schools.isEmpty()) {
             displaySpots(attractions, "attraction", attractionItemPanel);
             remove(schoolScrollPane);
             remove(attractionScrollPane);
             if (attractionScrollPane.getParent() == null) {
                 add(attractionScrollPane, BorderLayout.CENTER);
             }
-        }
-        else {
-            if(type){
+        } else {
+            if (type) {
                 displaySpots(schools, "school", schoolItemPanelDy);
                 remove(attractionScrollPane);
                 remove(schoolScrollPane);
                 if (schoolScrollPane.getParent() == null) {
                     add(schoolScrollPane, BorderLayout.CENTER);
                 }
-            }
-            else{
+            } else {
                 displaySpots(schools, "school", schoolItemPanelSt);
                 remove(schoolScrollPane);
                 remove(attractionScrollPane);
@@ -240,9 +229,8 @@ public class RecommendationPanel extends JPanel {
         List<Spot> spots = recommendationSystem.getAllSpots();
         List<Spot> sortedSpots = recommendationSystem.sortSpots(spots, sortCriteria);
 
-        display(sortedSpots,false);
+        display(sortedSpots, false);
     }
-
 
     private void updateAttractionsForSchool(Spot school) {
         // 更新右部景点展示逻辑
@@ -264,14 +252,14 @@ public class RecommendationPanel extends JPanel {
             repaint();
         }
     }
+
     private void restoreOriginalState() {
         // 恢复右部景点展示逻辑
         schoolScrollPane.setVisible(true);
         attractionScrollPane.setVisible(true);
-        display(recommendationSystem.getAllSpots(),true);
+        display(recommendationSystem.getAllSpots(), true);
         setLayout(new GridLayout(1, 3));
     }
-
 
     private JPanel getLeftPanel() {
         // 左部：搜索和偏好设置
@@ -297,7 +285,7 @@ public class RecommendationPanel extends JPanel {
 
         JPanel sortPanel = new JPanel();
         sortPanel.setLayout(new FlowLayout());
-        sortComboBox = new JComboBox<>(new String[]{"选择排序方式","热度", "评分"});
+        sortComboBox = new JComboBox<>(new String[]{"选择排序方式", "热度", "评分"});
         sortComboBox.addActionListener(e -> sortResults());
         sortPanel.add(sortComboBox);
 
@@ -332,7 +320,7 @@ public class RecommendationPanel extends JPanel {
 
             List<Spot> recommendedSpots = recommendationSystem.filterAndSortSpots(selectedPreferences);
 
-            display(recommendedSpots,false);
+            display(recommendedSpots, false);
         });
         preferencePanel.add(recommendButton);
 
@@ -346,7 +334,6 @@ public class RecommendationPanel extends JPanel {
         return leftPanel;
     }
 
-
     private JScrollPane getMiddlePanel() {
         // 中部：学校展示
         schoolPanel = new JPanel();
@@ -354,7 +341,6 @@ public class RecommendationPanel extends JPanel {
         schoolScrollPane = new JScrollPane(schoolPanel);
         return schoolScrollPane;
     }
-
 
     private JScrollPane getRightPanel() {
         // 右部：景点展示
@@ -364,4 +350,3 @@ public class RecommendationPanel extends JPanel {
         return attractionScrollPane;
     }
 }
-

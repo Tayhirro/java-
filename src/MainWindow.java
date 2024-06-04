@@ -10,11 +10,13 @@ public class MainWindow {
     private final JFrame frame;// 主窗口
     private final JPanel mainPanel;// 主面板
     private final CardLayout cardLayout;// 卡片布局
+    RecommendationPanel recommendationPanel;
 
-    public MainWindow(UserManagement userManagement, User currUser) {
+    public MainWindow(UserManagement userManagement, User currUser, SpotManagement spotManagement, RecommendationPanel recommendationPanel) {
         this.userManagement = userManagement;
         this.currUser = currUser;
-        this.spotManagement = new SpotManagement();
+        this.spotManagement = spotManagement;
+        this.recommendationPanel = recommendationPanel;
 
         frame = new JFrame("游学推荐系统");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -28,7 +30,7 @@ public class MainWindow {
 
         // 添加子页面
         mainPanel.add(createWelcomePanel(), "Welcome");
-        mainPanel.add(createRecommendationPanel(), "Recommendation");
+        mainPanel.add(recommendationPanel, "Recommendation");
         mainPanel.add(createRoutePlanningPanel(), "RoutePlanning");
         mainPanel.add(createLocationQueryPanel(), "LocationQuery");
         mainPanel.add(createFoodRecommendationPanel(), "FoodRecommendation");
@@ -76,11 +78,6 @@ public class MainWindow {
     }
 
     // 创建游学推荐页面，在别的类中实现
-    private JPanel createRecommendationPanel() {
-        RoutePlanningPanel recommendationPanel = new RoutePlanningPanel(currUser, userManagement, spotManagement);
-        return recommendationPanel;
-    }
-
     // 创建路径规划页面，在别的类中实现
     private JPanel createRoutePlanningPanel() {
         RoutePlanningPanel routePlanningPanel = new RoutePlanningPanel(currUser, userManagement, spotManagement);

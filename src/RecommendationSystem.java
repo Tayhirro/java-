@@ -4,17 +4,14 @@ import java.util.stream.Collectors;
 
 public class RecommendationSystem {
 
-    private final User currUser;// 当前用户
-    private final UserManagement userManagement;// 用户管理对象
     private final SpotManagement spotManagement;// 景点管理对象
 
     private List<Spot> spots;// 所有景点
     private List<Spot> schools;// 学校
     private List<Spot> attractions;// 景点
 
-    RecommendationSystem(User currUser, UserManagement userManagement, SpotManagement spotManagement) {
-        this.currUser = currUser;
-        this.userManagement = userManagement;
+    RecommendationSystem(SpotManagement spotManagement) {
+
         this.spotManagement = spotManagement;
         // 加载初始数据
         loadInitialData();

@@ -11,9 +11,13 @@ public class LoginApp {
     private JPanel panel;// 面板
     private final CardLayout cardLayout;// 卡片布局
     private final UserManagement userManagement; // 用户管理对象,用于注册和登录,从外部传入
+    private final SpotManagement spotManagement;
+    private final RecommendationPanel recommendationPanel;
     private User currentUser; // 当前用户
 
-    public LoginApp(UserManagement us) {// 构造方法
+    public LoginApp(UserManagement us, SpotManagement sm, RecommendationPanel rp) {
+        this.spotManagement = sm;
+        this.recommendationPanel = rp;
         userManagement = us; // 创建用户管理对象，加载用户数据
         frame = new JFrame("用户登录系统");// 创建窗口，设置标题，
         panel = new JPanel();// 创建面板，用于切换登录和注册
@@ -195,7 +199,7 @@ public class LoginApp {
 
                 if (currentUser != null) {// 登录成功
 
-                    new MainWindow(userManagement, currentUser);
+                    new MainWindow(userManagement, currentUser, spotManagement, recommendationPanel);// 创建主窗口对象
                     //关闭登录窗口
                     frame.dispose();
 
