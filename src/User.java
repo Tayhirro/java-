@@ -1,6 +1,7 @@
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -62,7 +63,7 @@ public class User implements Serializable {
 class UserManagement {
 
     private Map<String, User> userDatabase;// 用户数据库
-    private AtomicLong idCounter;// 用户ID计数器
+    private AtomicLong idCounter;// 用户ID计数器，多线程安全
     private String dataFile;// 用户数据文件
 
     //按需添加更多属性和方法  
@@ -117,5 +118,173 @@ class UserManagement {
     public void setDiarynum(User user, int dairynum) {
         user.setDairynum(dairynum);
         saveUserData();
+    }
+}
+
+// 图
+class MyMap<K, V> {
+
+    private static class Entry<K, V> {
+
+        K key;
+        V value;
+
+        Entry(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+    private final int SIZE = 16;
+    private LinkedList<Entry<K, V>>[] buckets;
+
+    public MyMap() {
+        buckets = new LinkedList[SIZE];
+        for (int i = 0; i < SIZE; i++) {
+            buckets[i] = new LinkedList<>();
+        }
+    }
+
+    private int getBucketIndex(K key) {
+        return key.hashCode() % SIZE;
+    }
+
+    public void put(K key, V value) {
+        int bucketIndex = getBucketIndex(key);
+        LinkedList<Entry<K, V>> bucket = buckets[bucketIndex];
+        for (Entry<K, V> entry : bucket) {
+            if (entry.key.equals(key)) {
+                entry.value = value;
+                return;
+            }
+        }
+        bucket.add(new Entry<>(key, value));
+    }
+
+    public V get(K key) {
+        int bucketIndex = getBucketIndex(key);
+        LinkedList<Entry<K, V>> bucket = buckets[bucketIndex];
+        for (Entry<K, V> entry : bucket) {
+            if (entry.key.equals(key)) {
+                return entry.value;
+            }
+        }
+        return null;
+    }
+}
+
+// 链表
+class MyList<T> {
+
+    private Object[] elements;
+    private int size = 0;
+    private static final int DEFAULT_CAPACITY = 10;
+
+    public MyList() {
+        elements = new Object[DEFAULT_CAPACITY];
+    }
+
+    public void add(T element) {
+        if (size == elements.length) {
+            resize();
+        }
+        elements[size++] = element;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T get(int index) {
+        if (index >= size || index < 0) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+        return (T) elements[index];
+    }
+
+    public int size() {
+        return size;
+    }
+
+    private void resize() {
+        int newSize = elements.length * 2;
+        Object[] newElements = new Object[newSize];
+        System.arraycopy(elements, 0, newElements, 0, elements.length);
+        elements = newElements;
+    }
+}
+
+// 双向链表
+class MyLinkedList<T> {
+
+    private Node<T> head;
+    private Node<T> tail;
+    private int size;
+
+    private static class Node<T> {
+
+        T data;
+        Node<T> next;
+
+        Node(T data) {
+            this.data = data;
+            this.next = null;
+        }
+    }
+
+    public MyLinkedList() {
+        head = null;
+        tail = null;
+        size = 0;
+    }
+
+    public void add(T element) {
+        Node<T> newNode = new Node<>(element);
+        if (tail == null) {
+            head = newNode;
+            tail = newNode;
+        } else {
+            tail.next = newNode;
+            tail = newNode;
+        }
+        size++;
+    }
+
+    public T get(int index) {
+        if (index >= size || index < 0) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+        Node<T> current = head;
+        for (int i = 0; i < index; i++) {
+            current = current.next;
+        }
+        return current.data;
+    }
+
+    public void remove(int index) {
+        if (index >= size || index < 0) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+        if (index == 0) {
+            head = head.next;
+            if (head == null) {
+                tail = null;
+            }
+        } else {
+            Node<T> current = head;
+            for (int i = 0; i < index - 1; i++) {
+                current = current.next;
+            }
+            current.next = current.next.next;
+            if (current.next == null) {
+                tail = current;
+            }
+        }
+        size--;
+    }
+
+    public int size() {
+        return size;
+    }
+
+    public boolean isEmpty() {
+        return size == 0;
     }
 }
