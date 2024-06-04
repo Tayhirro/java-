@@ -1,19 +1,19 @@
 
-C
-java:S1604c"(Make this anonymous inner class a lambda(¢’–ìúÿÿÿÿ
-C
-java:S1604y"(Make this anonymous inner class a lambda(ÄßÇŠûÿÿÿÿ
-?
-java:S1604·"(Make this anonymous inner class a lambda(øšÅ
-?
-java:S1604Ğ"(Make this anonymous inner class a lambda(Šïõ®
-0
-java:S1220""Move this file to a named package.
-\
-java:S1192"FDefine a constant instead of duplicating this literal "Login" 4 times.(¿”È
-d
-java:S3252"IUse static access with "javax.swing.WindowConstants" for "EXIT_ON_CLOSE".(òî„ùÿÿÿÿ
-\
-java:S3252-"AUse static access with "javax.swing.SwingConstants" for "CENTER".(áæåÄÿÿÿÿÿ
-]
-java:S3252ˆ"AUse static access with "javax.swing.SwingConstants" for "CENTER".(È¶®‹ùÿÿÿÿ
+p
+java:S1604g"(Make this anonymous inner class a lambda(¢’–ìúÿÿÿÿ8Æİ´•ş1J$1257cee5-b92b-42fb-a167-c120c613e374
+p
+java:S1604}"(Make this anonymous inner class a lambda(ÄßÇŠûÿÿÿÿ8Æİ´•ş1J$21822246-09ac-4975-af4e-f17db51fc056
+l
+java:S1604»"(Make this anonymous inner class a lambda(øšÅ8Æİ´•ş1J$daecf422-1120-440f-847d-17e4a94b628e
+l
+java:S1604Õ"(Make this anonymous inner class a lambda(Šïõ®8Æİ´•ş1J$ac529d32-991f-4c95-9cb9-c0a37cb7809e
+‰
+java:S1192"FDefine a constant instead of duplicating this literal "Login" 4 times.(¿”È8Êİ´•ş1J$480b9762-d50e-418d-b3b7-7b3726f80ca9
+~	java:S125"<This block of commented-out lines of code should be removed.(äàññ8Îİ´•ş1J$1ebf6717-d3af-41a8-9d16-fce76d47bec1
+ƒ	java:S125"<This block of commented-out lines of code should be removed.(¦şÿ¼ıÿÿÿÿ8Óİ´•ş1J$c7e41c28-f374-452d-820a-45d181a071b6
+‘
+java:S3252 "IUse static access with "javax.swing.WindowConstants" for "EXIT_ON_CLOSE".(òî„ùÿÿÿÿ8Óİ´•ş1J$4132078f-ac68-4ecc-8a02-81d023784991
+‰
+java:S32521"AUse static access with "javax.swing.SwingConstants" for "CENTER".(áæåÄÿÿÿÿÿ8Ùİ´•ş1J$070dc79b-49d4-4ce2-9706-29324d81e7ea
+Š
+java:S3252Œ"AUse static access with "javax.swing.SwingConstants" for "CENTER".(È¶®‹ùÿÿÿÿ8äİ´•ş1J$e257f14b-450a-4907-9ecb-6710d650fc91

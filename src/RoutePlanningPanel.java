@@ -27,42 +27,19 @@ class RoutePlanningPanel extends JPanel {
         titlePanel = new TitlePanel("路线规划");
         // 创建图形面板
         graphPanel = new GraphPanel("source\\map.jpg");
+        graphPanel.setPreferredSize(new Dimension(871, 1253));
+        JScrollPane scrollPane = new JScrollPane(graphPanel);
+        Panel panel = new Panel();
+        panel.setLayout(new BorderLayout());
+        panel.add(scrollPane, BorderLayout.CENTER);
         // 创建提交面板
         submitPanel = new FormPanel(graphPanel, spotManagement);// 创建表单面板,并传入图形面板,用于数据交互
 
         // 设置整个面板的布局为GridBagLayout
-        setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-
-        // 将三个面板添加到整个面板中
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 5; // 标题面板占据5列宽
-        gbc.gridheight = 1; // 标题面板占据1行高
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
-        gbc.weighty = 0.1;
-        add(titlePanel, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 1; // submitPanel 占据 1 列宽
-        gbc.gridheight = 9; // submitPanel 占据 9 行高
-
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 0.0;
-        gbc.weighty = 1.0;
-
-        add(submitPanel, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.gridwidth = 4; // graphPanel 占据 1 列宽
-        gbc.gridheight = 9; // graphPanel 占据 1 行高
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(graphPanel, gbc);
+        setLayout(new BorderLayout());
+        add(titlePanel, BorderLayout.NORTH);
+        add(panel, BorderLayout.CENTER);
+        add(submitPanel, BorderLayout.WEST);
 
     }
 
@@ -71,13 +48,14 @@ class RoutePlanningPanel extends JPanel {
 class TitlePanel extends JPanel {
 
     public TitlePanel(String title) {
-        setPreferredSize(new Dimension(0, 20)); // Set title panel height
+        setPreferredSize(new Dimension(0, 50)); // Set title panel height
         setLayout(new GridBagLayout());
 
         // 添加标题标签
         JLabel titleLabel = new JLabel(title);
+        // 设置标题标签的字体、大小和粗细，颜色为白色
         titleLabel.setFont(new Font("微软雅黑", Font.BOLD, 24));
-
+        titleLabel.setForeground(Color.WHITE);
         // 设置标题标签在标题面板中的位置
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -88,7 +66,7 @@ class TitlePanel extends JPanel {
         add(titleLabel, gbc);
 
         // 设置标题面板的背景色灰色和边框
-        setBackground(Color.LIGHT_GRAY);
+        setBackground(Color.GRAY);
         setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
     }
 }
@@ -99,7 +77,7 @@ class FormPanel extends JPanel {
     JTextField spotField;
     List<JPanel> destinationPanels;
     JPanel destinationContainerPanel;
-    JButton addButton, submitButton;
+    JButton addButton, submitButton, zoomInButton, zoomOutButton;
     RoutePlanningSystem routePlanningSystem;// 路线规划系统
     SpotManagement spotManagement;// 景点管理对象
     GraphPanel graphPanel;// 图形面板
@@ -137,19 +115,10 @@ class FormPanel extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // 创建景区选择面版spotPanel
-        JPanel spotPanel = new JPanel(new GridLayout(3, 1, 5, 5));
-        JLabel spotLabel = new JLabel("景区名称:");
-        spotField = new JTextField(13);
-        JButton spotButton = new JButton("确定");
-        spotButton.setPreferredSize(new Dimension(40, 20));
-        JPanel spotButtonPanel = new JPanel(new BorderLayout());
-        spotButtonPanel.setPreferredSize(new Dimension(50, 20));
-        spotButtonPanel.add(spotButton, BorderLayout.CENTER);
-        spotButton.addActionListener(e -> findSpot());
-        spotPanel.add(spotLabel, BorderLayout.WEST);
+        JPanel spotPanel = new JPanel(new BorderLayout());
+        spotPanel.setBorder(BorderFactory.createTitledBorder("所在景区"));
+        spotField = new JTextField();
         spotPanel.add(spotField, BorderLayout.CENTER);
-        spotPanel.add(spotButtonPanel, BorderLayout.EAST);
 
         // 创建单选按钮的面板
         JPanel sortingPanel = new JPanel(new GridLayout(2, 1, 0, 0));
@@ -169,13 +138,10 @@ class FormPanel extends JPanel {
         transportationPanel.add(transportationButtonPanel);
 
         // Create address fields
-        JPanel addressPanel = new JPanel(new GridLayout(3, 1, 5, 0));
-        JLabel startLabel = new JLabel("起始地址:");
-        JLabel endLabel = new JLabel("目的地址:");
-        startField = new JTextField(13);
-        addressPanel.add(startLabel);
-        addressPanel.add(startField);
-        addressPanel.add(endLabel);
+        JPanel addressPanel = new JPanel(new BorderLayout());
+        addressPanel.setBorder(BorderFactory.createTitledBorder("起始地址:"));
+        startField = new JTextField();
+        addressPanel.add(startField, BorderLayout.CENTER);
 
         // Create a panel for the address and buttons
         JPanel firstPanel = new JPanel(new GridLayout(4, 1, 10, 10));
@@ -186,38 +152,87 @@ class FormPanel extends JPanel {
         add(firstPanel, BorderLayout.NORTH);
 
         destinationPanels = new ArrayList<>();
-        destinationContainerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        addDestinationPanel();
+        destinationContainerPanel = new JPanel();
+        // 设置目的地面板的布局为FlowLayout，每个组件一行
+        destinationContainerPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 5));
+        destinationContainerPanel.setPreferredSize(new Dimension(0, 200));
+        initDestinationPanel();
+
         add(destinationContainerPanel, BorderLayout.CENTER);
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 5, 30));
+        //设置边框
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 30, 10));
+
+        JPanel buttonPanel1 = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
         addButton = new JButton("+");
+        addButton.setPreferredSize(new Dimension(60, 30));
         addButton.addActionListener(e -> addDestinationPanel());
-        buttonPanel.add(addButton);
+        buttonPanel1.add(addButton);
 
         submitButton = new JButton("确定");
+        submitButton.setPreferredSize(new Dimension(60, 30));
         submitButton.addActionListener(e -> handleSubmit());
-        buttonPanel.add(submitButton);
+        buttonPanel1.add(submitButton);
+
+        JPanel buttonPanel2 = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        zoomInButton = new JButton("放大");
+        zoomInButton.setPreferredSize(new Dimension(60, 30));
+        zoomInButton.addActionListener(e -> {
+            graphPanel.scale *= 1.1;
+            graphPanel.revalidate();
+            graphPanel.repaint();
+        });
+        buttonPanel2.add(zoomInButton);
+
+        zoomOutButton = new JButton("缩小");
+        zoomOutButton.setPreferredSize(new Dimension(60, 30));
+        zoomOutButton.addActionListener(e -> {
+            graphPanel.scale /= 1.1;
+            graphPanel.revalidate();
+            graphPanel.repaint();
+        });
+        buttonPanel2.add(zoomOutButton);
+
+        buttonPanel.add(buttonPanel1);
+        buttonPanel.add(buttonPanel2);
 
         add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    void initDestinationPanel() {
+        JPanel labelpanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 4));
+        JLabel label = new JLabel("目的地址:");
+        labelpanel.add(label);
+        destinationContainerPanel.add(labelpanel);
+        JPanel panel = createDestinationPanel();
+        destinationContainerPanel.add(panel);
+        destinationPanels.add(panel);
+        destinationContainerPanel.setSize(new Dimension(150, destinationPanels.size() * 30));
+        destinationContainerPanel.revalidate();
+        destinationContainerPanel.repaint();
+        repaint();
 
     }
 
-    void findSpot() {
+    boolean findSpot() {
 
         String spotname = spotField.getText();
         if (!spotManagement.findSpot(spotname)) {
             //弹出提示框，提示景点不存在
             JOptionPane.showMessageDialog(this, "景区/学校不存在", "错误", JOptionPane.ERROR_MESSAGE);
+            return false;
         }
+        return true;
 
     }
 
     void addDestinationPanel() {
-
         JPanel panel = createDestinationPanel();
         destinationContainerPanel.add(panel);
         destinationPanels.add(panel);
+        destinationContainerPanel.setSize(new Dimension(150, destinationPanels.size() * 30));
         destinationContainerPanel.revalidate();
         destinationContainerPanel.repaint();
         repaint();
@@ -228,7 +243,7 @@ class FormPanel extends JPanel {
             destinationContainerPanel.remove(panel);
             destinationPanels.remove(panel);
             destinationContainerPanel.revalidate();
-            destinationContainerPanel.repaint();//
+            destinationContainerPanel.repaint();
             repaint();
         }
     }
@@ -246,6 +261,9 @@ class FormPanel extends JPanel {
     }
 
     void handleSubmit() {
+        if (!findSpot()) {
+            return;
+        }
         String start = startField.getText();
         List<String> destinations = new ArrayList<>();
         for (JPanel panel : destinationPanels) {
@@ -274,6 +292,11 @@ class FormPanel extends JPanel {
         if (startId == -1) {
             // 在控制台中打印错误信息
             JOptionPane.showMessageDialog(this, "起点不存在", "错误", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (startId == -2) {
+            JOptionPane.showMessageDialog(this, "起点不能为空", "错误", JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
         int[] endArray = new int[destinations.size()];
@@ -331,7 +354,7 @@ class FormPanel extends JPanel {
         for (int i = 0; i < path[0]; i++) {
             pointx[i] = routePlanningSystem.point[path[i + 1]].x;
             pointy[i] = routePlanningSystem.point[path[i + 1]].y;
-            System.out.println("x:" + pointx[i] + " y:" + pointy[i] + " id:" + path[i + 1]);
+
         }
 
         graphPanel.drawPath(pointx, pointy);
@@ -343,6 +366,7 @@ class GraphPanel extends JPanel {
     private BufferedImage graphImage;
     private int[] pointx = new int[0];  // Initialize to prevent null pointer issues
     private int[] pointy = new int[0];  // Initialize to prevent null pointer issues
+    public double scale = 1.0;
 
     // Constructor that loads the image from the file path
     public GraphPanel(String graphFile) {
@@ -361,6 +385,7 @@ class GraphPanel extends JPanel {
         }
         this.pointx = pointx;
         this.pointy = pointy;
+        revalidate();
         repaint();
     }
 
@@ -370,7 +395,8 @@ class GraphPanel extends JPanel {
         Graphics2D g2d = (Graphics2D) g; // Convert to Graphics2D
         if (graphImage != null) {
             // Draw the image
-            g2d.drawImage(graphImage, 0, 0, this.getWidth(), this.getHeight(), null);
+            g2d.scale(scale, scale);
+            g2d.drawImage(graphImage, 0, 0, null);
         }
 
         // Draw the path if it exists
@@ -379,23 +405,17 @@ class GraphPanel extends JPanel {
             g2d.setStroke(new BasicStroke(3)); // Set line width to 3
             for (int i = 0; i < pointx.length - 1; i++) {
                 // Map your path points to coordinates
-                int x1 = mapToX(pointx[i]);
-                int y1 = mapToY(pointy[i]);
-                int x2 = mapToX(pointx[i + 1]);
-                int y2 = mapToY(pointy[i + 1]);
-                g2d.drawLine(x1, y1, x2, y2);
+
+                g2d.drawLine(pointx[i], pointy[i], pointx[i + 1], pointy[i + 1]);
+
             }
         }
     }
 
-    // Example mapping method - replace with your actual mapping logic
-    private int mapToX(int point) {
-        // Example mapping - replace with actual logic
-        return point; // Simple example: assuming pointx already in coordinate space
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension((int) (graphImage.getWidth() * scale), (int) (graphImage.getHeight() * scale));
     }
 
-    private int mapToY(int point) {
-        // Example mapping - replace with actual logic
-        return point; // Simple example: assuming pointy already in coordinate space
-    }
+    // Example mapping method - replace with your actual mapping logic
 }

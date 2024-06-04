@@ -1,0 +1,13 @@
+
+³
+java:S1319h"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(¢·Ñ€8»Í‰•ş1J$e88d7a3c-bdd1-4475-a1c5-faf9c25f6757
+
+java:S1192n"MDefine a constant instead of duplicating this literal "attraction" 115 times.(…œ¤8ûÍ‰•ş1J$4f2f3be1-3db8-4375-97d2-591574d48031
+
+java:S1192r"HDefine a constant instead of duplicating this literal "school" 90 times.(Ÿğµ«şÿÿÿÿ8‰Î‰•ş1J$9a430d4c-36ee-44cb-8056-5a542b696526
+ˆ	java:S107"AConstructor has 9 parameters, which is greater than 7 authorized.(ß™ÈŸüÿÿÿÿ8ŠÎ‰•ş1J$e932e06f-67c7-44cc-965c-0370b26125fa
+ƒ	java:S107M"<Method has 9 parameters, which is greater than 7 authorized.(µêï˜üÿÿÿÿ8ŠÎ‰•ş1J$a877e25b-19bc-41b7-be80-83c1a6aaed7c
+l	java:S106O"+Replace this use of System.out by a logger.(ªĞÈu8ŠÎ‰•ş1J$85554e8d-0df1-4a77-a62f-0f34e2b9abaa
+m	java:S106T"+Replace this use of System.out by a logger.(ô›Î§8ŠÎ‰•ş1J$fd2e2edc-bdb3-4903-aeb8-de0c860b5970
+s	java:S106Á"+Replace this use of System.out by a logger.(Ôí«‹şÿÿÿÿ8åÎ‰•ş1J$2096cde5-fb24-4aca-a679-56d69154199c
+s	java:S106É"+Replace this use of System.out by a logger.(õê¥Äüÿÿÿÿ8æÎ‰•ş1J$be778243-0716-4a32-a117-b2d50119d704

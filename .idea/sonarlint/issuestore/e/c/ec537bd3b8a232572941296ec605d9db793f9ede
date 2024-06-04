@@ -1,54 +1,87 @@
 
-g	java:S117ƒ"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¸»¾Ó
-K
-java:S1066"/Merge this if statement with the enclosing one.(¡›Ê¦şÿÿÿÿ
-0
-java:S1220""Move this file to a named package.
-o
-java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(™…øñ
+’	java:S117¬"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¬„›áúÿÿÿÿJ$467b02ad-e116-4080-82c3-7b54b0ab4d12
+’	java:S117İ"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Á±¡ÉüÿÿÿÿJ$130162a7-0066-41c8-a8bd-5da224ca820c
+’	java:S117‘"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ûé¶øÿÿÿÿJ$41ebec8d-17e3-4605-8b42-b1bac426a0f8
+	java:S117›"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.( ùßJ$64b8f8bc-58dc-4eb1-a1e5-ffb4682a9ee6
+q
+java:S1066Š"/Merge this if statement with the enclosing one.(¡›Ê¦şÿÿÿÿJ$d3d9f09f-21c5-4cb7-acd8-7fce9e731fed
+•
+java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(™…øñJ$64bb4e20-da4a-4894-8254-dbf41d8d0542
+š
+java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(²É¨‡úÿÿÿÿJ$ca1302d3-c5e2-49aa-9802-43a2e78f98bd
+”
+java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(ƒÕè~J$b43fa535-6b13-419c-af8d-52fe6ee3654f
+ 
+java:S1488î"^Immediately return this expression instead of assigning it to the temporary variable "result".(îşÿËüÿÿÿÿJ$373c559e-f919-48ba-b87c-28e3999735d8
+w
+java:S1141®"5Extract this nested try block into a separate method.(öÌºÿøÿÿÿÿJ$8630ab52-fad3-41ad-893c-ad88970c1ae4
+r
+java:S1141Å"5Extract this nested try block into a separate method.(É¾‘öJ$aae960d6-1abc-47fc-a942-e91401286da2
+r
+java:S1141û"5Extract this nested try block into a separate method.(²ìĞJ$e786f92e-c6b8-4725-b91b-9e8f2f529626
+š	java:S135ø"YReduce the total number of break and continue statements in this loop to use at most one.(ÁÔš‰ùÿÿÿÿJ$e804daa8-fc66-4f19-9274-6c7a9045e78f
+]
+java:S1643}"Use a StringBuilder instead.(äÆÎÖüÿÿÿÿJ$19f0664b-ec46-4817-9e8f-2ee31eddaf54
+]
+java:S1643"Use a StringBuilder instead.(°±ŒüÿÿÿÿJ$92176f9f-b913-439f-aeb6-b11f8d7009f4
+Y
+java:S1643ÿ"Use a StringBuilder instead.(Ì¡J$bd3ff39f-f332-45ed-a4dd-942f12e91a66
+^
+java:S1643ƒ"Use a StringBuilder instead.(·ËùÿÿÿÿJ$835b73ab-1f1b-4445-b99d-4da1f49fcee6
+^
+java:S1643Œ"Use a StringBuilder instead.(·ËùÿÿÿÿJ$f54b2354-474e-45e5-a6ad-4a3d9d1ff5b1
+ˆ
+java:S1192¬"FDefine a constant instead of duplicating this literal "head_" 3 times.(¬„›áúÿÿÿÿJ$83d333b6-4cee-4284-9f2c-6a43e439377c
+‚
+java:S1126"AReplace this if-then-else statement by a single return statement.(¹”ÊùÿÿÿÿJ$4d663944-7931-4f17-80a8-a1a08ff92b65
+i
+java:S1481'"(Remove this unused "len" local variable.(¤í´‚şÿÿÿÿJ$99eb81ed-b478-4cf7-a164-b77682341b59
+l
+java:S14816"+Remove this unused "bytes2" local variable.(ÓôùÊşÿÿÿÿJ$82e42ffe-a68c-4146-a655-c1683e288788
+d	java:S108@")Either remove or fill this block of code.(‹±ÃÆJ$4fd74e45-665f-446a-951d-ac7fa61f9dea
 t
-java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(²É¨‡úÿÿÿÿ
-L
-java:S1141¨"5Extract this nested try block into a separate method.(®ÏØÃ
-L
-java:S1141í"5Extract this nested try block into a separate method.(²ìĞ
-t	java:S135"YReduce the total number of break and continue statements in this loop to use at most one.(ÁÔš‰ùÿÿÿÿ
-7
-java:S1643y"Use a StringBuilder instead.(äÆÎÖüÿÿÿÿ
-7
-java:S1643{"Use a StringBuilder instead.(°±Œüÿÿÿÿ
-3
-java:S1643•"Use a StringBuilder instead.(Ì¡
-8
-java:S1643˜"Use a StringBuilder instead.(·Ëùÿÿÿÿ
-8
-java:S1643 "Use a StringBuilder instead.(·Ëùÿÿÿÿ
-\
-java:S1126"AReplace this if-then-else statement by a single return statement.(¹”Êùÿÿÿÿ
-C
-java:S1481&"(Remove this unused "len" local variable.(¤í´‚şÿÿÿÿ
->	java:S108<")Either remove or fill this block of code.(‹±ÃÆ
-N
-java:S1117t"8Rename "code" which hides the field declared at line 19.(²çÎÒ
-\
-java:S2147Ä"ECombine this catch with the one at line 194, which has the same body.(ï­£Ä
-D
-java:S1481‘"(Remove this unused "len" local variable.(¤í´‚şÿÿÿÿ
-\
-java:S2147ÿ"ECombine this catch with the one at line 253, which has the same body.(ï­£Ä
-D
-java:S1481Ô"(Remove this unused "len" local variable.(¤í´‚şÿÿÿÿ
+java:S1117v"8Rename "code" which hides the field declared at line 19.(²çÎÒJ$1901d050-1523-4f07-ad05-d867561676c7
+‚
+java:S2147Õ"ECombine this catch with the one at line 211, which has the same body.(ï­£ÄJ$36ec6069-9bed-4b12-90ea-94123cd2795a
+j
+java:S1481•"(Remove this unused "len" local variable.(¤í´‚şÿÿÿÿJ$4db4456a-f4ba-465f-84dd-5147616112a7
+g
+java:S1481Ü"*Remove this unused "file1" local variable.(Üì×ÖJ$6d2dccd6-824a-4c15-b0d9-f14e1bfcd3fd
+‚
+java:S2147"ECombine this catch with the one at line 267, which has the same body.(ï­£ÄJ$c6b5ede7-9837-4e4a-acd7-c539b2c1b223
+j
+java:S1481â"(Remove this unused "len" local variable.(¤í´‚şÿÿÿÿJ$09920b62-5c1d-4224-9203-5be677f94802
 n
-java:S3776‡"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(Ÿ­¡×ûÿÿÿÿ
-[
-java:S1854ˆ"?Remove this useless assignment to local variable "filenameOut".(—ŒË¢ÿÿÿÿÿ
-2
-java:S3626¡"Remove this redundant jump.(ÉŠ©ƒ
-<
-java:S2129ˆ" Remove this "String" constructor(—ŒË¢ÿÿÿÿÿ
-<
-java:S2129‰" Remove this "String" constructor(ÀÕÈãşÿÿÿÿ
-7
-java:S2129Š" Remove this "String" constructor(Ş¿­
-I
-java:S1128".Remove this unused import 'java.util.Scanner'.(ÒÜÅ¸úÿÿÿÿ
+java:S1481é",Remove this unused "add0Num" local variable.(”œîºùÿÿÿÿJ$f75bdca5-fefb-46a0-b4e7-239b89ca83a4
+c
+java:S1481ë"&Remove this unused "k" local variable.(¢³¯¯J$45292d56-a5b4-412b-a678-3bc3f42d08f1
+j
+java:S1481î"(Remove this unused "key" local variable.(¢İ÷ìÿÿÿÿÿJ$e7409854-49e3-4502-8ae4-c2396ee6da2d
+”
+java:S3776•"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(ä¹ì¹ÿÿÿÿÿJ$f7e4822a-062e-4804-81fe-d14f60a81524
+b
+java:S2129–" Remove this "String" constructor( à‡ÖûÿÿÿÿJ$4c922a98-0bf7-4bd1-9c3a-8977c6b3f883
+‚
+java:S2147·"ECombine this catch with the one at line 309, which has the same body.(ï­£ÄJ$9199414d-38e7-4574-b2dc-c5a385bbee9c
+d
+java:S1481¥"'Remove this unused "is" local variable.(¿…‚J$8f73aa53-b7b2-4673-9880-330797188295
+c
+java:S1481²"&Remove this unused "k" local variable.(¢³¯¯J$97a678f2-002a-4981-85e5-24bb6e715b29
+‚
+java:S2147å"ECombine this catch with the one at line 355, which has the same body.(ï­£ÄJ$ed1adb72-b9af-45c1-a745-02b2de9442ee
+]
+java:S2129Â" Remove this "String" constructor(ß‰õ†J$a46562b0-dcaa-4ed2-972e-d4ead14bd667
+d
+java:S1481É"'Remove this unused "is" local variable.(¿…‚J$3f1d5da5-e140-46d4-b779-3e6934d6c0cc
+
+java:S3776ñ"RRefactor this method to reduce its Cognitive Complexity from 20 to the 15 allowed.(Á÷èõJ$64c92b69-5ee2-4fe0-acc5-d4d5ee83be1d
+
+java:S1854ò"?Remove this useless assignment to local variable "filenameOut".(—ŒË¢ÿÿÿÿÿJ$2e4cb366-62ef-4792-89f1-9eaead30cddb
+X
+java:S3626"Remove this redundant jump.(ÉŠ©ƒJ$90a6796a-64e3-4ae3-b685-33987154fb83
+b
+java:S2129ò" Remove this "String" constructor(—ŒË¢ÿÿÿÿÿJ$91a905a1-bada-4e2c-a585-23bd204f5ec7
+b
+java:S2129ó" Remove this "String" constructor(ÀÕÈãşÿÿÿÿJ$8af8daa6-cca1-4d37-91e7-31a6d39dc441
+]
+java:S2129ô" Remove this "String" constructor(Ş¿­J$ea1cfeed-44f7-4556-b50d-9f6da1d1d59f

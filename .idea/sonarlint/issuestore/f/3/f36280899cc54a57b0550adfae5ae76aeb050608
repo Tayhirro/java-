@@ -1,0 +1,22 @@
+
+	java:S101ˆ"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(›•¬8›½ñ•ş1J$ea7810a1-ea38-47df-b56f-9767a2d92631
+©
+java:S1488b"aImmediately return this expression instead of assigning it to the temporary variable "textPanel".(ÒÿÆşÿÿÿÿ8›½ñ•ş1J$ba39cb08-185f-4ec2-8628-467b58d62da3
+¢
+java:S1450"ZRemove the "diaryTitles" field and declare it as a local variable in the relevant methods.(îŞ­–øÿÿÿÿ8›½ñ•ş1J$c0e65688-a7e6-4aa0-be2a-51e19c35f72c
+Ÿ
+java:S1450"WRemove the "interest" field and declare it as a local variable in the relevant methods.(öˆ¼¯úÿÿÿÿ8ôÉö•ş1J$e488df92-45b4-42e0-9f21-38253e1893ac
+ 
+java:S1450"XRemove the "locations" field and declare it as a local variable in the relevant methods.(¶íÁ¹ûÿÿÿÿ8›½ñ•ş1J$dd3df702-f8de-42d1-a895-71a4b3620b05
+–
+java:S1450"SRemove the "rate" field and declare it as a local variable in the relevant methods.(Õ‡àª8›½ñ•ş1J$ce75ea7c-8ea1-4799-ba56-fd61420aa38d
+™
+java:S1450"VRemove the "readnum" field and declare it as a local variable in the relevant methods.(ğÀÊ8›½ñ•ş1J$ff997181-4fd9-4fd3-bfe8-9c537abdf1e8
+l
+java:S1948")Make "diaries" transient or serializable.(– ¯8›½ñ•ş1J$22d1de7d-81ef-4e30-9143-2d51d61c50c9
+h
+java:S2129T" Remove this "String" constructor(”ÀÅÒûÿÿÿÿ8©½ñ•ş1J$78cb4b13-95c2-456d-b5d2-af5673392ce8
+u
+java:S1128"3Remove this unused import 'java.io.BufferedWriter'.(¬õº/8Òçù•ş1J$d97fefbe-ac83-4a17-85e6-07c0cf278899
+u
+java:S1128	"-Remove this unused import 'java.util.Arrays'.(î–˜Éüÿÿÿÿ8Òçù•ş1J$6aed5b1b-a707-4bb4-a10c-953d91cbc7a4

@@ -1,21 +1,17 @@
 
 import java.util.*;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class RecommendationSystem {
 
-    private final User currUser;// 当前用户
-    private final UserManagement userManagement;// 用户管理对象
     private final SpotManagement spotManagement;// 景点管理对象
 
     private List<Spot> spots;// 所有景点
     private List<Spot> schools;// 学校
     private List<Spot> attractions;// 景点
 
-    RecommendationSystem(User currUser, UserManagement userManagement, SpotManagement spotManagement) {
-        this.currUser = currUser;
-        this.userManagement = userManagement;
+    RecommendationSystem(SpotManagement spotManagement) {
+
         this.spotManagement = spotManagement;
         // 加载初始数据
         loadInitialData();
@@ -47,9 +43,9 @@ public class RecommendationSystem {
 
     public List<Spot> sortSpots(List<Spot> spots, String criteria) {
         Comparator<Spot> comparator = null;
-        if ("Sort by Popularity".equals(criteria)) {
+        if ("热度".equals(criteria)) {
             comparator = Comparator.comparingLong(Spot::getPopularity).reversed();
-        } else if ("Sort by Rating".equals(criteria)) {
+        } else if ("评分".equals(criteria)) {
             comparator = Comparator.comparingDouble(Spot::getScore).reversed();
         }
 

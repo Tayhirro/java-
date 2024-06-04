@@ -4,6 +4,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.DefaultTableCellRenderer;
 
 public class LocationQueryPanel extends JPanel {
 
@@ -32,15 +36,11 @@ public class LocationQueryPanel extends JPanel {
         this.userManagement = userManagement;
         this.spotManagement = spotManagement;
 
-        locations = new String[locationQuerySystem.MAX_POINT];
-        type = new String[locationQuerySystem.MAX_POINT];
-        distances = new double[locationQuerySystem.MAX_POINT];
+        locations = new String[1000];
+        type = new String[1000];
+        distances = new double[1000];
         // (1) 展示景区或者学校内部设施数量
         num = locationQuerySystem.initData(locations, type, distances);
-        System.err.println("num: " + num);
-        for (int i = 0; i < num; i++) {
-            System.err.println(locations[i] + " " + type[i] + " " + distances[i]);
-        }
 
         // 所在景区输入框
         JPanel regionPanel = new JPanel(new BorderLayout());
@@ -63,7 +63,7 @@ public class LocationQueryPanel extends JPanel {
         // (3) 类别过滤
         JPanel filterPanel = new JPanel(new BorderLayout());
         filterPanel.setBorder(BorderFactory.createTitledBorder("类别"));
-        categoryComboBox = new JComboBox<>(new String[]{"所有", "教学楼", "宿舍楼", "生活设施", "体育设施", "行政办公", "家属区", "其他"});
+        categoryComboBox = new JComboBox<>(new String[]{"所有", "生活设施", "教学楼", "公寓楼", "食堂", "体育场所"});
         filterPanel.add(categoryComboBox, BorderLayout.CENTER);
 
         // (4) 名称查询
@@ -111,38 +111,12 @@ public class LocationQueryPanel extends JPanel {
 
         displayPanel = new TablePanel(locations, type, distances, num);
 
-        // 使用 GridBagLayout 布局
-        setLayout(new GridBagLayout());
+        // 使用 BorderLayout 设置内容面板
+        setLayout(new BorderLayout());
 
-        // 标题面板
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 5; // 标题面板占据5列宽
-        gbc.gridheight = 1; // 标题面板占据1行高
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
-        gbc.weighty = 0.1;
-        add(titlePanel, gbc);
-
-        // 查询面板, 侧边栏面板
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 1; // submitPanel 占据 1 列宽
-        gbc.gridheight = 9; // submitPanel 占据 9 行高
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 0.0;
-        gbc.weighty = 1.0;
-        add(sidebarPanel, gbc);
-
-        // 展示面板
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.gridwidth = 4; // graphPanel 占据 4 列宽
-        gbc.gridheight = 9; // graphPanel 占据 9 行高
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(displayPanel, gbc);
+        add(titlePanel, BorderLayout.NORTH); // 添加标题面板到内容面板
+        add(sidebarPanel, BorderLayout.WEST); // 添加侧边栏到内容面板
+        add(displayPanel, BorderLayout.CENTER); // 添加显示面板到内容面板
 
         // 添加事件监听器（示例，实际功能需要后端支持）
         searchButton.addActionListener(new ActionListener() {
@@ -173,12 +147,18 @@ public class LocationQueryPanel extends JPanel {
         }
         int positionId = locationQuerySystem.getPointId(userLocation); // 获取位置ID
         if (positionId == -1) {
-            JOptionPane.showMessageDialog(null, "当前位置不存在", "错误", JOptionPane.ERROR_MESSAGE); // 如果位置不存在，则弹出提示框
-            return;
-        }
-        // 所在地
-        num = locationQuerySystem.LocationQuery(positionId, query, range, category, locations, type, distances); // 查询附近场所
+            if (!userLocation.equals("") && userLocation != null) {
+                JOptionPane.showMessageDialog(null, "当前位置:" + userLocation + "不存在", "错误", JOptionPane.ERROR_MESSAGE); // 如果位置不存在，则弹出提示框
+                return;
+            } else {
+                num = locationQuerySystem.LocationQuery(query, category, locations, type, distances); // 查询附近场所
 
+            }
+
+        } // 所在地
+        else {
+            num = locationQuerySystem.LocationQuery(positionId, query, range, category, locations, type, distances); // 查询附近场所
+        }
         // 更新显示
         displayPanel.update(locations, type, distances, num);
 
@@ -193,10 +173,13 @@ class TablePanel extends JPanel {
     public TablePanel(String[] locations, String[] type, double[] distances, int num) {
 
         // 创建表格模型，包含三列：场所、类别和距离
-        tableModel = new DefaultTableModel();
-        tableModel.addColumn("场所");
-        tableModel.addColumn("类别");
-        tableModel.addColumn("距离/m");
+        String[] columnNames = {"场所", "类别", "距离/m"};
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // 所有单元格不可编辑
+            }
+        };
 
         // 将数据添加到表格模型中
         for (int i = 0; i < num; i++) {
@@ -205,27 +188,72 @@ class TablePanel extends JPanel {
 
         // 创建包含指定表格模型的 JTable
         JTable table = new JTable(tableModel);
+        TableColumnModel columnModel = table.getColumnModel();
 
         // 设置首选列宽度
-        table.getColumnModel().getColumn(0).setPreferredWidth(200);
-        table.getColumnModel().getColumn(1).setPreferredWidth(100);
-        table.getColumnModel().getColumn(2).setPreferredWidth(100);
+        columnModel.getColumn(0).setPreferredWidth(200);
+        columnModel.getColumn(1).setPreferredWidth(100);
+        columnModel.getColumn(2).setPreferredWidth(100);
 
-        // 设置表格字体大小
-        Font tableFont = table.getFont();
-        table.setFont(new Font(tableFont.getName(), Font.PLAIN, 14));
+        // 设置列内容居中显示
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 
-        // 设置自动调整列宽以填充所有列
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        // 内容不可编辑，但可以选择
-        table.setEnabled(false);
+        for (int i = 0; i < columnModel.getColumnCount(); i++) {
+            columnModel.getColumn(i).setCellRenderer(centerRenderer);
+        }
+
+        // 增加行高
+        table.setRowHeight(25);
+
+        // 设置表格列之间的间距
+        table.setIntercellSpacing(new Dimension(2, 2));
+
+        // 设置表格字体
+        table.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+
+        // 设置表格边框
+        table.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        // 设置表头的字体和背景
+        JTableHeader header = table.getTableHeader();
+        header.setFont(new Font("微软雅黑", Font.BOLD, 16));
+        header.setBackground(Color.GRAY);
+        header.setForeground(Color.WHITE);
+
+        table.setFillsViewportHeight(true);
+        TableColumn nameColumn = columnModel.getColumn(0);
+        nameColumn.setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                c.setBackground(new Color(255, 255, 204));  // 设置背景颜色
+                setHorizontalAlignment(SwingConstants.CENTER);  // 设置居中对齐
+                return c;
+            }
+        });
+
+        // 设置表格网格线颜色
+        table.setGridColor(Color.LIGHT_GRAY);
+
+        // 设置表格行的颜色
+        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if (!isSelected) {
+                    c.setBackground(row % 2 == 0 ? Color.LIGHT_GRAY : Color.WHITE);
+                } else {
+                    c.setBackground(Color.YELLOW);
+                }
+                return c;
+            }
+        });
 
         // 创建表格的滚动面板
         JScrollPane scrollPane = new JScrollPane(table);
 
         // 使用 BorderLayout 设置内容面板
         setLayout(new BorderLayout());
-        setBorder(BorderFactory.createTitledBorder("设施展示"));
 
         add(scrollPane, BorderLayout.CENTER); // 添加滚动面板到内容面板
 

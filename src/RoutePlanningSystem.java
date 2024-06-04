@@ -80,15 +80,25 @@ public class RoutePlanningSystem {
                 sidewalk[sidewalkEdgeNum] = new MyEdge(from, to, sidewalkHeads[from], length, crowding);
                 sidewalkHeads[from] = sidewalkEdgeNum;
                 sidewalkEdgeNum++;
+                sidewalk[sidewalkEdgeNum] = new MyEdge(to, from, sidewalkHeads[to], length, crowding);
+                sidewalkHeads[to] = sidewalkEdgeNum;
+                sidewalkEdgeNum++;
+
                 break;
             case "cycleway":
                 cycleway[cyclewayEdgeNum] = new MyEdge(from, to, cyclewayHeads[from], length, crowding);
                 cyclewayHeads[from] = cyclewayEdgeNum;
                 cyclewayEdgeNum++;
+                cycleway[cyclewayEdgeNum] = new MyEdge(to, from, cyclewayHeads[to], length, crowding);
+                cyclewayHeads[to] = cyclewayEdgeNum;
+                cyclewayEdgeNum++;
                 break;
             case "road":
                 road[roadEdgeNum] = new MyEdge(from, to, roadHeads[from], length, crowding);
                 roadHeads[from] = roadEdgeNum;
+                roadEdgeNum++;
+                road[roadEdgeNum] = new MyEdge(to, from, roadHeads[to], length, crowding);
+                roadHeads[to] = roadEdgeNum;
                 roadEdgeNum++;
                 break;
             default:
@@ -98,8 +108,16 @@ public class RoutePlanningSystem {
 
     // 获取点的编号
     int getPointId(String name) {
+        if (name.equals("")) {
+            return -2;
+        }
         for (int i = 0; i < pointNum; i++) {
             if (point[i].name.equals(name)) {
+                return i;
+            }
+        }
+        for (int i = 0; i < pointNum; i++) {
+            if (point[i].name.contains(name)) {
                 return i;
             }
         }
@@ -198,36 +216,29 @@ public class RoutePlanningSystem {
 
     //迪杰斯特拉算法
     double dijkstra(int startId, int endId, MyEdge[] edge, int[] heads, double[] weight, int[] path, double[] dist) {
-
+        int pointNum = dist.length;
         int[] prev = new int[pointNum];
         boolean[] visited = new boolean[pointNum];
+
         for (int i = 0; i < pointNum; i++) {
             dist[i] = Double.MAX_VALUE;
             prev[i] = -1;
             visited[i] = false;
         }
         dist[startId] = 0;
-        for (int i = 1; i <= pointNum; i++) {//循环n-1次,每次找到一个最短路径
-            double mindis = Double.MAX_VALUE;//找到未访问的点中距离最小的点的距离
-            int updateId = -2;
-            for (int j = 0; j < pointNum; j++) {//找到最近的点
-                if (!visited[j] && dist[j] < mindis) {
-                    mindis = dist[j];
-                    updateId = j;
-                }
-            }
-            if (updateId == -2) {//找不到未访问的点
-                break;
-            }
-            if (updateId == endId) {//找到终点,开启提前退出
-                path[0] = 0;
 
+        PriorityQueue pq = new PriorityQueue(pointNum, dist);
+        pq.insert(startId);
+
+        while (!pq.isEmpty()) {
+            int updateId = pq.delMin();
+
+            if (updateId == endId) {
+                path[0] = 0;
                 int[] temppath = new int[pointNum];
                 for (int j = endId; j != -1; j = prev[j]) {
                     temppath[path[0]++] = j;
                 }
-
-                //倒置path
                 for (int j = path[0] - 1; j >= 0; j--) {
                     path[path[0] - j] = temppath[j];
                 }
@@ -235,56 +246,62 @@ public class RoutePlanningSystem {
             }
 
             visited[updateId] = true;
-            for (int u = heads[updateId]; u != -1; u = edge[u].nextId) {// 根据updateId更新其他点的距离
+            for (int u = heads[updateId]; u != -1; u = edge[u].nextId) {
                 if (!visited[edge[u].to] && dist[updateId] + weight[u] < dist[edge[u].to]) {
                     dist[edge[u].to] = dist[updateId] + weight[u];
                     prev[edge[u].to] = updateId;
+                    pq.insert(edge[u].to);
                 }
             }
         }
-        if (endId != -1) {
-            System.out.println("warning: dij : there is no path between " + point[startId].name + " and " + point[endId].name);
+        if (endId == -1) {
+            return -2;
         }
+        System.out.println("warning: dij : there is no path between " + point[startId].name + " and " + point[endId].name);
         return -1;
-
     }
 
     //旅行商问题,返回最短路径长度,路径存储在path数组中,预处理函数
     double tsp(int startId, int[] endId, String edgeType, boolean isTime, int[] path) {
-        //传入数据预处理
+        //传入数据初始化
         MyEdge[] edge;
         int[] heads;
         int speed;
+        int edgeNum;
         switch (edgeType) {
             case "sidewalk":
                 edge = sidewalk;
                 heads = sidewalkHeads;
+                edgeNum = sidewalkEdgeNum;
                 speed = 1;
                 break;
             case "cycleway":
                 edge = cycleway;
                 heads = cyclewayHeads;
+                edgeNum = cyclewayEdgeNum;
                 speed = 5;
                 break;
             case "road":
                 edge = road;
                 heads = roadHeads;
+                edgeNum = roadEdgeNum;
                 speed = 10;
                 break;
             default:
-                System.out.println("Error: tsp :unknown type");
+                System.out.println("Error: dijkstraLength :unknown type");
                 return -1;
         }
-        double[] weight = new double[MAX_POINT];
+        double[] weight = new double[edgeNum];
         if (isTime) {
-            for (int i = 0; i < pointNum; i++) {
+            for (int i = 0; i < edgeNum; i++) {
                 weight[i] = edge[i].length / edge[i].crowding / speed;
             }
         } else {
-            for (int i = 0; i < pointNum; i++) {
+            for (int i = 0; i < edgeNum; i++) {
                 weight[i] = edge[i].length;
             }
         }
+
         int cycleNum = endId.length + 1;
         int[] cyclepointId = new int[cycleNum];
         double[][] shortestDist = new double[cycleNum][cycleNum];
@@ -303,43 +320,58 @@ public class RoutePlanningSystem {
                 shortestDist[cycleI][cycleJ] = dist[cyclepointId[cycleJ]];
             }
         }//√
+        // System.out.println("shortestDist:");
+        // for (int i = 0; i < cycleNum; i++) {
+        //     System.out.print(point[cyclepointId[i]].name + " ");
+        // }
+        // System.out.println();
 
         int[] shortPath = new int[cycleNum + 1];
         double dist = tsp(cycleNum, shortestDist, shortPath);
+
         //将编号转换为点的编号
         for (int i = 0; i <= cycleNum; i++) {
             shortPath[i] = cyclepointId[shortPath[i]];
         }
-        System.out.println("shortpath:");
-        for (int i = 0; i <= cycleNum; i++) {
-            System.out.print(shortPath[i] + " ");
-        }
-        System.out.println();
+        // System.out.println("shortpath:");
+        // for (int i = 0; i <= cycleNum; i++) {
+        //     System.out.print(point[shortPath[i]].name + " ");
+        // }
+        // System.out.println();
 
-        //path填充
+        //path填充,有bug，待修复
         int[] segPath = new int[pointNum + 5];
         double[] distTemp = new double[pointNum + 5];
         path[0] = 0;
         path[++path[0]] = shortPath[0];
         for (int i = 0; i < cycleNum; i++) {
-            dijkstra(shortPath[i], shortPath[i + 1], edge, heads, weight, segPath, distTemp);
+            double seglen = dijkstra(shortPath[i], shortPath[i + 1], edge, heads, weight, segPath, distTemp);
 
             for (int j = 2; j <= segPath[0]; j++) {
                 path[++path[0]] = segPath[j];
             }
-        }
 
-        System.err.println("path:" + path[0]);
-        for (int i = 1; i <= path[0]; i++) {
-            System.err.print(point[path[i]].name + " ");
+            segPath[0] = 0;
         }
-        System.err.println("tsp:" + dist);
+        // System.out.println();
+        // System.err.println("totle path:" + path[0]);
+        // for (int i = 1; i <= path[0]; i++) {
+        //     System.err.print(point[path[i]].name + " ");
+        // }
+        // System.err.println("tsp:" + dist);
         return dist;
     }
 
     //动态规划求解旅行商问题,有bug，待修复
     static double tsp(int N, double[][] dist, int[] path) {
         System.out.println("环路节点数:" + N);
+        System.out.println("距离矩阵:");
+        // for (int i = 0; i < N; i++) {
+        //     for (int j = 0; j < N; j++) {
+        //         System.out.print(dist[i][j] + " ");
+        //     }
+        //     System.out.println();
+        // }
         final int M = 1 << (N - 1);
         final double INF = 1e7;
         double[][] dp = new double[N][M];
@@ -394,4 +426,62 @@ public class RoutePlanningSystem {
         return true;
     }
 
+}
+// 优先队列
+
+class PriorityQueue {
+
+    private int[] heap;
+    private double[] dist;
+    private int size;
+
+    public PriorityQueue(int capacity, double[] dist) {
+        heap = new int[capacity + 1];
+        this.dist = dist;
+        size = 0;
+    }
+
+    public void insert(int x) {
+        heap[++size] = x;
+        swim(size);
+    }
+
+    public int delMin() {
+        int min = heap[1];
+        swap(1, size--);
+        sink(1);
+        heap[size + 1] = 0; // Avoid loitering
+        return min;
+    }
+
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    private void swim(int k) {
+        while (k > 1 && dist[heap[k]] < dist[heap[k / 2]]) {
+            swap(k, k / 2);
+            k = k / 2;
+        }
+    }
+
+    private void sink(int k) {
+        while (2 * k <= size) {
+            int j = 2 * k;
+            if (j < size && dist[heap[j]] > dist[heap[j + 1]]) {
+                j++;
+            }
+            if (dist[heap[k]] <= dist[heap[j]]) {
+                break;
+            }
+            swap(k, j);
+            k = j;
+        }
+    }
+
+    private void swap(int i, int j) {
+        int temp = heap[i];
+        heap[i] = heap[j];
+        heap[j] = temp;
+    }
 }

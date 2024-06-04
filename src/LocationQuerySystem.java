@@ -31,12 +31,21 @@ public class LocationQuerySystem {
         edge[edgeNum] = new MyEdge(from, to, heads[from], length, crowding);
         heads[from] = edgeNum;
         edgeNum++;
+        edge[edgeNum] = new MyEdge(to, from, heads[to], length, crowding);
+        heads[to] = edgeNum;
+        edgeNum++;
+
     }
 
     // 获取点的编号
     int getPointId(String name) {
         for (int i = 0; i < pointNum; i++) {
             if (point[i].name.equals(name)) {
+                return i;
+            }
+        }
+        for (int i = 0; i < pointNum; i++) {
+            if (KMP.kmpMatch(point[i].name, name) != -1) {
                 return i;
             }
         }
@@ -67,15 +76,15 @@ public class LocationQuerySystem {
             System.out.println("point.txt or edge.txt not found.");
             e.printStackTrace();
         }
-        System.out.println("LocationQuerySystem Load data successfully.");
-        System.out.println("Point number: " + pointNum);
-        for (int i = 0; i < pointNum; i++) {
-            System.out.println(point[i].name + " " + point[i].x + " " + point[i].y + " " + point[i].type);
-        }
-        System.out.println("Edge number: " + edgeNum);
-        for (int i = 0; i < edgeNum; i++) {
-            System.out.println(edge[i].from + " " + edge[i].to + " " + edge[i].length + " " + edge[i].crowding);
-        }
+        // System.out.println("LocationQuerySystem Load data successfully.");
+        // System.out.println("Point number: " + pointNum);
+        // for (int i = 0; i < pointNum; i++) {
+        //     System.out.println(point[i].name + " " + point[i].x + " " + point[i].y + " " + point[i].type);
+        // }
+        // System.out.println("Edge number: " + edgeNum);
+        // for (int i = 0; i < edgeNum; i++) {
+        //     System.out.println(edge[i].from + " " + edge[i].to + " " + edge[i].length + " " + edge[i].crowding);
+        // }
 
     }
 
@@ -86,52 +95,54 @@ public class LocationQuerySystem {
             if (!point[i].type.equals("道路")) {
                 locations[count] = point[i].name;
                 type[count] = point[i].type;
-                distances[count] = 0;
+                distances[count] = -1.00;
 
                 count++;
             }
         }
-        System.out.println("initData count: " + count);
-        for (int i = 0; i < count; i++) {
-            System.out.println(locations[i] + " " + type[i] + " " + distances[i]);
+        // System.out.println("initData count: " + count);
+        // for (int i = 0; i < count; i++) {
+        //     System.out.println(locations[i] + " " + type[i] + " " + distances[i]);
 
-        }
-
+        // }
         return count;
     }
 
-    int LocationQuery(int position, String Location, String range, String category, String[] ansLocations, String[] ansTypes, double[] ansDistances) {
+    int LocationQuery(int fromid, String query, String range, String category, String[] ansLocations, String[] ansTypes, double[] ansDistances) {
         double scale = 0.65;// 比例尺
-        // 使用dij计算所有点到 position 点的距离
+        // 使用dij计算所有点到 fromid 点的距离
         //迪杰斯特拉算法
-        double[] dist = new double[pointNum];
-        boolean[] visited = new boolean[pointNum];
+        //System.out.println("from: " + fromid + " query: " + query + " range: " + range + " category: " + category);
+
+        Distwithid distwithid[] = new Distwithid[MAX_POINT];
+        boolean[] visited = new boolean[MAX_POINT];
         for (int i = 0; i < pointNum; i++) {
-            dist[i] = Double.MAX_VALUE;
+            distwithid[i] = new Distwithid(i, Double.MAX_VALUE);
             visited[i] = false;
         }
-        dist[position] = 0;
+
+        distwithid[fromid].dist = 0;
         for (int i = 1; i < pointNum; i++) {//循环n-1次,每次找到一个最短路径
             double mindis = Double.MAX_VALUE;//找到未访问的点中距离最小的点的距离
-            int updateId = -1;
+            int updateId = -2;
             for (int j = 0; j < pointNum; j++) {//找到最近的点
-                if (!visited[j] && dist[j] < mindis) {
-                    mindis = dist[j];
+                if (!visited[j] && distwithid[j].dist < mindis) {
+                    mindis = distwithid[j].dist;
                     updateId = j;
                 }
             }
-            if (updateId == -1) {//找不到未访问的点
+            if (updateId == -2) {//找不到未访问的点
                 break;
             }
             visited[updateId] = true;
             for (int u = heads[updateId]; u != -1; u = edge[u].nextId) {// 根据updateId更新其他点的距离
-                if (!visited[edge[u].to] && dist[updateId] + edge[u].length < dist[edge[u].to]) {
-                    dist[edge[u].to] = dist[updateId] + edge[u].length;
+                if (!visited[edge[u].to] && distwithid[updateId].dist + edge[u].length < distwithid[edge[u].to].dist) {
+                    distwithid[edge[u].to].dist = distwithid[updateId].dist + edge[u].length;
                 }
             }
         }
 
-        DoubleQuickSort.quickSort(dist, 0, pointNum - 1);
+        DoubleQuickSort.quickSort(distwithid, 0, pointNum - 1);
         int count = 0;
         double rangeDouble = -1;
         //range是100米,要转为double
@@ -152,27 +163,61 @@ public class LocationQuerySystem {
         }
 
         for (int i = 0; i < pointNum; i++) {
-            if (KMP.kmpMatch(point[i].name, Location) != -1 && (rangeDouble == -1 || dist[i] * scale <= rangeDouble) && (category.equals("所有") || point[i].type.equals(category))) {
+            if (rangeDouble != -1 && distwithid[i].dist > rangeDouble) {
+                break;
+            }
+            if (KMP.kmpMatch(point[distwithid[i].id].name, query) != -1 && (category.equals("所有") || point[distwithid[i].id].type.equals(category))) {
+                if ((point[distwithid[i].id].type.equals("道路"))) {
+                    continue;
+                }
+                ansLocations[count] = point[distwithid[i].id].name;
+                ansDistances[count] = distwithid[i].dist * scale;//保留两位小数
+                ansDistances[count] = (double) Math.round(ansDistances[count] * 100) / 100;
+                ansTypes[count] = point[distwithid[i].id].type;
+                // System.out.println(ansLocations[count] + " " + ansTypes[count] + " " + ansDistances[count]);
+                count++;
+            }
+        }
+        return count;
+    }
+
+    int LocationQuery(String Location, String category, String[] ansLocations, String[] ansTypes, double[] ansDistances) {
+
+        int count = 0;
+        for (int i = 0; i < pointNum; i++) {
+            if (KMP.kmpMatch(point[i].name, Location) != -1 && ((category.equals("所有") && !point[i].type.equals("道路")) || point[i].type.equals(category))) {
                 ansLocations[count] = point[i].name;
-                ansDistances[count] = dist[i] * scale;
+                ansDistances[count] = -1.00;
+
                 ansTypes[count] = point[i].type;
                 count++;
             }
         }
 
-        System.out.println("LocationQuery count: " + count);
-        for (int i = 0; i < count; i++) {
-            System.out.println(ansLocations[i] + " " + ansTypes[i] + " " + ansDistances[i]);
-        }
+        // System.out.println("LocationQuery count: " + count);
+        // for (int i = 0; i < count; i++) {
+        //     System.out.println(ansLocations[i] + " " + ansTypes[i] + " " + ansDistances[i]);
+        // }
         return count;
     }
 
 }
 
+class Distwithid {
+
+    int id;
+    double dist;
+
+    public Distwithid(int id, double dist) {
+        this.id = id;
+        this.dist = dist;
+    }
+}
+
 class DoubleQuickSort {
 
     // 快速排序函数
-    public static void quickSort(double[] arr, int low, int high) {
+    public static void quickSort(Distwithid[] arr, int low, int high) {
         if (low < high) {
             // 获取分区点
             int pi = partition(arr, low, high);
@@ -184,22 +229,22 @@ class DoubleQuickSort {
     }
 
     // 分区函数，用于确定分区点并重新排列数组
-    public static int partition(double[] arr, int low, int high) {
-        double pivot = arr[high];
+    public static int partition(Distwithid[] arr, int low, int high) {
+        double pivot = arr[high].dist;
         int i = low - 1;
         for (int j = low; j < high; j++) {
-            if (arr[j] < pivot) {
+            if (arr[j].dist < pivot) {
                 i++;
 
                 // 交换 arr[i] 和 arr[j]
-                double temp = arr[i];
+                Distwithid temp = arr[i];
                 arr[i] = arr[j];
                 arr[j] = temp;
             }
         }
 
         // 将分区点放到正确的位置上
-        double temp = arr[i + 1];
+        Distwithid temp = arr[i + 1];
         arr[i + 1] = arr[high];
         arr[high] = temp;
 

@@ -1,7 +1,12 @@
 
-]
-java:S1220""Move this file to a named package.8†δεύ1J$2d531ccb-d62e-4811-93b2-ed92f0eceead
-r	java:S106;"+Replace this use of System.out by a logger.(“¨ΚΎψÿÿÿÿ8‘δεύ1J$673d2f51-e335-4e70-833c-cb2b1addc6ec
-r	java:S106D"+Replace this use of System.out by a logger.(υκ¥Δόÿÿÿÿ8“δεύ1J$ad84dcb9-d046-4342-8441-8da9377efaa3
+f
+java:S1192Ε"HDefine a constant instead of duplicating this literal "Index: " 3 times.(‡ÿ¦8ν•ώ1
+g
+java:S1192Ε"IDefine a constant instead of duplicating this literal ", Size: " 3 times.(‡ÿ¦8ν•ώ1
+r	java:S106R"+Replace this use of System.out by a logger.(“¨ΚΎψÿÿÿÿ8‘δεύ1J$673d2f51-e335-4e70-833c-cb2b1addc6ec
+r	java:S106["+Replace this use of System.out by a logger.(υκ¥Δόÿÿÿÿ8“δεύ1J$ad84dcb9-d046-4342-8441-8da9377efaa3
+l	java:S116"ORename this field "SIZE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(†’Ξ8ν•ώ1
+?
+java:S1170"!Make this final field static too.(†’Ξ8ν•ώ1
 u
-java:S1068"-Remove this unused "isWelcome" private field.(¨ÿθΚωÿÿÿÿ8•δεύ1J$b8b18a94-c34c-443b-b5f9-0295016c2b65
+java:S1068"-Remove this unused "isWelcome" private field.(¨ÿθΚωÿÿÿÿ8•δεύ1J$b8b18a94-c34c-443b-b5f9-0295016c2b65

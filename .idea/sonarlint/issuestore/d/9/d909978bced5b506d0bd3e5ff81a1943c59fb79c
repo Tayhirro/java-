@@ -1,8 +1,20 @@
 
-0
-java:S1220""Move this file to a named package.
-K
-java:S1948
-"0Make "userManagement" transient or serializable.(…â¡èýÿÿÿÿ
-F
-java:S1948"0Make "spotManagement" transient or serializable.(ûõÄÙ
+D
+java:S1604G"(Make this anonymous inner class a lambda(õïD8äÑ…—þ1
+½
+java:S6539"ŸSplit this â€œMonster Classâ€ into smaller and more specialized ones to reduce its dependencies on other classes from 24 to the maximum authorized 20 or less.(£«ÿä8çÑ…—þ1
+}	java:S116"\Rename this field "RatingRadioButton" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(²©™ñøÿÿÿÿ8íÑ…—þ1
+R
+java:S1948"0Make "userManagement" transient or serializable.(å˜´®øÿÿÿÿ8ŠÒ…—þ1
+M
+java:S1948"0Make "spotManagement" transient or serializable.(ŒëÃ¨8ŠÒ…—þ1
+R
+java:S1948"0Make "foodManagement" transient or serializable.(ÑÆ¤Ðüÿÿÿÿ8ŠÒ…—þ1
+`
+java:S1854y">Remove this useless assignment to local variable "scenicSpot".(úÃ§ñøÿÿÿÿ8 Ò…—þ1
+Q
+java:S1481y"/Remove this unused "scenicSpot" local variable.(úÃ§ñøÿÿÿÿ8 Ò…—þ1
+N
+java:S1068",Remove this unused "currUser" private field.(Ê“åÇùÿÿÿÿ8´Ò…—þ1
+T
+java:S1068"2Remove this unused "userManagement" private field.(å˜´®øÿÿÿÿ8´Ò…—þ1

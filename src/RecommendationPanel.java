@@ -1,186 +1,200 @@
-import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.swing.*;
 
-// 游学推荐页面
 public class RecommendationPanel extends JPanel {
 
-    private final User currUser;// 当前用户
-    private final UserManagement userManagement;// 用户管理对象
-    private final SpotManagement spotManagement;// 景点管理对象
-
-
-    private JTextField searchField;// 搜索框
-    private JComboBox<String> sortComboBox;// 排序下拉框
-    private JPanel preferencePanel;// 偏好设置面板
-    private JPanel schoolPanel;// 学校展示面板
-    private JPanel attractionPanel;// 景点展示面板
-    private JScrollPane schoolScrollPane;// 学校滚动面板
-    private JScrollPane attractionScrollPane;// 景点滚动面板
-    private JPanel leftPanel;// 左侧面板
+    private JTextField searchField;
+    private JComboBox<String> sortComboBox;
+    private JPanel preferencePanel;
+    private JPanel schoolPanel;
+    private JPanel attractionPanel;
+    private Map<Spot, JPanel> schoolItemPanelDy;
+    private Map<Spot, JPanel> schoolItemPanelSt;
+    private Map<Spot, JPanel> attractionItemPanel;
+    private JScrollPane schoolScrollPane;
+    private JScrollPane attractionScrollPane;
+    private JPanel leftPanel;
     private RecommendationSystem recommendationSystem;
+    private List<Spot> currentDisplayedSchools;
+    private List<Spot> currentDisplayedAttractions;
 
+    private Spot lastClickedSchool = null;
+    private Spot lastClickedAttraction = null;
 
-    public RecommendationPanel(User currUser, UserManagement userManagement, SpotManagement spotManagement) {
-        this.currUser = currUser;
-        this.userManagement = userManagement;
-        this.spotManagement = spotManagement;
+    public RecommendationPanel(SpotManagement spotManagement) {
 
-        this.recommendationSystem = new RecommendationSystem(currUser, userManagement, spotManagement);
+        this.recommendationSystem = new RecommendationSystem(spotManagement);
 
-        setLayout(new BorderLayout());
-        add(new JLabel("游学推荐页面"), BorderLayout.CENTER);
+        schoolItemPanelDy = new HashMap<>();
+        schoolItemPanelSt = new HashMap<>();
+        attractionItemPanel = new HashMap<>();
+
+        for (Spot spot : recommendationSystem.getInitialSchools()) {
+            JPanel panel = createItemPanel(spot, true);
+            schoolItemPanelDy.put(spot, panel);
+            panel = createItemPanel(spot, false);
+            schoolItemPanelSt.put(spot, panel);
+        }
+        for (Spot spot : recommendationSystem.getInitialAttractions()) {
+            JPanel panel = createItemPanel(spot, false);
+            attractionItemPanel.put(spot, panel);
+        }
+
+        setLayout(new GridLayout(1, 3));
 
         leftPanel = getLeftPanel();
-
         schoolScrollPane = getMiddlePanel();
-
         attractionScrollPane = getRightPanel();
 
-        add(leftPanel, BorderLayout.WEST);
-        add(schoolScrollPane, BorderLayout.CENTER);
-        add(attractionScrollPane, BorderLayout.EAST);
+        add(leftPanel);
+        add(schoolScrollPane);
+        add(attractionScrollPane);
 
-        setSpots(recommendationSystem.getInitialSchools(), "school");
-        setSpots(recommendationSystem.getInitialAttractions(), "attraction");
+        currentDisplayedSchools = recommendationSystem.getInitialSchools();
+        currentDisplayedAttractions = recommendationSystem.getInitialAttractions();
 
+        displaySpots(currentDisplayedSchools, "school", schoolItemPanelDy);
+        displaySpots(currentDisplayedAttractions, "attraction", attractionItemPanel);
     }
 
+    private JPanel createItemPanel(Spot spot, boolean type) {
+        JPanel ItemPanel = new JPanel();
+        BoxLayout boxLayout = new BoxLayout(ItemPanel, BoxLayout.Y_AXIS);
+        ItemPanel.setLayout(boxLayout);
 
-    public void setSpots(List<Spot> spots, String type) {
-        if (type.equals("school")) {
-            schoolPanel.removeAll();
-            for (Spot spot : spots) {
-                JPanel schoolItemPanel = new JPanel();
-                BoxLayout boxLayout = new BoxLayout(schoolItemPanel, BoxLayout.Y_AXIS);
-                schoolItemPanel.setLayout(boxLayout);
+        ImageIcon originalIcon = new ImageIcon(spot.getImages()[0]);
+        Image originalImage = originalIcon.getImage();
+        Image scaledImage = originalImage.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        JLabel Image = new JLabel(new ImageIcon(scaledImage));
+        Image.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-                ImageIcon originalIcon = new ImageIcon(spot.getImages()[0]);
-                Image originalImage = originalIcon.getImage();
-                Image scaledImage = originalImage.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-                JLabel schoolImage = new JLabel(new ImageIcon(scaledImage));
-                schoolImage.setAlignmentX(Component.CENTER_ALIGNMENT); // 设置图片居中
+        if (type) {
+            Image.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    updateAttractionsForSchool(spot);
+                }
 
-                schoolImage.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseEntered(MouseEvent e) {
-                        updateAttractionsForSchool(spot);
-                    }
-                    @Override
-                    public void mouseExited(MouseEvent e) {
-                        restoreOriginalState();
-                    }
-                });
-
-                JLabel schoolName = new JLabel(spot.getName());
-                schoolName.setHorizontalAlignment(JLabel.CENTER); // 设置文本居中
-                schoolName.setAlignmentX(Component.CENTER_ALIGNMENT); // 设置文本居中
-
-                JLabel schoolTags = new JLabel(String.join(", ", spot.getTags()));
-                schoolTags.setHorizontalAlignment(JLabel.CENTER); // 设置文本居中
-                schoolTags.setAlignmentX(Component.CENTER_ALIGNMENT); // 设置文本居中
-
-                schoolItemPanel.add(schoolImage);
-                schoolItemPanel.add(Box.createVerticalStrut(5)); // 创建一个垂直间距，高度为5
-                schoolItemPanel.add(schoolName);
-                schoolItemPanel.add(Box.createVerticalStrut(5)); // 创建一个垂直间距，高度为5
-                schoolItemPanel.add(schoolTags);
-
-                schoolPanel.add(schoolItemPanel);
-            }
-        } else if (type.equals("attraction")) {
-            attractionPanel.removeAll();
-            for (Spot spot : spots) {
-                JPanel attractionItemPanel = new JPanel();
-                BoxLayout boxLayout = new BoxLayout(attractionItemPanel, BoxLayout.Y_AXIS);
-                attractionItemPanel.setLayout(boxLayout);
-
-                ImageIcon originalIcon = new ImageIcon(spot.getImages()[0]);
-                Image originalImage = originalIcon.getImage();
-                Image scaledImage = originalImage.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-                JLabel attractionImage = new JLabel(new ImageIcon(scaledImage));
-                attractionImage.setAlignmentX(Component.CENTER_ALIGNMENT); // 设置图片居中
-
-                JLabel attractionName = new JLabel(spot.getName());
-                attractionName.setHorizontalAlignment(JLabel.CENTER); // 设置文本居中
-                attractionName.setAlignmentX(Component.CENTER_ALIGNMENT); // 设置文本居中
-
-                JLabel attractionTags = new JLabel(String.join(", ", spot.getTags()));
-                attractionTags.setHorizontalAlignment(JLabel.CENTER); // 设置文本居中
-                attractionTags.setAlignmentX(Component.CENTER_ALIGNMENT); // 设置文本居中
-
-                attractionItemPanel.add(attractionImage);
-                attractionItemPanel.add(Box.createVerticalStrut(5)); // 创建一个垂直间距，高度为5
-                attractionItemPanel.add(attractionName);
-                attractionItemPanel.add(Box.createVerticalStrut(5)); // 创建一个垂直间距，高度为5
-                attractionItemPanel.add(attractionTags);
-
-                attractionPanel.add(attractionItemPanel);
-            }
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    restoreOriginalState(currentDisplayedSchools, currentDisplayedAttractions, schoolItemPanelDy, false);
+                }
+            });
         }
+        Image.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                showSpotDetails(spot);
+            }
+        });
+
+        JLabel Name = new JLabel(spot.getName());
+        Name.setHorizontalAlignment(JLabel.CENTER);
+        Name.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel Tags = new JLabel(String.join(", ", spot.getTags()));
+        Tags.setHorizontalAlignment(JLabel.CENTER);
+        Tags.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        ItemPanel.add(Image);
+        ItemPanel.add(Box.createVerticalStrut(5));
+        ItemPanel.add(Name);
+        ItemPanel.add(Box.createVerticalStrut(5));
+        ItemPanel.add(Tags);
+
+        return ItemPanel;
+    }
+
+    private void showSpotDetails(Spot spot) {
+
+        String type = spot.getType();
+
+        JPanel panelToUpdate = new JPanel();
+        panelToUpdate.setLayout(new BoxLayout(panelToUpdate, BoxLayout.Y_AXIS));
+
+        if (type.equals("school")) {
+            if (lastClickedSchool == spot) {
+                attractionPanel.removeAll();
+                restoreOriginalState(currentDisplayedSchools, currentDisplayedAttractions, schoolItemPanelSt, false);
+                lastClickedSchool = null;
+                return;
+            }
+            lastClickedSchool = spot;
+        } else {
+            if (lastClickedAttraction == spot) {
+                schoolPanel.removeAll();
+                restoreOriginalState(currentDisplayedSchools, currentDisplayedAttractions, schoolItemPanelSt, false);
+                lastClickedAttraction = null;
+                return;
+            }
+            lastClickedAttraction = spot;
+        }
+
+        JLabel nameLabel = new JLabel(spot.getName(), JLabel.CENTER);
+        nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panelToUpdate.add(nameLabel);
+        panelToUpdate.add(Box.createVerticalStrut(10));
+
+        JPanel imagesPanel = new JPanel();
+        imagesPanel.setLayout(new BoxLayout(imagesPanel, BoxLayout.Y_AXIS));
+        for (String imagePath : spot.getImages()) {
+            ImageIcon originalIcon = new ImageIcon(imagePath);
+            Image originalImage = originalIcon.getImage();
+            Image scaledImage = originalImage.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+            JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
+            imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            imagesPanel.add(imageLabel);
+            imagesPanel.add(Box.createVerticalStrut(5));
+        }
+        JScrollPane imagesScrollPane = new JScrollPane(imagesPanel);
+        panelToUpdate.add(imagesScrollPane);
+        panelToUpdate.add(Box.createVerticalStrut(10));
+
+        JTextArea descriptionArea = new JTextArea(spot.getDescription());
+        descriptionArea.setLineWrap(true);
+        descriptionArea.setWrapStyleWord(true);
+        descriptionArea.setEditable(false);
+        descriptionArea.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JScrollPane descriptionScrollPane = new JScrollPane(descriptionArea);
+        panelToUpdate.add(descriptionScrollPane);
+
+        if (type.equals("school")) {
+            attractionPanel.removeAll();
+            attractionPanel.add(panelToUpdate);
+//            attractionScrollPane.remove(attractionPanel);
+//            attractionScrollPane.add(panelToUpdate);
+        } else {
+            schoolPanel.removeAll();
+            schoolPanel.add(panelToUpdate);
+//            schoolScrollPane.remove(schoolPanel);
+//            schoolScrollPane.add(panelToUpdate);
+        }
+
         revalidate();
         repaint();
     }
 
-    public void setSpots1(List<Spot> spots, String type) {
+    private void displaySpots(List<Spot> spots, String type, Map<Spot, JPanel> itemPanelMap) {
         if (type.equals("school")) {
+            schoolPanel.removeAll();
             for (Spot spot : spots) {
-                JPanel schoolItemPanel = new JPanel();
-                BoxLayout boxLayout = new BoxLayout(schoolItemPanel, BoxLayout.Y_AXIS);
-                schoolItemPanel.setLayout(boxLayout);
-
-                ImageIcon originalIcon = new ImageIcon(spot.getImages()[0]);
-                Image originalImage = originalIcon.getImage();
-                Image scaledImage = originalImage.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-                JLabel schoolImage = new JLabel(new ImageIcon(scaledImage));
-                schoolImage.setAlignmentX(Component.CENTER_ALIGNMENT); // 设置图片居中
-
-                JLabel schoolName = new JLabel(spot.getName());
-                schoolName.setHorizontalAlignment(JLabel.CENTER); // 设置文本居中
-                schoolName.setAlignmentX(Component.CENTER_ALIGNMENT); // 设置文本居中
-
-                JLabel schoolTags = new JLabel(String.join(", ", spot.getTags()));
-                schoolTags.setHorizontalAlignment(JLabel.CENTER); // 设置文本居中
-                schoolTags.setAlignmentX(Component.CENTER_ALIGNMENT); // 设置文本居中
-
-                schoolItemPanel.add(schoolImage);
-                schoolItemPanel.add(Box.createVerticalStrut(5)); // 创建一个垂直间距，高度为5
-                schoolItemPanel.add(schoolName);
-                schoolItemPanel.add(Box.createVerticalStrut(5)); // 创建一个垂直间距，高度为5
-                schoolItemPanel.add(schoolTags);
-
-                schoolPanel.add(schoolItemPanel);
+                JPanel ItemPanel = itemPanelMap.get(spot);
+                if (ItemPanel != null) {
+                    schoolPanel.add(ItemPanel);
+                }
             }
         } else if (type.equals("attraction")) {
+            attractionPanel.removeAll();
             for (Spot spot : spots) {
-                JPanel attractionItemPanel = new JPanel();
-                BoxLayout boxLayout = new BoxLayout(attractionItemPanel, BoxLayout.Y_AXIS);
-                attractionItemPanel.setLayout(boxLayout);
-
-                ImageIcon originalIcon = new ImageIcon(spot.getImages()[0]);
-                Image originalImage = originalIcon.getImage();
-                Image scaledImage = originalImage.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-                JLabel attractionImage = new JLabel(new ImageIcon(scaledImage));
-                attractionImage.setAlignmentX(Component.CENTER_ALIGNMENT); // 设置图片居中
-
-                JLabel attractionName = new JLabel(spot.getName());
-                attractionName.setHorizontalAlignment(JLabel.CENTER); // 设置文本居中
-                attractionName.setAlignmentX(Component.CENTER_ALIGNMENT); // 设置文本居中
-
-                JLabel attractionTags = new JLabel(String.join(", ", spot.getTags()));
-                attractionTags.setHorizontalAlignment(JLabel.CENTER); // 设置文本居中
-                attractionTags.setAlignmentX(Component.CENTER_ALIGNMENT); // 设置文本居中
-
-                attractionItemPanel.add(attractionImage);
-                attractionItemPanel.add(Box.createVerticalStrut(5)); // 创建一个垂直间距，高度为5
-                attractionItemPanel.add(attractionName);
-                attractionItemPanel.add(Box.createVerticalStrut(5)); // 创建一个垂直间距，高度为5
-                attractionItemPanel.add(attractionTags);
-
-                attractionPanel.add(attractionItemPanel);
+                JPanel attractionItemPanels = itemPanelMap.get(spot);
+                if (attractionItemPanels != null) {
+                    attractionPanel.add(attractionItemPanels);
+                }
             }
         }
         revalidate();
@@ -190,121 +204,73 @@ public class RecommendationPanel extends JPanel {
     private void performSearch() {
         String query = searchField.getText();
         List<Spot> filteredSpots = recommendationSystem.searchSpots(query);
-        List<Spot> schools = filteredSpots.stream().filter(spot -> spot.getType().equals("school")).collect(Collectors.toList());
-        List<Spot> attractions = filteredSpots.stream().filter(spot -> spot.getType().equals("attraction")).collect(Collectors.toList());
+        updateDisplayedSpots(filteredSpots);
+    }
 
-        schoolPanel.removeAll();
-        attractionPanel.removeAll();
-        if(schools.size() == 0 && attractions.size() == 0) {
-            JOptionPane.showMessageDialog(this, "No results found", "Search Results", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
-        if(schools.size() != 0) {
-            setSpots1(schools, "school");
-            schoolScrollPane.setVisible(true);
-        }
-        else{
-            schoolScrollPane.setVisible(false);
-        }
-        if(attractions.size() != 0) {
-            setSpots1(attractions, "attraction");
-            attractionScrollPane.setVisible(true);
-        }
-        else{
-            attractionScrollPane.setVisible(false);
-        }
+    private void updateDisplayedSpots(List<Spot> filteredSpots) {
+        currentDisplayedSchools = filteredSpots.stream()
+                .filter(spot -> spot.getType().equals("school"))
+                .collect(Collectors.toList());
+        currentDisplayedAttractions = filteredSpots.stream()
+                .filter(spot -> spot.getType().equals("attraction"))
+                .collect(Collectors.toList());
+
+        displaySpots(currentDisplayedSchools, "school", schoolItemPanelSt);
+        displaySpots(currentDisplayedAttractions, "attraction", attractionItemPanel);
     }
 
     private void sortResults() {
         String sortCriteria = (String) sortComboBox.getSelectedItem();
-        List<Spot> spots = recommendationSystem.getAllSpots();
-        List<Spot> sortedSpots = recommendationSystem.sortSpots(spots, sortCriteria);
+        List<Spot> sortedSchools = recommendationSystem.sortSpots(currentDisplayedSchools, sortCriteria);
+        List<Spot> sortedAttractions = recommendationSystem.sortSpots(currentDisplayedAttractions, sortCriteria);
 
-        List<Spot> schools = sortedSpots.stream().filter(spot -> spot.getType().equals("school")).collect(Collectors.toList());
-        List<Spot> attractions = sortedSpots.stream().filter(spot -> spot.getType().equals("attraction")).collect(Collectors.toList());
-
-        schoolPanel.removeAll();
-        attractionPanel.removeAll();
-        if(schools.size() == 0 && attractions.size() == 0) {
-            JOptionPane.showMessageDialog(this, "No results found", "Search Results", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
-        if(schools.size() != 0) {
-            setSpots1(schools, "school");
-            schoolScrollPane.setVisible(true);
-        }
-        else{
-            schoolScrollPane.setVisible(false);
-        }
-        if(attractions.size() != 0) {
-            setSpots1(attractions, "attraction");
-            attractionScrollPane.setVisible(true);
-        }
-        else{
-            attractionScrollPane.setVisible(false);
-        }
+        displaySpots(sortedSchools, "school", schoolItemPanelSt);
+        displaySpots(sortedAttractions, "attraction", attractionItemPanel);
     }
 
-
     private void updateAttractionsForSchool(Spot school) {
-        // 更新右部景点展示逻辑
         Spot[] relatedSpots = school.getRelatedSpots();
         if (relatedSpots != null) {
             attractionPanel.removeAll();
             for (Spot spot : relatedSpots) {
-                JPanel attractionItemPanel = new JPanel();
-                BoxLayout boxLayout = new BoxLayout(attractionItemPanel, BoxLayout.Y_AXIS);
-                attractionItemPanel.setLayout(boxLayout);
-
-                ImageIcon originalIcon = new ImageIcon(spot.getImages()[0]);
-                Image originalImage = originalIcon.getImage();
-                Image scaledImage = originalImage.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-                JLabel attractionImage = new JLabel(new ImageIcon(scaledImage));
-                attractionImage.setAlignmentX(Component.CENTER_ALIGNMENT); // 设置图片居中
-
-                JLabel attractionName = new JLabel(spot.getName());
-                attractionName.setHorizontalAlignment(JLabel.CENTER); // 设置文本居中
-                attractionName.setAlignmentX(Component.CENTER_ALIGNMENT); // 设置文本居中
-
-                JLabel attractionTags = new JLabel(String.join(", ", spot.getTags()));
-                attractionTags.setHorizontalAlignment(JLabel.CENTER); // 设置文本居中
-                attractionTags.setAlignmentX(Component.CENTER_ALIGNMENT); // 设置文本居中
-
-                attractionItemPanel.add(attractionImage);
-                attractionItemPanel.add(Box.createVerticalStrut(5)); // 创建一个垂直间距，高度为5
-                attractionItemPanel.add(attractionName);
-                attractionItemPanel.add(Box.createVerticalStrut(5)); // 创建一个垂直间距，高度为5
-                attractionItemPanel.add(attractionTags);
-
-                attractionPanel.add(attractionItemPanel);
+                JPanel panel = spot.getType().equals("school") ? schoolItemPanelSt.get(spot) : attractionItemPanel.get(spot);
+                if (panel != null) {
+                    attractionPanel.add(panel);
+                }
             }
             revalidate();
             repaint();
         }
     }
-    private void restoreOriginalState() {
-        // 恢复右部景点展示逻辑
-        List<Spot> attractions = recommendationSystem.getInitialAttractions();
-        setSpots(attractions, "attraction");
+
+    private void restoreOriginalState(List<Spot> currentDisplayedSchools1, List<Spot> currentDisplayedAttractions1, Map<Spot, JPanel> schoolItemPanel, boolean type) {
+        lastClickedSchool = null;
+        lastClickedAttraction = null;
+        schoolScrollPane.setVisible(true);
+        attractionScrollPane.setVisible(true);
+        if (type) {
+            currentDisplayedSchools = recommendationSystem.getInitialSchools();
+            currentDisplayedAttractions = recommendationSystem.getInitialAttractions();
+        }
+        displaySpots(currentDisplayedSchools1, "school", schoolItemPanel);
+        displaySpots(currentDisplayedAttractions1, "attraction", attractionItemPanel);
     }
 
-
     private JPanel getLeftPanel() {
-        // 左部：搜索和偏好设置
         leftPanel = new JPanel();
-        leftPanel.setLayout(new BorderLayout());
+        leftPanel.setLayout(new GridLayout(3, 1));
 
         JPanel searchPanel = new JPanel();
         searchPanel.setLayout(new FlowLayout());
-        searchField = new JTextField(15);
-        JButton searchButton = new JButton("Search");
+        searchField = new JTextField(20);
+        JButton searchButton = new JButton("搜索");
         searchButton.addActionListener(e -> performSearch());
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
 
         JPanel sortPanel = new JPanel();
         sortPanel.setLayout(new FlowLayout());
-        sortComboBox = new JComboBox<>(new String[]{"Sort by Popularity", "Sort by Rating"});
+        sortComboBox = new JComboBox<>(new String[]{"选择排序方式", "热度", "评分"});
         sortComboBox.addActionListener(e -> sortResults());
         sortPanel.add(sortComboBox);
 
@@ -338,55 +304,31 @@ public class RecommendationPanel extends JPanel {
             }
 
             List<Spot> recommendedSpots = recommendationSystem.filterAndSortSpots(selectedPreferences);
-
-            List<Spot> schools = recommendedSpots.stream().filter(spot -> spot.getType().equals("school")).collect(Collectors.toList());
-            List<Spot> attractions = recommendedSpots.stream().filter(spot -> spot.getType().equals("attraction")).collect(Collectors.toList());
-
-            schoolPanel.removeAll();
-            attractionPanel.removeAll();
-            if(schools.size() == 0 && attractions.size() == 0) {
-                JOptionPane.showMessageDialog(this, "No results found", "Search Results", JOptionPane.INFORMATION_MESSAGE);
-                return;
-            }
-            if(schools.size() != 0) {
-                setSpots1(schools, "school");
-                schoolScrollPane.setVisible(true);
-            }
-            else{
-                schoolScrollPane.setVisible(false);
-            }
-            if(attractions.size() != 0) {
-                setSpots1(attractions, "attraction");
-                attractionScrollPane.setVisible(true);
-            }
-            else{
-                attractionScrollPane.setVisible(false);
-            }
+            updateDisplayedSpots(recommendedSpots);
         });
         preferencePanel.add(recommendButton);
 
-        leftPanel.add(searchPanel, BorderLayout.NORTH);
-        leftPanel.add(sortPanel, BorderLayout.CENTER);
-        leftPanel.add(preferencePanel, BorderLayout.SOUTH);
+        JButton backButton = new JButton("返回初始状态");
+        backButton.addActionListener(e -> restoreOriginalState(recommendationSystem.getInitialSchools(), recommendationSystem.getInitialAttractions(), schoolItemPanelDy, true));
+        preferencePanel.add(backButton);
+
+        leftPanel.add(searchPanel);
+        leftPanel.add(sortPanel);
+        leftPanel.add(preferencePanel);
         return leftPanel;
     }
 
-
     private JScrollPane getMiddlePanel() {
-        // 中部：学校展示
         schoolPanel = new JPanel();
         schoolPanel.setLayout(new GridLayout(0, 1));
         schoolScrollPane = new JScrollPane(schoolPanel);
         return schoolScrollPane;
     }
 
-
     private JScrollPane getRightPanel() {
-        // 右部：景点展示
         attractionPanel = new JPanel();
         attractionPanel.setLayout(new GridLayout(0, 1));
         attractionScrollPane = new JScrollPane(attractionPanel);
         return attractionScrollPane;
     }
 }
-
