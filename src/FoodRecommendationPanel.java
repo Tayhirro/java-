@@ -154,7 +154,7 @@ public class FoodRecommendationPanel extends JPanel {
         }
         resultTable.setModel(tableModel);
 
-        // 设置列的默认宽度并禁用用户调整列宽
+        // 设置列的默认宽度
         TableColumnModel columnModel = resultTable.getColumnModel();
 
         // 设置每列的宽度
@@ -196,9 +196,11 @@ public class FoodRecommendationPanel extends JPanel {
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 c.setBackground(new Color(255, 255, 204));  // 设置背景颜色
+                setHorizontalAlignment(SwingConstants.CENTER);  // 设置居中对齐
                 return c;
             }
         });
+
         // 设置表格网格线颜色
         resultTable.setGridColor(Color.LIGHT_GRAY);
 
